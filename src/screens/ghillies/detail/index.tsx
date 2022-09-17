@@ -1,0 +1,414 @@
+import { useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect } from "react";
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  useColorScheme
+} from "react-native";
+import { SharedElement } from "react-navigation-shared-element";
+import styles from "./styles";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { colorsVerifyCode } from "../../../components/colors";
+import { Badge, Center, Column, Row, Spinner, View } from "native-base";
+import TopicsContainer from "../../../components/topics-container";
+import { numberToReadableFormat } from "../../../shared/utils/number-utils";
+import { useSelector } from "react-redux";
+import { IRootState, useAppDispatch } from "../../../store";
+import { getGhillie, joinGhillie, leaveGhillie } from "../../../shared/reducers/ghillie.reducer";
+import VirtualizedView from "../../../components/virtualized-view";
+import PostService from "../../../shared/services/post.service";
+import { PostListingDto } from "../../../shared/models/posts/post-listing.dto";
+import BigText from "../../../components/texts/big-text";
+import PostCard from "../../../components/post-card";
+import CreatePostButton from "../../../components/buttons/create-post-button";
+import postReactionService from "../../../shared/services/post-reaction.service";
+import {GhillieRole} from "../../../shared/models/ghillies/ghillie-role";
+import {MemberStatus} from "../../../shared/models/members/member-status";
+import {PostStatus} from "../../../shared/models/posts/post-status";
+import {ReactionType} from "../../../shared/models/reactions/reaction-type";
+import {PageInfo} from "../../../shared/models/pagination/types";
+
+const { primary, secondary, fail } = colorsVerifyCode;
+
+
+interface Route {
+  params: {
+    ghillieId: string;
+    ghillieIndex: number;
+  };
+}
+
+export const GhillieDetailScreen: React.FC<{ route: Route }> = ({ route }) => {
+  const [selection, setSelection] = React.useState(0);
+  const [pageInfo, setPageInfo] = React.useState<PageInfo>({
+    hasNextPage: false,
+    hasPreviousPage: false,
+    startCursor: "",
+    endCursor: ""
+  });
+  const [isLoadingGhillies, setIsLoadingGhillies] = React.useState(false);
+  const [postList, setPostList] = React.useState<PostListingDto[]>([]);
+
+  const currentUser = useSelector(
+    (state: IRootState) => state.authentication.account
+  );
+
+  const ghillie = useSelector(
+    (state: IRootState) => state.ghillie.ghillie
+  );
+  const isLoading = useSelector(
+    (state: IRootState) => state.ghillie.loading
+  );
+
+  const isAdmin = useSelector(
+    (state: IRootState) => state.authentication.isAdmin
+  );
+
+  const isGhillieOwner = useSelector(
+    (state: IRootState) => state.ghillie.ghillie.memberMeta?.role === GhillieRole.OWNER
+  );
+
+  const isBanned = useSelector(
+    (state: IRootState) => state.ghillie.ghillie.memberMeta?.memberStatus === MemberStatus.BANNED ||
+      state.ghillie.ghillie.memberMeta?.memberStatus === MemberStatus.SUSPENDED
+  );
+
+  const isMember = useSelector(
+    (state: IRootState) => state.ghillie.ghillie.memberMeta !== null
+  );
+
+  const isModerator = useSelector(
+    (state: IRootState) =>
+      state.ghillie.ghillie.memberMeta !== null &&
+      (
+        state.ghillie.ghillie.memberMeta?.role === GhillieRole.OWNER ||
+        state.ghillie.ghillie.memberMeta?.role === GhillieRole.MODERATOR
+      )
+  );
+
+
+  // eslint-disable-next-line no-unsafe-optional-chaining
+  const { ghillieId } = route?.params;
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getGhillie(ghillieId));
+    PostService.getPostsForGhillie(
+      ghillieId,
+      20
+    )
+      .then(({ data, meta }) => {
+        setPostList(data);
+        setPageInfo(meta);
+      });
+  }, [dispatch, ghillieId]);
+
+  const navigation: any = useNavigation();
+
+  const goBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
+  const handleGhillieUpdate = useCallback(() => {
+    navigation.navigate("GhillieUpdate", { ghillie });
+  }, [navigation, ghillie]);
+
+  const color = useColorScheme() === "dark" ? "#fff" : "#000";
+
+  const onGhillieJoinOrLeave = () => {
+    if (ghillie.memberMeta) {
+      dispatch(leaveGhillie(ghillieId));
+    } else {
+      dispatch(joinGhillie(ghillieId));
+    }
+  };
+
+  const moderatorRemovePost = (post) => {
+    PostService.updatePost(post.id, {
+      status: PostStatus.REMOVED
+    })
+      .then(res => {
+        PostService.getPostsForGhillie(
+          ghillieId,
+          20
+        )
+          .then(({ data, meta }) => {
+            setPostList(data);
+            setPageInfo(meta);
+          });
+      })
+      .catch(err => {
+        // todo: handle
+        console.log(err);
+      });
+  };
+
+  const ownerDeletePost = (post) => {
+    PostService.updatePost(post.id, {
+      status: PostStatus.ARCHIVED
+    })
+      .then(res => {
+        PostService.getPostsForGhillie(
+          ghillieId,
+          20
+        )
+          .then(({ data, meta }) => {
+            setPostList(data);
+            setPageInfo(meta);
+          });
+      })
+      .catch(err => {
+        // todo: handle
+        console.log(err);
+      });
+  };
+
+  const onHandleReaction = (postId: string, reaction: ReactionType | null) => {
+    postReactionService.reactToPost(reaction, postId)
+      .then(async res => {
+        // find the post and update the reaction, set the state with the existing list of posts with updated value
+        const updatedPosts = postList.map(foundPost => {
+          if (foundPost.id === postId) {
+            foundPost.currentUserReaction = reaction;
+          }
+          return foundPost;
+        });
+        setPostList(updatedPosts);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  const loadMore = () => {
+    if (pageInfo.hasNextPage) {
+      PostService.getPostsForGhillie(
+        ghillieId,
+        3,
+        pageInfo.endCursor
+      )
+        .then(({ data, meta }) => {
+          setPostList(data);
+          setPageInfo(meta);
+        });
+    }
+  };
+
+  const _renderPost = ({ item }) => (
+    <PostCard
+      post={item}
+      isModerator={isModerator}
+      isAdmin={isAdmin}
+      isOwner={currentUser.id === item.postedBy.id}
+      onModeratorRemoval={moderatorRemovePost}
+      onOwnerDelete={ownerDeletePost}
+      onHandleReaction={onHandleReaction}
+    />
+  );
+
+  if (isLoading) {
+    return (
+      <View style={{
+        flex: 1,
+        backgroundColor: primary
+      }}>
+        <Center>
+          <Spinner color={color} />
+        </Center>
+      </View>
+    );
+  }
+
+  return (
+    <View style={{
+      flex: 1,
+      backgroundColor: primary
+    }}>
+      <TouchableOpacity style={styles.backButton} onPress={goBack}>
+        <Ionicons name="arrow-back-circle-outline" size={40} color={secondary} />
+      </TouchableOpacity>
+      {(isAdmin || isGhillieOwner) && (
+        <TouchableOpacity style={styles.updateButton} onPress={handleGhillieUpdate}>
+          <Ionicons name="cog" size={40} color={secondary} />
+        </TouchableOpacity>
+      )}
+      <VirtualizedView
+        showsVerticalScrollIndicator={false}
+        style={[styles.container, { backgroundColor: primary }]}
+        contentContainerStyle={styles.contentContainer}
+        renderItem={_renderPost}
+        hideData={selection === 1}
+        data={postList}
+        keyExtractor={(item) => item.id}
+        pagingEnabled={true}
+        onEndReached={() => {
+          console.log("onEndReached");
+        }}
+        snapToInterval={300}
+      >
+        <SharedElement id={`ghillie#${ghillie}-Image`}>
+          <Image
+            style={styles.image}
+            source={{ uri: ghillie?.imageUrl ? ghillie?.imageUrl : "https://picsum.photos/1000" }}
+            resizeMode={"cover"}
+          />
+        </SharedElement>
+        <View marginBottom={50}>
+          <Center>
+            <Text style={[styles.title, { color }]}>{ghillie?.name}</Text>
+            <Badge variant="solid" color="default">
+              {ghillie.totalMembers !== undefined && ghillie.totalMembers > 0
+                ? (
+                  <Text style={{
+                    color: "white"
+                  }}>
+                    {`${numberToReadableFormat(ghillie?.totalMembers)} members`}
+                  </Text>
+                )
+                : (
+                  <Text style={{
+                    color: "white"
+                  }}>
+                    Be the first to join!
+                  </Text>
+                )
+              }
+            </Badge>
+            <TouchableOpacity
+              style={{
+                marginTop: 10
+              }}
+              disabled={isBanned}
+              onPress={() => onGhillieJoinOrLeave()}
+            >
+              <Badge
+                variant="solid"
+                style={{
+                  backgroundColor: !ghillie.memberMeta ? secondary : fail,
+                  borderRadius: 10
+                }}
+              >
+                <Text style={{
+                  color: "white",
+                  fontSize: 20
+                }}
+                >
+                  {!ghillie.memberMeta
+                    ? "Join Ghillie"
+                    : isBanned ? "Banned" : "Leave Ghillie"
+                  }
+                </Text>
+              </Badge>
+            </TouchableOpacity>
+          </Center>
+          <Row>
+            <Column width="50%" alignItems="center">
+              <TouchableOpacity onPress={() => setSelection(0)}>
+                <FontAwesome
+                  name={selection === 0 ? "comments" : "comments-o"}
+                  size={40}
+                  color={secondary}
+                />
+                <Text style={{
+                  color: secondary
+                }}
+                >
+                  Posts
+                </Text>
+              </TouchableOpacity>
+            </Column>
+            <Column width="50%" alignItems="center">
+              <TouchableOpacity onPress={() => setSelection(1)}>
+                <FontAwesome
+                  name={selection === 1 ? "question-circle" : "question-circle-o"}
+                  size={40}
+                  color={secondary}
+                />
+                <Text style={{
+                  color: secondary
+                }}
+                >
+                  About
+                </Text>
+              </TouchableOpacity>
+            </Column>
+          </Row>
+        </View>
+
+        {selection === 0 && (
+          <View>
+            {isBanned
+              ? (
+                <Center>
+                  <Text style={{
+                    color: "white"
+                  }}
+                  >
+                    You are banned from this ghillie.
+                  </Text>
+                </Center>
+              )
+              : (
+                <View flex={1}>
+                  <BigText style={{
+                    marginLeft: 15,
+                    marginBottom: 10
+                  }}>
+                    Recent Posts
+                  </BigText>
+                  {(!isBanned && isMember) && (
+                    <CreatePostButton
+                      style={{
+                        height: 50,
+                        opacity: 0.8,
+                        margin: 15
+                      }}
+                      onPress={() => {
+                        navigation.navigate("Posts", {
+                          screen: "CreatePost",
+                          params: { preSelectedGhillie: ghillie }
+                        });
+                      }}
+                    />
+                  )}
+                  {/* TODO: Add create post for this ghillie */}
+                  {/* TODO: Add pinned posts, ** REQUIRES DATA CHANGE ** */}
+                </View>
+              )}
+          </View>
+        )}
+        {selection === 1 && (
+          <>
+            <View>
+              <Text style={[styles.content, { color: color }]}>
+                {ghillie?.about}
+              </Text>
+            </View>
+            <View style={{
+              marginTop: 20,
+              borderTopWidth: 1,
+              borderTopColor: secondary,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20
+            }}>
+              <TopicsContainer topics={ghillie.topics} style={{
+                flex: 1,
+                marginTop: 10,
+                marginBottom: 10
+              }} />
+            </View>
+
+          </>
+        )}
+
+      </VirtualizedView>
+    </View>
+  );
+};
+
+(GhillieDetailScreen as any).sharedElements = (route: any) => {
+  const { ghillieIndex } = route.params;
+  return [`ghillie#${ghillieIndex}-Image`];
+};
