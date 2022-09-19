@@ -29,7 +29,20 @@ export interface CommentBlockProps {
 
 const dimensions = Dimensions.get('window');
 
-export const CommentBlock = ({
+export const CommentBlock: ({
+                              item,
+                              post,
+                              index,
+                              onCommentReply,
+                              onCommentReact,
+                              onDeleteComment,
+                              onModeratorRemoval,
+                              onEditComment,
+                              onLoadReplies,
+                              isAdmin,
+                              isModerator,
+                              isOwner
+                            }: CommentBlockProps) => JSX.Element = ({
                                item,
                                post,
                                index,
@@ -93,7 +106,7 @@ export const CommentBlock = ({
         onCommentReact={onCommentReact}
         onCommentReply={onCommentReply}
         setOpenActionSheet={setIsOpen}
-        isOp={post.postedBy.username === item.createdBy.username}
+        isOp={post?.postedBy?.username === item.createdBy.username}
       />
       <CommentActionSheet
         isOpen={isOpen}
