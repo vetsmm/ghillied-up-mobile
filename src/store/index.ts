@@ -6,11 +6,13 @@ import {FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, RE
 import authentication from '../shared/reducers/authentication.reducer'
 import ghillie from '../shared/reducers/ghillie.reducer'
 import post from '../shared/reducers/post.reducer'
+import notifications from '../shared/reducers/notifications.reducer'
 
 const reducers = combineReducers({
   authentication,
   ghillie,
-  post
+  post,
+  notifications
 })
 
 const persistConfig = {

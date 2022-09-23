@@ -32,6 +32,10 @@ export const ApplicationTabBar = ({ navigation }: any) => {
     (state: IRootState) => state.authentication.isVerifiedMilitary,
   );
 
+    const unreadNotifications = useSelector(
+        (state: IRootState) => state.notifications.unreadNotifications,
+    );
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -175,6 +179,9 @@ export const ApplicationTabBar = ({ navigation }: any) => {
             });
           },
         })}
+        options={{
+            tabBarBadge: unreadNotifications > 0 ? unreadNotifications : undefined,
+        }}
       />
       <Tab.Screen
         name="Account"

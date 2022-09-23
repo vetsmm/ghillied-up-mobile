@@ -6,7 +6,6 @@ const enumStyleToSentence = (str: string) => {
   );
 }
 
-
 const maskEmail = (email: string) => {
   const [first, last] = email.split('@');
   return `${first.substr(0, 1)}*****${last}`;
@@ -29,11 +28,19 @@ const mapStringToObjectKey = (str: string, values: object) => {
   return match ? values[match] : null;
 }
 
+const trimStringToMaxLength = (str: string, maxLength: number) => {
+    if (str.length > maxLength) {
+        return `${str.substr(0, maxLength)}...`;
+    }
+    return str;
+}
+
 const stringUtils = {
   trimString,
   enumStyleToSentence,
   maskEmail,
-  mapStringToObjectKey
+  mapStringToObjectKey,
+  trimStringToMaxLength
 }
 
 export default stringUtils;

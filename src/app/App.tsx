@@ -7,7 +7,7 @@ import {persistor, store} from "../store";
 import {NativeBaseProvider} from "native-base";
 import setupAxiosInterceptors from "../config/axios.interceptors";
 import {bindActionCreators} from "@reduxjs/toolkit";
-import {logoutSession, refreshToken} from "../shared/reducers/authentication.reducer";
+import {logout, logoutSession, refreshToken} from "../shared/reducers/authentication.reducer";
 import JwtService from "../shared/services/jwt.service";
 import {appTheme} from "../shared/styles/app.theme"
 import NavContainer from "../navigation/navigation-container";
@@ -30,7 +30,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const actions = bindActionCreators({logoutSession, refreshToken}, store.dispatch);
+const actions = bindActionCreators({logout, refreshToken}, store.dispatch);
 
 setupAxiosInterceptors(
   async (error: any) => {
@@ -39,7 +39,7 @@ setupAxiosInterceptors(
       const isTokenExpired = await JwtService.isTokenExpired()
       if (isTokenExpired) {
         console.log('Token expired logout');
-        actions.logoutSession();
+        actions.logout();
       } else {
         console.log('Token refresh');
         actions.refreshToken();

@@ -1,5 +1,4 @@
 import {useNavigation} from '@react-navigation/native';
-import moment from 'moment';
 import React, {useCallback} from 'react';
 import {Image, Text, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';

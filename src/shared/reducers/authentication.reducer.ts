@@ -53,10 +53,6 @@ export const register = createAsyncThunk(
       .then(async (response) => {
         console.log(`Successfully Registered: ${JSON.stringify(response)}`);
         return response;
-      })
-      .catch((error) => {
-        console.log(`Error Registering: ${JSON.stringify(error.message)}`);
-        thunkAPI.rejectWithValue(error);
       });
   }
 );
@@ -67,10 +63,6 @@ export const changePassword = createAsyncThunk(
     AuthService.changePassword(changePasswordInput)
       .then(async (response) => {
         return response;
-      })
-      .catch((error) => {
-        console.log(`Error Changing Password: ${error}`);
-        thunkAPI.rejectWithValue(error);
       });
   }
 );
@@ -81,10 +73,6 @@ export const resetPasswordInit = createAsyncThunk(
     AuthService.resetPasswordInit(passwordReset)
       .then(async (response) => {
         return response;
-      })
-      .catch((error) => {
-        console.log(`Error Resetting Password Init: ${error}`);
-        thunkAPI.rejectWithValue(error);
       });
   }
 );
@@ -95,10 +83,6 @@ export const resetPasswordFinish = createAsyncThunk(
     AuthService.resetPasswordFinish(passwordReset)
       .then(async (response) => {
         return response;
-      })
-      .catch((error) => {
-        console.log(`Error Resetting Password Finish ${error}`);
-        thunkAPI.rejectWithValue(error);
       });
   }
 );
@@ -109,10 +93,6 @@ export const getAccount = createAsyncThunk(
     return AuthService.getAccount()
       .then(async (response) => {
         return response.data;
-      })
-      .catch((error) => {
-        console.log(`Error Getting Account: ${error}`);
-        return thunkAPI.rejectWithValue(error);
       });
   }
 );
@@ -140,8 +120,6 @@ export const refreshToken = createAsyncThunk(
           thunkAPI.dispatch(logout());
         });
     }
-
-    thunkAPI.rejectWithValue("No refresh token found");
   }
 );
 

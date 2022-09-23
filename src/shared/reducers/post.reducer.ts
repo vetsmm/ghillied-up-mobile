@@ -21,10 +21,6 @@ export const createPost = createAsyncThunk(
     return await postService.createPost(post)
       .then(async (response) => {
         return response;
-      })
-      .catch((error) => {
-        thunkAPI.rejectWithValue(error);
-        return error;
       });
   }
 );
@@ -35,10 +31,6 @@ export const getPost = createAsyncThunk(
     return await postService.getPost(id)
       .then(async (response) => {
         return response;
-      })
-      .catch((error) => {
-        thunkAPI.rejectWithValue(error);
-        return error;
       });
   }
 );
@@ -52,10 +44,6 @@ export const updatePost = createAsyncThunk(
     return await postService.updatePost(id, post)
       .then(async (response) => {
         return response;
-      })
-      .catch((error) => {
-        thunkAPI.rejectWithValue(error);
-        return error;
       });
   }
 );
@@ -66,10 +54,6 @@ export const deletePost = createAsyncThunk(
     return await postService.deletePost(id)
       .then(async (response) => {
         return response;
-      })
-      .catch((error) => {
-        thunkAPI.rejectWithValue(error);
-        return error;
       });
   }
 );
@@ -85,38 +69,46 @@ export const PostSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(createPost.rejected, (state, action) => {
+      console.log("createpost rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(getPost.rejected, (state, action) => {
+      console.log("getPost rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(updatePost.rejected, (state, action) => {
+      console.log("updatePost Rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(deletePost.rejected, (state, action) => {
+      console.log("deletepost rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(createPost.fulfilled, (state, action) => {
+      // @ts-ignore
       state.post = action.payload;
       state.loading = false
     });
     builder.addCase(getPost.fulfilled, (state, action) => {
+      // @ts-ignore
       state.post = action.payload;
       state.loading = false
     });
     builder.addCase(updatePost.fulfilled, (state, action) => {
+      // @ts-ignore
       state.post = action.payload;
       state.loading = false
     });
     builder.addCase(deletePost.fulfilled, (state, action) => {
+      // @ts-ignore
       state.post = action.payload;
       state.loading = false
     });
