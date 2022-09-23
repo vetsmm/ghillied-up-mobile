@@ -17,10 +17,7 @@ const login = async (loginInput: AuthLoginInputDto): Promise<BaseApiResponse<Aut
   return await axios.post(`${AppConfig.apiUrl}/auth/login`, loginInput)
     .then(res => {
       return res.data;
-    })
-    .catch(err => {
-      throw err;
-    })
+    });
 }
 
 const register = async (registerInput: AuthRegisterInputDto): Promise<BaseApiResponse<RegisterOutput, never>> => {
@@ -44,9 +41,6 @@ const changePassword = async (changePasswordInput: AuthChangePasswordInputDto): 
     .post(`${AppConfig.apiUrl}/auth/change-password`, changePasswordInput)
     .then(() => {
       return
-    })
-    .catch(err => {
-      throw err;
     });
 }
 
@@ -87,9 +81,6 @@ const isUsernameAvailable = async (username: string): Promise<{ available: boole
     .get(`${AppConfig.apiUrl}/auth/check-username/${username}`)
     .then(res => {
       return res.data.data;
-    })
-    .catch(err => {
-      throw err;
     });
 }
 
@@ -101,7 +92,6 @@ const activateAccount = async (emailVerification: AuthVerifyEmailInputDto)
   return await axios
     .post(`${AppConfig.apiUrl}/auth/activate`, emailVerification)
     .then(res => {
-      console.log(res);
       return res.data;
     });
 }

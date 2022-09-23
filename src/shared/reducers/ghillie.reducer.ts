@@ -20,10 +20,6 @@ export const getGhillies = createAsyncThunk(
     return await GhillieService.getGhillies(criteria)
       .then(async (response) => {
         return response;
-      })
-      .catch((error) => {
-        thunkAPI.rejectWithValue(error);
-        return error;
       });
   }
 );
@@ -34,10 +30,6 @@ export const joinGhillie = createAsyncThunk(
     return await GhillieService.joinGhillie(id)
       .then(_ => {
         thunkAPI.dispatch(getGhillie(id));
-      })
-      .catch((error) => {
-        thunkAPI.rejectWithValue(error);
-        return error;
       });
   }
 );
@@ -49,10 +41,6 @@ export const leaveGhillie = createAsyncThunk(
       .then(_ => {
         thunkAPI.dispatch(getGhillie(id));
       })
-      .catch((error) => {
-        thunkAPI.rejectWithValue(error);
-        return error;
-      });
   }
 );
 
@@ -62,9 +50,6 @@ export const getGhillie = createAsyncThunk(
     return await GhillieService.getGhillie(id)
       .then(async (response) => {
         return response.data;
-      }).catch((error) => {
-        thunkAPI.rejectWithValue(error);
-        return error;
       });
   }
 );
@@ -75,9 +60,6 @@ export const getMyGhillies = createAsyncThunk(
     return await GhillieService.getMyGhillies()
       .then(async (response) => {
         return response.data;
-      }).catch((error) => {
-        thunkAPI.rejectWithValue(error);
-        return error;
       });
   }
 );
@@ -97,27 +79,32 @@ export const GhillieSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(getGhillies.rejected, (state, action) => {
+      console.log("getGhillies rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(getGhillie.rejected, (state, action) => {
+      console.log("getGhillie rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
       state.ghillie = {} as GhillieDetailDto;
     });
     builder.addCase(joinGhillie.rejected, (state, action) => {
+      console.log("joinghillie rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(leaveGhillie.rejected, (state, action) => {
+      console.log("leavehillied rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(getMyGhillies.rejected, (state, action) => {
+      console.log("getMyGhillies rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;

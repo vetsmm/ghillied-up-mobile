@@ -7,7 +7,6 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eas:build": "eas build",
-
     "publish": "expo publish",
     "publish:qa": "expo publish --release-channel qa",
     "publish:set": "expo publish:set",
@@ -62,7 +61,10 @@
     "redux-persist": "^6.0.0",
     "sentry-expo": "^5.0.2",
     "styled-components": "^5.3.5",
-    "tslib": "^2.4.0"
+    "tslib": "^2.4.0",
+    "@sentry/react-native": "4.2.2",
+    "expo-application": "~4.2.2",
+    "expo-device": "~4.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

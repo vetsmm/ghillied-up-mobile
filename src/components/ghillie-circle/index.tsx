@@ -4,7 +4,7 @@ import { Text, VStack, HStack, Avatar, Pressable } from "native-base";
 
 export interface IGhillieCircle {
   onPress: () => void;
-  text: string;
+  text?: string;
   image: string;
 }
 
@@ -23,15 +23,17 @@ export const GhillieCircle = (props: IGhillieCircle) => {
               }}
             />
           </Pressable>
-          <Text
-            fontSize="xs"
-            fontWeight="normal"
-            style={{
-              color: "white",
-            }}
-          >
-            {props.text}
-          </Text>
+          {props.text && (
+              <Text
+                  fontSize="xs"
+                  fontWeight="normal"
+                  style={{
+                    color: "white",
+                  }}
+              >
+                {props.text}
+              </Text>
+          )}
         </VStack>
       </TouchableOpacity>
     </HStack>

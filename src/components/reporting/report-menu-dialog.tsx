@@ -13,6 +13,8 @@ export interface ReportMenuDialogProps {
   cancelRef: React.RefObject<any>;
   title?: string;
 }
+
+// TODO: Change to a styled modal
 export const ReportMenuDialog = ({isOpen, onClose, cancelRef, onReport, title = "Report Post"}: ReportMenuDialogProps) => {
   const [{
     category,
