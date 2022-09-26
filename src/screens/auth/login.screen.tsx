@@ -69,16 +69,18 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
         dispatch(login(res.data))
       })
       .catch((err: any) => {
+        console.log('err', err);
         if (err.status === 403) {
           navigation.navigate("VerifyEmail", {
             username: credentials.username,
           });
         } else if (err.status === 401) {
-          dispatch(setLoginError(err.data.error.message));
+          dispatch(setLoginError(err.data?.error?.message || err.data?.message || err.message || "Something went wrong"));
           setMessage('Login failed: Invalid Credentials');
         } else {
-          Sentry.Native.captureException(err);
-          dispatch(setLoginError(err.data.error.message));
+          console.log('err', err);
+          // Sentry.Native.captureException(err);
+          dispatch(setLoginError(err.data?.error?.message || "An error occurred"));
           setMessage('Login failed: Unknown error');
         }
       })

@@ -21,7 +21,6 @@ import {PostStatus} from "../../../shared/models/posts/post-status";
 import {ReactionType} from "../../../shared/models/reactions/reaction-type";
 import {PageInfo} from "../../../shared/models/pagination/types";
 import {FeedInputDto} from "../../../shared/models/feed/feed-input.dto";
-import {FlagCategory} from "../../../shared/models/flags/flag-category";
 
 
 function PostFeedHeader({ searchText, setSearchText, clearSearch, onFilterClick }) {
@@ -222,7 +221,6 @@ function PostListingScreen(props: any) {
             </BigText>
           </View>
         }
-        ListFooterComponent={isLoading ? renderSpinner : null}
         ListEmptyComponent={
           <Center>
             <Text style={{

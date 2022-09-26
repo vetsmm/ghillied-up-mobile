@@ -6,7 +6,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     flexGrow: 1,
-    paddingTop: isIphoneX() ? getStatusBarHeight() + 20 : 20,
+    paddingTop: isIphoneX() ? getStatusBarHeight() + 20 : 30,
   },
   list: {
     flex: 1,

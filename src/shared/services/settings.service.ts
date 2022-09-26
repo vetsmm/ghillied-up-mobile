@@ -1,6 +1,5 @@
 import axios from "axios";
 import AppConfig from "../../config/app.config";
-import * as Sentry from 'sentry-expo';
 import {Platform} from "react-native";
 
 const addPushTokenToAccount = async (token): Promise<void> => {

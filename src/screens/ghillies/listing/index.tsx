@@ -166,7 +166,6 @@ function GhillieListingScreen() {
             </BigText>
           </View>
         }
-        ListFooterComponent={isLoading ? renderSpinner : null}
         ListEmptyComponent={
           <Center>
             <Text style={{

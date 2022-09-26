@@ -1,6 +1,7 @@
 {
   "build": {
     "production": {
+      "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
       }
@@ -23,6 +24,7 @@
     "production": {}
   },
   "cli": {
-    "version": ">= 0.55.1"
+    "version": ">= 0.55.1",
+    "appVersionSource": "remote"
   }
 }

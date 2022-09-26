@@ -97,7 +97,9 @@ export const getAccount = createAsyncThunk(
   }
 );
 
+
 export const logout = (): any => async (dispatch: any) => {
+  console.log("Logging out");
   await JwtService.deleteAuthObject();
   dispatch(logoutSession());
 };
@@ -105,6 +107,7 @@ export const logout = (): any => async (dispatch: any) => {
 export const refreshToken = createAsyncThunk(
   "auth/refreshToken",
   async (_, thunkAPI) => {
+    console.log("Refreshing Token");
     const refreshToken = await JwtService.getRefreshToken();
     if (refreshToken) {
       return AuthService.refreshToken(refreshToken)
