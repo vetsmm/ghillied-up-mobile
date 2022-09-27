@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axiosInstance as axios } from './api'
 import AppConfig from "../../config/app.config";
 import {Platform} from "react-native";
 

@@ -1,5 +1,5 @@
 import {BaseApiResponse} from "../models/base-api-response";
-import axios from "axios";
+import { axiosInstance as axios } from './api'
 import AppConfig from "../../config/app.config";
 import {CreateCommentDto} from "../models/comments/create-comment.dto";
 import {CommentDetailDto} from "../models/comments/comment-detail.dto";

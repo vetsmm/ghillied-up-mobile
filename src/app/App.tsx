@@ -5,10 +5,6 @@ import {Provider} from 'react-redux'
 import {PersistGate} from 'redux-persist/integration/react'
 import {persistor, store} from "../store";
 import {NativeBaseProvider} from "native-base";
-import setupAxiosInterceptors from "../config/axios.interceptors";
-import {bindActionCreators} from "@reduxjs/toolkit";
-import {logout, logoutSession, refreshToken} from "../shared/reducers/authentication.reducer";
-import JwtService from "../shared/services/jwt.service";
 import {appTheme} from "../shared/styles/app.theme"
 import NavContainer from "../navigation/navigation-container";
 import * as Notifications from 'expo-notifications';
@@ -29,34 +25,6 @@ Notifications.setNotificationHandler({
         shouldSetBadge: true,
     }),
 });
-
-const actions = bindActionCreators({logout, refreshToken}, store.dispatch);
-
-setupAxiosInterceptors(
-    async (error: any) => {
-        const status = error.status || error.response.status;
-        if (status === 401) {
-            if (error.data.path === "/auth/login") {
-                return Promise.reject(error);
-            }
-
-            const isTokenExpired = await JwtService.isTokenExpired()
-            if (isTokenExpired) {
-                store.dispatch(logout());
-            } else if (error.data.path === "/auth/login") {
-                return Promise.reject(error);
-            } else {
-                console.log('Token refresh');
-                store.dispatch(refreshToken());
-            }
-        }
-        return Promise.reject(error);
-    },
-    (err: any) => {
-        Sentry.Native.captureException(err);
-        return Promise.reject(err);
-    }
-);
 
 const _renderApp = () => {
     return (
