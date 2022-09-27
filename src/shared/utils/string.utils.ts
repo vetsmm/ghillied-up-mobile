@@ -1,4 +1,7 @@
 const enumStyleToSentence = (str: string) => {
+    if (!str || str.length === 0) {
+        return '';
+    }
 // change from upper snake case to title case sentence
   return str.replace(/_/g, ' ').replace(/\w\S*/g, (txt) => {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();

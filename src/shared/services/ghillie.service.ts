@@ -1,5 +1,5 @@
 import {GhillieDetailDto} from "../models/ghillies/ghillie-detail.dto";
-import axios from "axios";
+import { axiosInstance as axios } from './api'
 import AppConfig from "../../config/app.config";
 import {BaseApiResponse} from "../models/base-api-response";
 import {GhillieListingMeta} from "../models/ghillies/ghillie-listing-meta";

@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axiosInstance as axios } from './api'
 import AppConfig from "../../config/app.config";
 import {BaseApiResponse} from "../models/base-api-response";
 import {PostListingDto} from "../models/posts/post-listing.dto";
