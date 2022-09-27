@@ -2,7 +2,7 @@ import React from "react";
 import MainContainer from "../../../components/containers/MainContainer";
 import styles from "./styles";
 import {ScrollView, Text, View} from "native-base";
-import {Linking, TouchableOpacity} from "react-native";
+import {TouchableOpacity} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../../../components/colors";
@@ -10,6 +10,8 @@ import {useAppDispatch} from "../../../store";
 import {logout} from "../../../shared/reducers/authentication.reducer";
 import SmallText from "../../../components/texts/small-text";
 import Constants from "expo-constants";
+import * as WebBrowser from 'expo-web-browser';
+
 
 interface SectionButton {
     title: string;
@@ -31,7 +33,7 @@ export const AccountSettings = () => {
 
     // Open External Links
     const openLink = (url: string) => {
-        Linking.openURL(url);
+        WebBrowser.openBrowserAsync(url);
     }
 
     const sections = [
