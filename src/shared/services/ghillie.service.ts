@@ -13,6 +13,13 @@ const getGhillies = async (criteria: GhillieSearchCriteria): Promise<BaseApiResp
     });
 }
 
+const getCurrentUserGhillies = async (): Promise<BaseApiResponse<Array<GhillieDetailDto>, never>> => {
+    return await axios.get(`${AppConfig.apiUrl}/ghillies/my/all`)
+        .then(response => {
+            return response.data;
+        });
+}
+
 const joinGhillie = async (id: string): Promise<BaseApiResponse<void, any>> => {
   return await axios.put(`${AppConfig.apiUrl}/ghillies/${id}/join`);
 }
@@ -56,7 +63,8 @@ const ghillieService = {
   getGhillie,
   createGhillie,
   updateGhillie,
-  getMyGhillies
+  getMyGhillies,
+    getCurrentUserGhillies
 }
 
 export default ghillieService;

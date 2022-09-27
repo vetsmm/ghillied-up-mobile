@@ -8,7 +8,7 @@ import {
     IconButton,
     Icon,
     Avatar,
-    View
+    View, Box
 } from "native-base";
 import {PostListingDto} from "../../shared/models/posts/post-listing.dto";
 import {MaterialIcons} from "@expo/vector-icons";
@@ -73,7 +73,7 @@ export const PostCard = ({
     };
 
     return (
-        <Card
+        <Box
             flexDirection="column"
             pt={{base: 7, md: 4}}
             pb={{base: 8, md: 4}}
@@ -231,7 +231,7 @@ export const PostCard = ({
                 cancelRef={cancelRef}
                 onReport={reportPost}
             />
-        </Card>
+        </Box>
     );
 };
 

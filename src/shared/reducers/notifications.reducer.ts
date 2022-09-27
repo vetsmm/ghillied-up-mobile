@@ -15,10 +15,7 @@ export const getUnreadNotifications = createAsyncThunk(
         return await NotificationsService.getUserUnreadNotificationCount()
             .then(async (response) => {
                 return response.data.unreadCount;
-            })
-            .catch(error => {
-                return thunkAPI.rejectWithValue(error.data.error);
-            })
+            });
     }
 );
 
@@ -45,9 +42,9 @@ export const NotificationState = createSlice({
     },
     extraReducers(builder) {
         builder.addCase(getUnreadNotifications.rejected, (state, action) => {
-            console.log("getUnreadNotifications rejected", action)
+            console.log("getUnreadNotifications rejected", action.payload)
             // @ts-ignore
-            state.errorMessage = action.payload.message;
+            state.errorMessage = action.payload.data.error.message;
             state.loading = false;
         });
         builder.addCase(markNotificationsAsRead.rejected, (state, action) => {

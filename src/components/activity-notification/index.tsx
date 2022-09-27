@@ -1,6 +1,6 @@
 import React from "react";
 import {useNavigation} from "@react-navigation/native";
-import {Avatar, Card, HStack, Pressable, Text, VStack} from "native-base";
+import {Avatar, Box, HStack, Pressable, Text, VStack} from "native-base";
 import RegularText from "../texts/regular-texts";
 import {NotificationType} from "../../shared/models/notifications/notification-type";
 import stringUtils from "../../shared/utils/string.utils";
@@ -25,7 +25,7 @@ export function ActivityNotification({notification}: { notification: any }) {
 
     return (
         <Pressable onPress={() => markAsReadAndMove()}>
-            <Card
+            <Box
                 flexDirection="column"
                 rounded={"lg"}
                 backgroundColor={"transparent"}
@@ -85,7 +85,7 @@ export function ActivityNotification({notification}: { notification: any }) {
                         )}
                     </VStack>
                 </HStack>
-            </Card>
+            </Box>
         </Pressable>
     );
 }

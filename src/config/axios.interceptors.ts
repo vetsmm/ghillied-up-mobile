@@ -20,6 +20,7 @@ const setupAxiosInterceptors = (onUnauthenticated: any, onServerError: any) => {
   const onResponseError = (err: any) => {
     const status = err.statusCode ? err.statusCode : err.status;
     if (status === 403 || status === 401) {
+      console.log("onResponseError", err);
       onUnauthenticated(err);
     }
     if (status >= 500) {

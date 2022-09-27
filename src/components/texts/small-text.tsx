@@ -8,7 +8,7 @@ import {TextProps} from "./types";
 const { tertiary } = colorsVerifyCode;
 
 const StyledText = styled.Text`
-  font-size: 13px;
+  font-size: 12px;
   color: ${tertiary};
   text-align: left;
 `;

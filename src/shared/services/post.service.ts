@@ -8,46 +8,54 @@ import {PostListingDto} from "../models/posts/post-listing.dto";
 import {PageInfo} from "../models/pagination/types";
 
 const createPost = async (post: CreatePostInputDto): Promise<BaseApiResponse<PostDetailDto, any>> => {
-  return axios.post(`${AppConfig.apiUrl}/posts`, post)
-    .then(response => {
-      return response.data;
-    });
+    return axios.post(`${AppConfig.apiUrl}/posts`, post)
+        .then(response => {
+            return response.data;
+        });
 }
 
 const getPost = async (id: string): Promise<BaseApiResponse<PostDetailDto, any>> => {
-  return axios.get(`${AppConfig.apiUrl}/posts/${id}`)
-    .then(response => {
-      return response.data;
-    });
+    return axios.get(`${AppConfig.apiUrl}/posts/${id}`)
+        .then(response => {
+            return response.data;
+        });
 }
 
 const getPostsForGhillie = async (id: string, take: number, cursor?: string | null): Promise<BaseApiResponse<PostListingDto[], PageInfo>> => {
-  return axios.get(`${AppConfig.apiUrl}/posts/for-ghillie/${id}?take=${take}${cursor ? `&cursor=${cursor}` : ''}`)
-    .then(response => {
-      return response.data;
-    });
+    return axios.get(`${AppConfig.apiUrl}/posts/for-ghillie/${id}?take=${take}${cursor ? `&cursor=${cursor}` : ''}`)
+        .then(response => {
+            return response.data;
+        });
+}
+
+const getPostsForCurrentUser = async (take: number, cursor?: string | null): Promise<BaseApiResponse<PostListingDto[], PageInfo>> => {
+    return axios.get(`${AppConfig.apiUrl}/posts/my/all?take=${take}${cursor ? `&cursor=${cursor}` : ''}`)
+        .then(response => {
+            return response.data;
+        });
 }
 
 const updatePost = async (id: string, post: UpdatePostInputDto): Promise<BaseApiResponse<PostDetailDto, any>> => {
-  return axios.patch(`${AppConfig.apiUrl}/posts/${id}`, post)
-    .then(response => {
-      return response.data;
-    });
+    return axios.patch(`${AppConfig.apiUrl}/posts/${id}`, post)
+        .then(response => {
+            return response.data;
+        });
 }
 
 const deletePost = async (id: string): Promise<BaseApiResponse<void, any>> => {
-  return axios.delete(`${AppConfig.apiUrl}/posts/${id}`)
-    .then(response => {
-      return response.data;
-    });
+    return axios.delete(`${AppConfig.apiUrl}/posts/${id}`)
+        .then(response => {
+            return response.data;
+        });
 }
 
 const postService = {
-  createPost,
-  getPost,
-  updatePost,
-  deletePost,
-  getPostsForGhillie
+    createPost,
+    getPost,
+    updatePost,
+    deletePost,
+    getPostsForGhillie,
+    getPostsForCurrentUser
 }
 
 export default postService;
