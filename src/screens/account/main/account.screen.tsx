@@ -66,6 +66,7 @@ function AccountScreen() {
         startCursor: null,
         endCursor: null
     });
+    // TODO: Add post bookmarking and add this view
 
     const [tabSelection, setTabSelection] = React.useState(0);
 
