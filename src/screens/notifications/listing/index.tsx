@@ -60,20 +60,20 @@ function NotificationListingScreen() {
             });
     }, []);
 
-    const loadNextPage = async () => {
-        if (pageInfo.hasNextPage && !isLoading && pageInfo.endCursor) {
-            await notificationService.getNotifications({
-                cursor: pageInfo.endCursor,
-            })
-                .then((response) => {
-                    setNotifications(response.data);
-                    setPageInfo(response.meta);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
-    }
+    // const loadNextPage = async () => {
+    //     if (pageInfo.hasNextPage && !isLoading && pageInfo.endCursor) {
+    //         await notificationService.getNotifications({
+    //             cursor: pageInfo.endCursor,
+    //         })
+    //             .then((response) => {
+    //                 setNotifications(response.data);
+    //                 setPageInfo(response.meta);
+    //             })
+    //             .catch((error) => {
+    //                 console.log(error);
+    //             });
+    //     }
+    // }
 
     const clearNotifications = async () => {
         await notificationService.markAllNotificationsAsRead()
@@ -146,7 +146,7 @@ function NotificationListingScreen() {
                     pagingEnabled={true}
                     maxToRenderPerBatch={30}
                     onEndReachedThreshold={0.5}
-                    onEndReached={loadNextPage}
+                    // onEndReached={loadNextPage}
                     snapToInterval={300}
                     renderItem={({item}: any) => (
                         <View mb={1}>

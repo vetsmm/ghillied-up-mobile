@@ -1,3 +1,8 @@
+export interface NotificationIdsDto {
+    activityId: string;
+    id: string;
+}
+
 export interface ReadNotificationsInputDto {
-    notificationIds: string[];
+    ids: NotificationIdsDto[];
 }

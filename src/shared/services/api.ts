@@ -15,7 +15,10 @@ export const axiosInstance = axios.create({
     },
     transformResponse: [
         (data) => {
-            return JSON.parse(data); // TODO: This is a weird bug, where the data is a string, not an object
+            if (data) {
+                return JSON.parse(data); // TODO: This is a weird bug, where the data is a string, not an object
+            }
+            return data;
         }
     ]
 })
@@ -26,7 +29,7 @@ const requestRefresh: TokenRefreshRequest = async (refreshToken: string): Promis
     // Important! Do NOT use the axios instance that you supplied to applyAuthTokenInterceptor
     // because this will result in an infinite loop when trying to refresh the token.
     // Use the global axios client or a different instance
-    const response = await axios.post(`${BASE_URL}/auth/refresh-token`, { refreshToken })
+    const response = await axios.post(`${BASE_URL}/auth/refresh-token`, {refreshToken})
 
     return response.data.data.accessToken
 }

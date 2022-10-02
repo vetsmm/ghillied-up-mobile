@@ -1,19 +1,25 @@
-import { axiosInstance as axios } from './api'
+import {axiosInstance as axios} from './api'
 import AppConfig from "../../config/app.config";
 import {BaseApiResponse} from "../models/base-api-response";
-import {PostListingDto} from "../models/posts/post-listing.dto";
-import {FeedInputDto} from "../models/feed/feed-input.dto";
-import {PageInfo} from "../models/pagination/types";
+import {PostFeedDto} from "../models/feed/post-feed.dto";
 
-const getFeed = async (queryBody?: FeedInputDto): Promise<BaseApiResponse<PostListingDto[], PageInfo>> => {
-  return axios.post(`${AppConfig.apiUrl}/post-feed/`, queryBody)
-    .then(response => {
-      return response.data;
-    });
+const getFeed = async (page = 1, take = 25): Promise<BaseApiResponse<PostFeedDto[], never>> => {
+    return axios.get(`${AppConfig.apiUrl}/feeds/user?page=${page}&take=${take}`)
+        .then(response => {
+            return response.data;
+        });
+}
+
+const getGhillieFeed = async (ghillieId: string, page = 1, take = 25): Promise<BaseApiResponse<PostFeedDto[], never>> => {
+    return axios.get(`${AppConfig.apiUrl}/feeds/ghillie/${ghillieId}?page=${page}&take=${take}`)
+        .then(response => {
+            return response.data;
+        });
 }
 
 const postFeedService = {
-  getFeed
+    getFeed,
+    getGhillieFeed
 }
 
 export default postFeedService;

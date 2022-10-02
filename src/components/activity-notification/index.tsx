@@ -10,6 +10,7 @@ import {TouchableOpacity} from "react-native-gesture-handler";
 import {colorsVerifyCode} from "../colors";
 import {useAppDispatch} from "../../store";
 import {markNotificationsAsRead} from "../../shared/reducers/notifications.reducer";
+import {getNotificationMessage} from "../../shared/messages";
 
 export function ActivityNotification({notification}: { notification: any }) {
     const dispatch = useAppDispatch();
@@ -19,7 +20,12 @@ export function ActivityNotification({notification}: { notification: any }) {
     };
 
     const markAsReadAndMove = () => {
-        dispatch(markNotificationsAsRead([notification.id]));
+        dispatch(markNotificationsAsRead({
+            ids: [{
+                id: notification.notificationId,
+                activityId: notification.activityId
+            }]
+        }));
         moveTo("Posts", {params: {postId: notification.postId,}, screen: "PostDetail"});
     }
 
@@ -71,7 +77,7 @@ export function ActivityNotification({notification}: { notification: any }) {
                                 flexWrap: "wrap",
                             }}
                         >
-                            {notification.message}:
+                            {getNotificationMessage(notification)}
                         </RegularText>
 
                         {notification.type === NotificationType.POST_COMMENT && (
