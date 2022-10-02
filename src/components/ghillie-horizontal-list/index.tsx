@@ -1,5 +1,5 @@
 import React from "react";
-import {HStack} from "native-base";
+import {HStack, View} from "native-base";
 import {GhillieCircle} from "../ghillie-circle";
 import {GhillieDetailDto} from "../../shared/models/ghillies/ghillie-detail.dto";
 
@@ -10,7 +10,13 @@ export const GhillieHorizontalList = ({onGhilliePress, ghillieList, height, widt
     width: number;
 }) => {
     return (
-        <HStack>
+        <View style={{
+            marginTop: 10,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+        }}>
             {ghillieList.map((ghillie, index) => {
                 return (
                     <GhillieCircle
@@ -24,6 +30,6 @@ export const GhillieHorizontalList = ({onGhilliePress, ghillieList, height, widt
                     />
                 );
             })}
-        </HStack>
+        </View>
     )
 }

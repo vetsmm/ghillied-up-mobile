@@ -1,5 +1,5 @@
 import React from "react";
-import {ScrollView, Spinner, Text, View} from "native-base";
+import {Center, FlatList, ScrollView, Spinner, Text, View} from "native-base";
 import MainContainer from "../../../components/containers/MainContainer";
 import styles from "../styles";
 import {useSelector} from "react-redux";
@@ -12,10 +12,17 @@ import ghillieService from "../../../shared/services/ghillie.service";
 import {GhillieHorizontalList} from "../../../components/ghillie-horizontal-list";
 import {PostListingDto} from "../../../shared/models/posts/post-listing.dto";
 import {PageInfo} from "../../../shared/models/pagination/types";
-import {TouchableOpacity} from "react-native";
+import {RefreshControl, TouchableOpacity} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../../../components/colors";
 import AccountTabBar from "../../../components/account-tab-bar";
+import uuid from "react-native-uuid";
+import PostFeedCard from "../../../components/post-feed-card";
+import {Colors} from "../../../shared/styles";
+import BigText from "../../../components/texts/big-text";
+import UserPostCard from "../../../components/user-post-card";
+import postFeedService from "../../../shared/services/post-feed.service";
+import {PostFeedDto} from "../../../shared/models/feed/post-feed.dto";
 
 
 function RenderGhillies({
@@ -26,22 +33,61 @@ function RenderGhillies({
     return isLoadingUserGhillies ? (
         <Spinner color="blue"/>
     ) : (
-        <GhillieHorizontalList
-            onGhilliePress={onGhilliePress}
-            ghillieList={userGhillies}
-            height={16}
-            width={16}
-        />
+        <ScrollView showsVerticalScrollIndicator={false}>
+            <GhillieHorizontalList
+                onGhilliePress={onGhilliePress}
+                ghillieList={userGhillies}
+                height={16}
+                width={16}
+            />
+        </ScrollView>
     );
 }
 
-function RenderPosts({}) {
-    return <Text style={{
-        color: colorsVerifyCode.secondary,
-        fontWeight: "bold",
-        fontSize: 20,
-        textAlign: "center"
-    }}>Coming Soon...</Text>;
+function RenderPosts({posts, loadNextPage, isLoading, handleRefresh}: {
+    posts: PostFeedDto[],
+    loadNextPage: () => void,
+    isLoading: boolean,
+    handleRefresh: () => void
+}) {
+    const navigation: any = useNavigation();
+    const onPostPress = (postId: string) => {
+        navigation.navigate("Posts", {params: {postId: postId}, screen: "PostDetail"});
+    }
+    return <FlatList
+        keyExtractor={() => uuid.v4()?.toString()}
+        showsVerticalScrollIndicator={false}
+        data={posts}
+        pagingEnabled={false}
+        maxToRenderPerBatch={30}
+        onEndReachedThreshold={0.8}
+        onEndReached={loadNextPage}
+        renderItem={({item}: any) => (
+            <TouchableOpacity onPress={() => onPostPress(item.id)}>
+                <UserPostCard
+                    post={item}
+                />
+            </TouchableOpacity>
+        )}
+        refreshControl={
+            <RefreshControl
+                refreshing={isLoading}
+                onRefresh={handleRefresh}
+                progressBackgroundColor={Colors.secondary}
+                tintColor={Colors.secondary}
+            />
+        }
+        ListEmptyComponent={
+            <Center>
+                <Text style={{
+                    color: Colors.secondary
+                }}>
+                    No Posts Found
+                </Text>
+            </Center>
+        }
+        style={styles.list}
+    />;
 }
 
 function RenderSaved({}) {
@@ -59,13 +105,8 @@ function AccountScreen() {
 
     // TODO - Circle back and add this view
     const [isLoadingUserPosts, setIsLoadingUserPosts] = React.useState(false);
-    const [userPosts, setUserPosts] = React.useState<PostListingDto[]>([]);
-    const [postPageInfo, setPostPageInfo] = React.useState<PageInfo>({
-        hasNextPage: false,
-        hasPreviousPage: false,
-        startCursor: null,
-        endCursor: null
-    });
+    const [userPosts, setUserPosts] = React.useState<PostFeedDto[]>([]);
+    const [postCurrentPage, setPostCurrentPage] = React.useState(1);
     // TODO: Add post bookmarking and add this view
 
     const [tabSelection, setTabSelection] = React.useState(0);
@@ -92,12 +133,51 @@ function AccountScreen() {
         return initialLoadGhillies;
     }, [navigation]);
 
+    React.useEffect(() => {
+        if (tabSelection === 1) {
+            console.log('Loading Posts');
+            getFeed(postCurrentPage)
+        }
+    }, [tabSelection]);
+
     const verifyMilitaryStatus = () => {
         console.log("Verify Military Status");
     }
 
     const onGhilliePress = (ghillieId?: string) => {
         moveTo("Ghillies", {screen: "GhillieDetail", params: {ghillieId: ghillieId}});
+    }
+
+    const getFeed = (page: number) => {
+        setIsLoadingUserPosts(true);
+        postFeedService.getUsersPosts(page, 25)
+            .then(res => {
+                if (res.data.length > 0) {
+                    setUserPosts([...userPosts, ...res.data]);
+                    setPostCurrentPage(page + 1);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+            .finally(() => setIsLoadingUserPosts(false));
+    };
+
+    const handleRefresh = async () => {
+        await getFeed(postCurrentPage);
+    };
+
+    const loadNextPage = async () => {
+        setIsLoadingUserPosts(true);
+        await postFeedService.getUsersPosts(postCurrentPage + 1, 25)
+            .then(res => {
+                setPostCurrentPage(postCurrentPage + 1);
+                return setUserPosts([...userPosts, ...res.data]);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+            .finally(() => setIsLoadingUserPosts(false));
     }
 
     const onTabSelection = (selection: number) => {
@@ -130,7 +210,7 @@ function AccountScreen() {
                 onVerifyClick={verifyMilitaryStatus}
             />
             <AccountTabBar selection={tabSelection} setSelection={onTabSelection}/>
-            <ScrollView showsVerticalScrollIndicator={false} mt={5}>
+            <View mt={5} flex={1}>
                 {tabSelection === 0 && (
                     <RenderGhillies
                         isLoadingUserGhillies={isLoadingUserGhillies}
@@ -139,12 +219,17 @@ function AccountScreen() {
                     />
                 )}
                 {tabSelection === 1 && (
-                    <RenderPosts/>
+                    <RenderPosts
+                        posts={userPosts}
+                        handleRefresh={handleRefresh}
+                        isLoading={isLoadingUserPosts}
+                        loadNextPage={loadNextPage}
+                    />
                 )}
                 {tabSelection === 2 && (
                     <RenderSaved/>
                 )}
-            </ScrollView>
+            </View>
         </MainContainer>
     );
 }

@@ -17,9 +17,17 @@ const getGhillieFeed = async (ghillieId: string, page = 1, take = 25): Promise<B
         });
 }
 
+const getUsersPosts = async (page = 1, take = 25): Promise<BaseApiResponse<PostFeedDto[], never>> => {
+    return axios.get(`${AppConfig.apiUrl}/feeds/user/personal?page=${page}&take=${take}`)
+        .then(response => {
+            return response.data;
+        });
+}
+
 const postFeedService = {
     getFeed,
-    getGhillieFeed
+    getGhillieFeed,
+    getUsersPosts
 }
 
 export default postFeedService;
