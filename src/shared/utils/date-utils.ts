@@ -36,6 +36,9 @@ export const getTimeAgo = (date: string) => {
   const months = Math.floor(diff / 1000 / 60 / 60 / 24 / 30);
   const years = Math.floor(diff / 1000 / 60 / 60 / 24 / 30 / 12);
 
+  if (seconds < 0) {
+    return 'Just now';
+  }
   if (seconds < 60) {
     return `${seconds} seconds ago`;
   } else if (minutes < 60) {

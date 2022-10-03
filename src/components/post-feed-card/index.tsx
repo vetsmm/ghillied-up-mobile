@@ -1,21 +1,18 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
     Text,
     HStack,
     VStack,
-    Pressable,
-    Card,
     IconButton,
     Icon,
     Avatar,
     View, Box
 } from "native-base";
-import {PostListingDto} from "../../shared/models/posts/post-listing.dto";
 import {MaterialIcons} from "@expo/vector-icons";
 import {getMilitaryString} from "../../shared/utils/military-utils";
 import RegularText from "../texts/regular-texts";
 import SmallText from "../texts/small-text";
-import {getTimeAgo} from "../../shared/utils/date-utils";
+import {getTimeAgoShort} from "../../shared/utils/date-utils";
 import ReactionButton from "../buttons/reaction-button";
 import CommentButton from "../buttons/comment-button";
 import PostActionSheet from "../bottom-sheets/post-action-sheet";
@@ -23,30 +20,30 @@ import {useNavigation} from "@react-navigation/native";
 import {ReportMenuDialog} from "../reporting/report-menu-dialog";
 import {numberToReadableFormat} from "../../shared/utils/number-utils";
 import {ReactionType} from "../../shared/models/reactions/reaction-type";
-import {PostDetailDto} from "../../shared/models/posts/post-detail.dto";
 import {FlagCategory} from "../../shared/models/flags/flag-category";
 import flagService from "../../shared/services/flag.service";
 import {SuccessAlert} from "../alerts/success-alert";
+import {PostFeedDto} from "../../shared/models/feed/post-feed.dto";
 
 export interface IPostCardProps {
-    post: PostListingDto | PostDetailDto;
+    post: PostFeedDto;
     isOwner?: boolean;
     isAdmin?: boolean;
     isModerator?: boolean;
-    onOwnerDelete: (post: PostListingDto | PostDetailDto) => void;
-    onModeratorRemoval: (post: PostListingDto | PostDetailDto) => void;
+    onOwnerDelete: (post: PostFeedDto) => void;
+    onModeratorRemoval: (post: PostFeedDto) => void;
     onHandleReaction: (postId: string, reaction: ReactionType | null) => void;
 }
 
-export const PostCard = ({
-                             post,
-                             onModeratorRemoval,
-                             onOwnerDelete,
-                             onHandleReaction,
-                             isAdmin,
-                             isOwner,
-                             isModerator
-                         }: IPostCardProps) => {
+export const PostFeedCard = ({
+                                 post,
+                                 onModeratorRemoval,
+                                 onOwnerDelete,
+                                 onHandleReaction,
+                                 isAdmin,
+                                 isOwner,
+                                 isModerator
+                             }: IPostCardProps) => {
     const [isOpen, setIsOpen] = React.useState(false);
     const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
     const [showReportAlert, setShowReportAlert] = React.useState(false);
@@ -58,17 +55,22 @@ export const PostCard = ({
         navigation.navigate(screen, {...payload});
     };
 
+    useEffect(() => {
+        if (showReportAlert) {
+            setTimeout(() => {
+                setShowReportAlert(false);
+            }, 3000);
+        }
+    }, [showReportAlert]);
+
     const reportPost = (category: FlagCategory, details: string) => {
         flagService.flagPost({
             postId: post.id,
             flagCategory: category,
             details
         })
-            .then(() => {
+            .finally(() => {
                 setShowReportAlert(true);
-            })
-            .catch((err) => {
-                console.log("Report report failed");
             });
     };
 
@@ -96,40 +98,33 @@ export const PostCard = ({
                         borderWidth="1"
                         _light={{borderColor: "primary.900"}}
                         _dark={{borderColor: "primary.700"}}
-                        source={{uri: post.ghillie?.imageUrl ? post.ghillie?.imageUrl : "https://picsum.photos/1000"}}
+                        source={{uri: post.ghillieImageUrl ? post.ghillieImageUrl : "https://picsum.photos/1000"}}
                         width="10"
                         height="10"
                     />
                     <VStack>
-                        <Pressable
-                            onPress={() => {
-                                console.log(`${post.postedBy.username} clicked`);
-                            }}
-                        >
-                            <Text fontSize="sm" fontWeight="semibold" color={"white"}>
-                                {post.postedBy.username}
-                            </Text>
-                        </Pressable>
+                        <Text fontSize="sm" fontWeight="semibold" color={"white"}>
+                            {post.ownerUsername}
+                        </Text>
 
                         <Text
                             _light={{color: "coolGray.300"}}
                             _dark={{color: "coolGray.200"}}
                             fontSize="xs"
                         >
-                            {getMilitaryString(post.postedBy.branch, post.postedBy.serviceStatus)}
+                            {getMilitaryString(post.ownerBranch, post.ownerServiceStatus)}
                         </Text>
                     </VStack>
                 </HStack>
                 <View style={{
-                    paddingLeft: 8,
                     width: 100,
-                    flex: 1,
+                    marginRight: 10,
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "flex-start"
                 }}>
                     <SmallText>
-                        {getTimeAgo(post.createdDate)}
+                        {getTimeAgoShort(post.createdDate)}
                     </SmallText>
                     <IconButton
                         variant="unstyled"
@@ -158,8 +153,8 @@ export const PostCard = ({
                     {post.content}
                 </RegularText>
                 <SmallText>
-                    {post.numberOfReactions > 0
-                        ? `${numberToReadableFormat(post.numberOfReactions)} reaction(s)`
+                    {post.postReactionsCount > 0
+                        ? `${numberToReadableFormat(post.postReactionsCount)} reaction(s)`
                         : ""
                     }
                 </SmallText>
@@ -171,7 +166,7 @@ export const PostCard = ({
                 justifyContent="center"
                 alignItems="space-between"
                 px="4"
-                mt={10}
+                mt={2}
             >
                 <ReactionButton
                     onReact={(reaction) => {
@@ -180,13 +175,13 @@ export const PostCard = ({
                     onUnReact={() => {
                         onHandleReaction(post.id, null);
                     }}
-                    currentReaction={post.currentUserReaction}
+                    currentReaction={post.currentUserReactionType}
                 />
                 <CommentButton
                     onPress={() => {
                         moveTo("Posts", {params: {postId: post.id,}, screen: "PostDetail"});
                     }}
-                    numberOfComments={post.numberOfComments}
+                    numberOfComments={post.postCommentsCount}
                 />
             </HStack>
 
@@ -210,7 +205,7 @@ export const PostCard = ({
                 }}
                 onViewGhillie={() => {
                     setIsOpen(false);
-                    moveTo("GhillieDetail", {ghillieId: post.ghillie.id});
+                    moveTo("GhillieDetail", {ghillieId: post.ghillieId});
                 }}
                 onReport={() => {
                     setIsOpen(false);
@@ -218,7 +213,7 @@ export const PostCard = ({
                 }}
                 onEdit={() => {
                     setIsOpen(false);
-                    moveTo("Posts", {params: {post: post, ghillieImageUrl: post.ghillie.imageUrl}, screen: "UpdatePost"});
+                    moveTo("Posts", {params: {post: post, ghillieImageUrl: post.ghillieImageUrl}, screen: "UpdatePost"});
                 }}
                 isAdmin={isAdmin}
                 isModerator={isModerator}
@@ -235,4 +230,4 @@ export const PostCard = ({
     );
 };
 
-export default PostCard;
+export default PostFeedCard;

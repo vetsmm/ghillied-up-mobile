@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import NotificationsService from "../services/notifications.service";
+import {ReadNotificationsInputDto} from "../models/notifications/read-notifications-input.dto";
 
 export const initialState = {
     loading: false,
@@ -21,7 +22,7 @@ export const getUnreadNotifications = createAsyncThunk(
 
 export const markNotificationsAsRead = createAsyncThunk(
     "notifications/markNotificationsAsRead",
-    async (notificationIds: string[], thunkAPI) => {
+    async (notificationIds: ReadNotificationsInputDto, thunkAPI) => {
         return await NotificationsService.markNotificationsAsRead(notificationIds)
             .then(async (response) => {
                 thunkAPI.dispatch(getUnreadNotifications());

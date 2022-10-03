@@ -46,7 +46,7 @@ export const PostActionSheet = ({
         >
           View Ghillie
         </Actionsheet.Item>
-        {(isAdmin || isOwner) && (
+        {(isOwner) && (
           <Actionsheet.Item
             onPress={() => onEdit()}
             mr={3}

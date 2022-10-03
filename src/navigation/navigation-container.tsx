@@ -104,7 +104,7 @@ const _renderAuthNavigation = () => {
 
 function NavContainer() {
     const [expoPushToken, setExpoPushToken] = React.useState<any>('');
-    const [delay, setDelay] = React.useState<number>(10000)
+    const [delay, setDelay] = React.useState<number>(30000);
     const notificationListener = React.useRef<any>();
     const responseListener = React.useRef<any>();
 

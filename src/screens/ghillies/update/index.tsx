@@ -37,7 +37,7 @@ interface Route {
 }
 
 
-function MobileHeader({ghillieId}) {
+function MobileHeader() {
   const navigation: any = useNavigation();
 
   const goBack = useCallback(() => {
@@ -160,7 +160,7 @@ export const GhillieUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
   return (
     <MainContainer>
       <KeyboardAvoidingContainer>
-        <MobileHeader ghillieId={ghillie.id}/>
+        <MobileHeader />
         <VStack style={{margin: 25, marginBottom: 100}}>
           <Formik
             initialValues={{

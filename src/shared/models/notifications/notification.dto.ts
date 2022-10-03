@@ -7,25 +7,24 @@ export interface BaseNotificationDto {
     trash: boolean
     createdDate: Date
     type: NotificationType
+    username: string;
     sourceId: string;
     ghillieName?: string;
     ghillieImageUrl?: string | null;
+    notificationId?: string;
 }
 
 export interface PostCommentNotificationDto extends BaseNotificationDto {
     commentContent: string;
-    username: string;
     postId: string;
 }
 
 export interface PostCommentReactionNotificationDto extends BaseNotificationDto {
     reactionType: ReactionType;
-    username: string;
     postId: string;
 }
 
 export interface PostReactionNotificationDto extends BaseNotificationDto {
     reactionType: ReactionType;
-    username: string;
     postId: string;
 }
