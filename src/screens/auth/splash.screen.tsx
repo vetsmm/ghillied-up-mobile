@@ -4,6 +4,7 @@ import GuestLayout from "../../shared/layouts/guest.layout";
 import RegularButton from "../../components/buttons/regular-button";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import MainContainer from "../../components/containers/MainContainer";
+import BigText from "../../components/texts/big-text";
 
 export interface ActionButtonsProps {
   navigation: NavigationProp<ParamListBase>
@@ -41,15 +42,15 @@ function HeaderLogo() {
     <Box alignItems="center" justifyContent="center">
       <Hidden from="md">
         <Image
-          source={require("../../../assets/logo.png")}
-          height="200"
-          width="250"
+          source={require("../../../assets/logos/logo.png")}
+          height="300"
+          width="350"
           alt="Alternate Text"
         />
       </Hidden>
       <Hidden from="base" till="md">
         <Image
-          source={require("../../../assets/logo.png")}
+          source={require("../../../assets/logos/logo.png")}
           height="66"
           width="375"
           alt="Alternate Text"
@@ -72,6 +73,12 @@ export default function SplashScreen({ navigation }: any) {
           justifyContent="center"
         >
           <HeaderLogo/>
+            <BigText style={{
+                color: "white",
+                textAlign: "center",
+            }}>
+                Ghillied Up
+            </BigText>
           <ActionButtons navigation={navigation}/>
         </Box>
       </Center>

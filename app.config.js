@@ -4,17 +4,17 @@ export default {
   owner: "ghilliedup",
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/icon.png",
+  icon: "./assets/logos/logo-square.png",
   scheme: "ghilliedup",
   notification: {
-    "icon": "./assets/square-logo.png"
+    "icon": "./assets/logos/logo-square.png"
   },
   plugins: [
     "sentry-expo",
     [
       "expo-notifications",
       {
-        "icon": "./assets/square-logo.png",
+        "icon": "./assets/logos/primary/logo-96.png",
         "color": "#1e4c69",
         "sounds": [
           "./assets/notification/notification.wav",
@@ -23,9 +23,9 @@ export default {
     ]
   ],
   splash: {
-    image: "./assets/splash.png",
+    image: "./assets/logos/splash.png",
     resizeMode: "contain",
-    backgroundColor: "#ffffff"
+    backgroundColor: "#1E4C69"
   },
   updates: {
     fallbackToCacheTimeout: 0
@@ -33,17 +33,17 @@ export default {
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "com.vetsmm.ghilliedup"
+    bundleIdentifier: "com.vetsmm.ghilliedup",
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: "./assets/adaptive-icon.png",
-      backgroundColor: "#FFFFFF"
+      foregroundImage: "./assets/logos/ic_launcher.png",
+      backgroundColor: "#1E4C69"
     },
     package: "com.vetsmm.ghilliedup"
   },
   web: {
-    favicon: "./assets/favicon.png"
+    favicon: "./assets/logos/favicon.png"
   },
   hooks: {
     postPublish: [
