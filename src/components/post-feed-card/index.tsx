@@ -3,8 +3,6 @@ import {
     Text,
     HStack,
     VStack,
-    Pressable,
-    Card,
     IconButton,
     Icon,
     Avatar,
@@ -14,7 +12,7 @@ import {MaterialIcons} from "@expo/vector-icons";
 import {getMilitaryString} from "../../shared/utils/military-utils";
 import RegularText from "../texts/regular-texts";
 import SmallText from "../texts/small-text";
-import {getTimeAgo} from "../../shared/utils/date-utils";
+import {getTimeAgoShort} from "../../shared/utils/date-utils";
 import ReactionButton from "../buttons/reaction-button";
 import CommentButton from "../buttons/comment-button";
 import PostActionSheet from "../bottom-sheets/post-action-sheet";
@@ -126,7 +124,7 @@ export const PostFeedCard = ({
                     justifyContent: "flex-start"
                 }}>
                     <SmallText>
-                        {getTimeAgo(post.createdDate)}
+                        {getTimeAgoShort(post.createdDate)}
                     </SmallText>
                     <IconButton
                         variant="unstyled"
@@ -214,8 +212,8 @@ export const PostFeedCard = ({
                     setIsReportDialogOpen(true);
                 }}
                 onEdit={() => {
-                    //Todo: implement
-                    console.log("Edit");
+                    setIsOpen(false);
+                    moveTo("Posts", {params: {post: post, ghillieImageUrl: post.ghillieImageUrl}, screen: "UpdatePost"});
                 }}
                 isAdmin={isAdmin}
                 isModerator={isModerator}

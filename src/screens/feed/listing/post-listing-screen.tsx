@@ -1,5 +1,5 @@
 import {Center, Column, FlatList, HStack, Spinner, Text, View} from "native-base";
-import React from "react";
+import React, {useEffect} from "react";
 import styles from "../../ghillies/listing/styles";
 import MainContainer from "../../../components/containers/MainContainer";
 import uuid from "react-native-uuid";
@@ -75,10 +75,6 @@ function PostListingScreen(props: any) {
 
     const navigation: any = useNavigation();
 
-    const isMember = useSelector(
-        (state: IRootState) => state.ghillie.ghillie.memberMeta !== null
-    );
-
     const isModerator = useSelector(
         (state: IRootState) =>
             state.ghillie.ghillie.memberMeta !== null &&
@@ -98,54 +94,54 @@ function PostListingScreen(props: any) {
 
     React.useEffect(() => {
         const initialLoad = navigation.addListener('focus', async () => {
-            await getFeed(currentPage);
+            getFeed(1);
         });
 
         return initialLoad;
     }, [navigation]);
 
-    const handleRefresh =async () => {
-        await getFeed(currentPage);
+    const handleRefresh = async () => {
+        getFeed(1);
     };
 
-    const getFeed = async (page: number) => {
+    const getFeed = (page: number) => {
         setIsLoading(true);
-        await postFeedService.getFeed(page, 25)
+        postFeedService.getFeed(page, 25)
             .then(res => {
-                if (res.data.length > 0) {
-                    setPosts([...posts, ...res.data]);
-                    setCurrentPage(page + 1);
+                if (page > 1) {
+                    if (page === currentPage) {
+                        return;
+                    }
+
+                    if (res.data.length > 0) {
+                        setPosts([...posts, ...res.data]);
+                        setCurrentPage(page);
+                        return;
+                    }
+                    setCurrentPage(page - 1);
+                } else {
+                    setPosts(res.data);
+                    setCurrentPage(page);
                 }
             })
             .catch(err => {
-                console.log(err);
+                if (page > 1) {
+                    setCurrentPage(page - 1);
+                }
             })
             .finally(() => setIsLoading(false));
     };
 
-    const loadNextPage = async () => {
-        setIsLoading(true);
-        await postFeedService.getFeed(currentPage + 1, 25)
-            .then(res => {
-                setCurrentPage(currentPage + 1);
-                return setPosts([...posts, ...res.data]);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-            .finally(() => setIsLoading(false));
+    const loadNextPage = () => {
+        getFeed(currentPage)
     }
-
-    const renderSpinner = () => {
-        return <Spinner color="emerald.500" size="lg"/>;
-    };
 
     const moderatorRemovePost = (post) => {
         PostService.updatePost(post.id, {
             status: PostStatus.REMOVED
         })
             .then(async res => {
-                await getFeed(currentPage);
+                getFeed(1);
             })
             .catch(err => {
                 // todo: handle
@@ -158,7 +154,7 @@ function PostListingScreen(props: any) {
             status: PostStatus.ARCHIVED
         })
             .then(async res => {
-                await getFeed(currentPage);
+                getFeed(1);
             })
             .catch(err => {
                 // todo: handle
@@ -201,7 +197,7 @@ function PostListingScreen(props: any) {
             <PostFeedHeader
                 clearSearch={async () => {
                     setSearchText("");
-                    await getFeed(1);
+                    getFeed(1);
                 }}
                 // TODO: Do something with the search
                 searchText={searchText}

@@ -14,6 +14,7 @@ interface ExtraInputProps {
   icon: ComponentProps<typeof MaterialCommunityIcons>["name"];
   isPassword?: boolean;
   isError?: boolean;
+  disabled?: boolean;
 }
 
 export type InputProps = TextInputProps & ExtraInputProps;
@@ -50,7 +51,7 @@ const RightIcon = styled.TouchableOpacity`
   z-index: 1;
 `;
 
-const StyledTextInput = ({ icon, label, isPassword, isError, ...props }: InputProps) => {
+const StyledTextInput = ({ icon, label, isPassword, isError, disabled=false, ...props }: InputProps) => {
 
   const [inputBackgroundColor, setInputBackgroundColor] = useState(primary);
   const [hidePassword, setHidePassword] = useState(true);
@@ -81,6 +82,7 @@ const StyledTextInput = ({ icon, label, isPassword, isError, ...props }: InputPr
         onBlur={customOnBlur}
         onFocus={customOnFocus}
         secureTextEntry={isPassword && hidePassword}
+        disabled={disabled}
       />
       {isPassword && (
         <RightIcon

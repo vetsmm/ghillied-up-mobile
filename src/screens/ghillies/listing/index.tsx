@@ -27,7 +27,7 @@ function GhillieListingHeader({ searchText, setSearchText, clearSearch, isVerifi
   return (
     <HStack style={{ marginTop: 5 }}>
       <Column width="12%">
-        {isVerifiedMilitary || isAdmin && (
+        {(isVerifiedMilitary || isAdmin) && (
           <TouchableOpacity
             style={{
               justifyContent: "center",

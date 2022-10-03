@@ -217,8 +217,8 @@ export const PostCard = ({
                     setIsReportDialogOpen(true);
                 }}
                 onEdit={() => {
-                    //Todo: implement
-                    console.log("Edit");
+                    setIsOpen(false);
+                    moveTo("Posts", {params: {post: post, ghillieImageUrl: post.ghillie.imageUrl}, screen: "UpdatePost"});
                 }}
                 isAdmin={isAdmin}
                 isModerator={isModerator}

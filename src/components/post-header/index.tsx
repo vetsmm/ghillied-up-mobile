@@ -93,28 +93,26 @@ export const PostHeader = ({
           </VStack>
         </HStack>
         <View style={{
-          paddingLeft: 8,
           width: 100,
-          flex: 1,
+          marginRight: 10,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "flex-start"
-        }}
-        >
+        }}>
           <SmallText>
             {getTimeAgo(post.createdDate)}
           </SmallText>
           <IconButton
-            variant="unstyled"
-            icon={
-              <Icon
-                size="6"
-                as={MaterialIcons}
-                name={"more-vert"}
-                color={"white"}
-              />
-            }
-            onPress={() => setIsOpen(true)}
+              variant="unstyled"
+              icon={
+                <Icon
+                    size="6"
+                    as={MaterialIcons}
+                    name={"more-vert"}
+                    color={"white"}
+                />
+              }
+              onPress={() => setIsOpen(true)}
           />
         </View>
       </HStack>
@@ -184,8 +182,7 @@ export const PostHeader = ({
         }}
         onEdit={() => {
           setIsOpen(false);
-          //Todo: implement
-          console.log("Edit");
+          moveTo("Posts", {params: {post: post, ghillieImageUrl: post.ghillie.imageUrl}, screen: "UpdatePost"});
         }}
         isAdmin={isAdmin}
         isModerator={isModerator}

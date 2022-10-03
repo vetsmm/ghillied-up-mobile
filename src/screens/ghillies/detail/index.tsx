@@ -92,7 +92,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     useEffect(() => {
         const initialLoad = navigation.addListener('focus', async () => {
             dispatch(getGhillie(ghillieId));
-            await getFeed(postCurrentPage, true);
+            getFeed(1);
         });
 
         return initialLoad;
@@ -123,7 +123,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             status: PostStatus.REMOVED
         })
             .then(async () => {
-                await getFeed(postCurrentPage);
+                getFeed(1);
             })
             .catch(err => {
                 // todo: handle
@@ -136,7 +136,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             await PostService.updatePost(post.id, {
                 status: PostStatus.ARCHIVED
             })
-            await getFeed(postCurrentPage);
+            getFeed(1);
         } catch (e) {
             console.log(e);
         }
@@ -159,37 +159,71 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             });
     }
 
-    const getFeed = async (page: number, initialLoad?: boolean) => {
-        setIsLoadingPosts(true);
-        await postFeedService.getGhillieFeed(ghillieId, page, 25)
+    // const getFeed = async (page: number, initialLoad?: boolean) => {
+    //     setIsLoadingPosts(true);
+    //     await postFeedService.getGhillieFeed(ghillieId, page, 25)
+    //         .then(res => {
+    //             if (res.data.length > 0) {
+    //                 if (initialLoad) {
+    //                     setPostList(res.data);
+    //                 } else {
+    //                     setPostList([...postList, ...res.data]);
+    //                 }
+    //                 setPostCurrentPage(page);
+    //             }
+    //         })
+    //         .catch(err => {
+    //             console.log(`Error: ${err}`);
+    //         })
+    //         .finally(() => setIsLoadingPosts(false));
+    // };
+
+    const getFeed = (page: number) => {
+        setIsLoadingGhillies(true);
+        console.log("page: " + page);
+        postFeedService.getGhillieFeed(ghillieId, page, 25)
             .then(res => {
-                if (res.data.length > 0) {
-                    if (initialLoad) {
-                        setPostList(res.data);
-                    } else {
-                        setPostList([...postList, ...res.data]);
+                if (page > 1) {
+                    if (page === postCurrentPage) {
+                        return;
                     }
+
+                    if (res.data.length > 0) {
+                        setPostList([...postList, ...res.data]);
+                        setPostCurrentPage(page);
+                        return;
+                    }
+
+                    setPostCurrentPage(page - 1);
+                } else {
+                    setPostList(res.data);
                     setPostCurrentPage(page);
                 }
             })
             .catch(err => {
-                console.log(`Error: ${err}`);
+                if (page > 1) {
+                    setPostCurrentPage(page - 1);
+                }
             })
-            .finally(() => setIsLoadingPosts(false));
+            .finally(() => setIsLoadingGhillies(false));
     };
 
-    const loadMore = async () => {
-        setIsLoadingPosts(true);
-        await postFeedService.getGhillieFeed(ghillieId, postCurrentPage + 1, 25)
-            .then(res => {
-                setPostCurrentPage(postCurrentPage + 1);
-                return setPostList([...postList, ...res.data]);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-            .finally(() => setIsLoadingPosts(false));
-    };
+    const loadNextPage = () => {
+        getFeed(postCurrentPage)
+    }
+
+    // const loadMore = async () => {
+    //     setIsLoadingPosts(true);
+    //     await postFeedService.getGhillieFeed(ghillieId, postCurrentPage + 1, 25)
+    //         .then(res => {
+    //             setPostCurrentPage(postCurrentPage + 1);
+    //             return setPostList([...postList, ...res.data]);
+    //         })
+    //         .catch(err => {
+    //             console.log(err);
+    //         })
+    //         .finally(() => setIsLoadingPosts(false));
+    // };
 
     const _renderPost = ({item}) => (
         <PostFeedCard
@@ -238,7 +272,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 data={postList}
                 keyExtractor={(item) => item.id}
                 pagingEnabled={false}
-                onEndReached={loadMore}
+                onEndReached={loadNextPage}
                 maxToRenderPerBatch={30}
                 onEndReachedThreshold={0.8}
                 snapToInterval={300}

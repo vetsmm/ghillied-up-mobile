@@ -31,8 +31,24 @@ export const ReactionButton = (props: ReactionButtonProps) => {
 
   const {isOpen, onClose, onOpen} = useDisclose()
 
-  const getReactionPath = (reaction: ReactionType | null): string => {
+  const getReactionText = (reaction: ReactionType | null) => {
     switch (reaction) {
+      case ReactionType.THUMBS_UP:
+        return "Liked";
+      case ReactionType.ANGRY:
+        return "Angry";
+      case ReactionType.CURIOUS:
+        return "Curious";
+      case ReactionType.SMART:
+        return "Smart";
+      case ReactionType.LAUGH:
+        return "Funny";
+      default:
+        return "Liked";
+    }
+  }
+  const getReactionPath = (inReaction: ReactionType | null): string => {
+    switch (inReaction) {
       case ReactionType.THUMBS_UP:
         return Reactions.HEART_SVG;
       case ReactionType.ANGRY:
@@ -89,7 +105,7 @@ export const ReactionButton = (props: ReactionButtonProps) => {
           height="30"
           width="30"
         />
-        <Text color="white">{`  Liked`}</Text>
+        <Text color="white">{`  ${getReactionText(props.currentReaction)}`}</Text>
       </View>
     </TouchableOpacity>
   );

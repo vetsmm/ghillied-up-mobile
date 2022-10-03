@@ -135,8 +135,7 @@ function AccountScreen() {
 
     React.useEffect(() => {
         if (tabSelection === 1) {
-            console.log('Loading Posts');
-            getFeed(postCurrentPage)
+            getFeed(1)
         }
     }, [tabSelection]);
 
@@ -152,32 +151,37 @@ function AccountScreen() {
         setIsLoadingUserPosts(true);
         postFeedService.getUsersPosts(page, 25)
             .then(res => {
-                if (res.data.length > 0) {
-                    setUserPosts([...userPosts, ...res.data]);
-                    setPostCurrentPage(page + 1);
+                if (page > 1) {
+                    if (page === postCurrentPage) {
+                        return;
+                    }
+
+                    if (res.data.length > 0) {
+                        setUserPosts([...userPosts, ...res.data]);
+                        setPostCurrentPage(page);
+                        return;
+                    }
+
+                    setPostCurrentPage(page - 1);
+                } else {
+                    setUserPosts(res.data);
+                    setPostCurrentPage(page);
                 }
             })
             .catch(err => {
-                console.log(err);
+                if (page > 1) {
+                    setPostCurrentPage(page - 1);
+                }
             })
             .finally(() => setIsLoadingUserPosts(false));
     };
 
     const handleRefresh = async () => {
-        await getFeed(postCurrentPage);
+        getFeed(1);
     };
 
     const loadNextPage = async () => {
-        setIsLoadingUserPosts(true);
-        await postFeedService.getUsersPosts(postCurrentPage + 1, 25)
-            .then(res => {
-                setPostCurrentPage(postCurrentPage + 1);
-                return setUserPosts([...userPosts, ...res.data]);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-            .finally(() => setIsLoadingUserPosts(false));
+        getFeed(postCurrentPage);
     }
 
     const onTabSelection = (selection: number) => {

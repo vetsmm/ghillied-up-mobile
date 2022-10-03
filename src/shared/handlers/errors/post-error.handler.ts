@@ -1,11 +1,11 @@
 import {BaseApiException} from "../../models/exceptions/base-api.exception";
 
 type FormErrors = {
-  title: string | null;
-  content: string | null;
-  status: string | null;
-  postTagNames: string | null;
-  ghillieId: string | null;
+  title?: string | null;
+  content?: string | null;
+  status?: string | null;
+  postTagNames?: string | null;
+  ghillieId?: string | null;
 }
 
 const handleCreatePostError = (error: BaseApiException): FormErrors => {
@@ -23,8 +23,20 @@ const handleCreatePostError = (error: BaseApiException): FormErrors => {
   return errorContext;
 }
 
+const handleUpdatePostError = (error: BaseApiException): { content: string | null } => {
+  const errorContext = {
+    content: null,
+  };
+
+  Object.keys(error.context).forEach((key) => {
+    errorContext[key] = error.context[key];
+  });
+  return errorContext;
+}
+
 const postErrorHandler = {
-  handleCreatePostError
+  handleCreatePostError,
+  handleUpdatePostError
 }
 
 export default postErrorHandler;
