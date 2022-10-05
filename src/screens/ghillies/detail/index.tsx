@@ -159,28 +159,9 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             });
     }
 
-    // const getFeed = async (page: number, initialLoad?: boolean) => {
-    //     setIsLoadingPosts(true);
-    //     await postFeedService.getGhillieFeed(ghillieId, page, 25)
-    //         .then(res => {
-    //             if (res.data.length > 0) {
-    //                 if (initialLoad) {
-    //                     setPostList(res.data);
-    //                 } else {
-    //                     setPostList([...postList, ...res.data]);
-    //                 }
-    //                 setPostCurrentPage(page);
-    //             }
-    //         })
-    //         .catch(err => {
-    //             console.log(`Error: ${err}`);
-    //         })
-    //         .finally(() => setIsLoadingPosts(false));
-    // };
 
     const getFeed = (page: number) => {
         setIsLoadingGhillies(true);
-        console.log("page: " + page);
         postFeedService.getGhillieFeed(ghillieId, page, 25)
             .then(res => {
                 if (page > 1) {
@@ -211,19 +192,6 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const loadNextPage = () => {
         getFeed(postCurrentPage)
     }
-
-    // const loadMore = async () => {
-    //     setIsLoadingPosts(true);
-    //     await postFeedService.getGhillieFeed(ghillieId, postCurrentPage + 1, 25)
-    //         .then(res => {
-    //             setPostCurrentPage(postCurrentPage + 1);
-    //             return setPostList([...postList, ...res.data]);
-    //         })
-    //         .catch(err => {
-    //             console.log(err);
-    //         })
-    //         .finally(() => setIsLoadingPosts(false));
-    // };
 
     const _renderPost = ({item}) => (
         <PostFeedCard
@@ -280,8 +248,12 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 <SharedElement id={`ghillie#${ghillie}-Image`}>
                     <Image
                         style={styles.image}
-                        source={{uri: ghillie?.imageUrl ? ghillie?.imageUrl : "https://picsum.photos/1000"}}
-                        resizeMode={"cover"}
+                        source={
+                            ghillie?.imageUrl
+                                ? {uri: ghillie?.imageUrl}
+                                : require("../../../../assets/logos/logo.png")
+                        }
+                        // resizeMode={"cover"}
                     />
                 </SharedElement>
                 <View marginBottom={50}>

@@ -47,6 +47,7 @@ export default function PostStackScreen() {
         <PostStack.Navigator>
             <PostStack.Screen
                 name="CreatePost"
+                // @ts-ignore
                 component={CreatePostScreen}
                 options={{
                     title: "",
@@ -55,6 +56,7 @@ export default function PostStackScreen() {
             />
             <PostStack.Screen
                 name="UpdatePost"
+                // @ts-ignore
                 component={UpdatePostScreen}
                 options={{
                     title: "",
@@ -63,6 +65,7 @@ export default function PostStackScreen() {
             />
             <PostStack.Screen
                 name="PostDetail"
+                // @ts-ignore
                 component={PostDetailScreen}
                 options={{
                     title: "",
@@ -72,6 +75,7 @@ export default function PostStackScreen() {
             />
             <PostStack.Screen
                 name="CreatePostComment"
+                // @ts-ignore
                 component={PostCommentCreateScreen}
                 options={{
                     title: "",
@@ -81,6 +85,7 @@ export default function PostStackScreen() {
             />
             <PostStack.Screen
                 name="UpdatePostComment"
+                // @ts-ignore
                 component={PostCommentUpdateScreen}
                 options={{
                     title: "",

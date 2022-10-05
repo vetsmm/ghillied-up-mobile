@@ -5,7 +5,7 @@ import {Text, VStack, HStack, Avatar, Pressable} from "native-base";
 export interface IGhillieCircle {
     onPress: (ghillieId?: string) => void;
     text?: string;
-    image: string;
+    image: string | undefined | null;
     ghillieId?: string;
     height?: number;
     width?: number;
@@ -21,9 +21,11 @@ export const GhillieCircle = (props: IGhillieCircle) => {
                             width={props.width || 20}
                             height={props.height || 20}
                             borderWidth="2"
-                            source={{
-                                uri: props.image,
-                            }}
+                            source={
+                                props.image
+                                    ? {uri: props.image}
+                                    : require("../../../assets/logos/icon.png")
+                            }
                         />
                     </Pressable>
                     {props.text && (

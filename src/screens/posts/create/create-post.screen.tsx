@@ -257,7 +257,7 @@ export const CreatePostScreen: React.FC<{ route: Route }> = ({route}) =>{
                 {Object.keys(values.ghillie).length > 0 && (
                   <Center>
                     <GhillieCircle
-                      image={values.ghillie.imageUrl || "https://via.placeholder.com/150"}
+                      image={values.ghillie.imageUrl}
                       onPress={() => setFieldValue('ghillie', {})}
                       text={values.ghillie.name}
                     />

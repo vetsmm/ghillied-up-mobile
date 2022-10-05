@@ -185,7 +185,11 @@ export const UpdatePostScreen: React.FC<{ route: Route }> = ({route}) =>{
                                         borderWidth="1"
                                         _light={{borderColor: "primary.900"}}
                                         _dark={{borderColor: "primary.700"}}
-                                        source={{uri: ghillieImageUrl || "https://picsum.photos/1000"}}
+                                        source={
+                                            ghillieImageUrl
+                                                ? {uri: ghillieImageUrl}
+                                                : require("../../../../assets/logos/icon.png")
+                                        }
                                         width="20"
                                         height="20"
                                     />

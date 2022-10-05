@@ -22,7 +22,7 @@ export const GhillieHorizontalList = ({onGhilliePress, ghillieList, height, widt
                     <GhillieCircle
                         key={index}
                         onPress={onGhilliePress}
-                        image={ghillie.imageUrl || "https://i.imgur.com/2cUgS9A.png"}
+                        image={ghillie.imageUrl}
                         text={ghillie.name}
                         ghillieId={ghillie.id}
                         height={height}

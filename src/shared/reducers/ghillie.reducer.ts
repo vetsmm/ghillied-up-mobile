@@ -111,7 +111,7 @@ export const GhillieSlice = createSlice({
     });
     builder.addCase(getGhillies.fulfilled, (state, action) => {
       state.ghillieList = action.payload.data;
-      state.totalResults = action.payload.meta.count;
+      state.totalResults = action.payload.data.length;
       state.loading = false
     });
     builder.addCase(getGhillie.fulfilled, (state, action) => {
