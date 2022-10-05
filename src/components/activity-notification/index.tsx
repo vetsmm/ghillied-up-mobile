@@ -50,9 +50,11 @@ export function ActivityNotification({notification}: { notification: any }) {
                                         width="12"
                                         height="12"
                                         borderWidth="2"
-                                        source={{
-                                            uri: notification.ghillieImageUrl ? notification.ghillieImageUrl : "https://picsum.photos/1000",
-                                        }}
+                                        source={
+                                            notification.ghillieImageUrl
+                                                ? {uri: notification.ghillieImageUrl}
+                                                : require("../../../assets/logos/icon.png")
+                                        }
                                     />
                                 </Pressable>
                             </VStack>

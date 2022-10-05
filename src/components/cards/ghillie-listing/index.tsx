@@ -25,14 +25,12 @@ export const GhillieCard: React.FC<{
         style={styles.imageContainer}
         id={`ghillie#${index}-Image`}>
         <Image
-          source={{
-            uri:
-              ghillie?.imageUrl
-                ? ghillie?.imageUrl
-                : `https://picsum.photos/${Math.floor(Math.random() * 1000)}`,
-            cache: 'force-cache',
-          }}
-          resizeMode={'cover'}
+            source={
+                ghillie?.imageUrl
+                    ? {uri: ghillie?.imageUrl}
+                    : require("../../../../assets/logos/icon.png")
+            }
+          resizeMode={'center'}
           style={styles.image}
         />
       </SharedElement>

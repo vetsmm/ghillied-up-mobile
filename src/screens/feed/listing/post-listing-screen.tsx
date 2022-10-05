@@ -1,8 +1,7 @@
-import {Center, Column, FlatList, HStack, Spinner, Text, View} from "native-base";
-import React, {useEffect} from "react";
+import {Center, Column, HStack, Text, View} from "native-base";
+import React from "react";
 import styles from "../../ghillies/listing/styles";
 import MainContainer from "../../../components/containers/MainContainer";
-import uuid from "react-native-uuid";
 import {RefreshControl} from "react-native";
 import {Colors} from "../../../shared/styles";
 import BigText from "../../../components/texts/big-text";
@@ -20,6 +19,7 @@ import {ReactionType} from "../../../shared/models/reactions/reaction-type";
 import {PostFeedDto} from "../../../shared/models/feed/post-feed.dto";
 import PostFeedCard from "../../../components/post-feed-card";
 import {useNavigation} from "@react-navigation/native";
+import {FlashList} from "@shopify/flash-list";
 
 
 function PostFeedHeader({searchText, setSearchText, clearSearch, onFilterClick}) {
@@ -207,14 +207,12 @@ function PostListingScreen(props: any) {
                     console.log("onFilter")
                 }}
             />
-            <FlatList
-                keyExtractor={() => uuid.v4()?.toString()}
-                showsVerticalScrollIndicator={false}
+            <FlashList
+                keyExtractor={(item) => item.id}
                 data={posts}
-                pagingEnabled={false}
-                maxToRenderPerBatch={30}
                 onEndReachedThreshold={0.8}
                 onEndReached={loadNextPage}
+                estimatedItemSize={100}
                 renderItem={({item}: any) => (
                     <PostFeedCard
                         post={item}
@@ -252,7 +250,6 @@ function PostListingScreen(props: any) {
                         </Text>
                     </Center>
                 }
-                style={styles.list}
             />
         </MainContainer>
     );

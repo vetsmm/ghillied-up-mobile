@@ -11,7 +11,7 @@ export default StyleSheet.create({
     paddingBottom: 120,
   },
   image: {
-    height: 400,
+    height: 350,
     width: '100%',
     borderBottomLeftRadius: 50,
     borderBottomRightRadius: 50,

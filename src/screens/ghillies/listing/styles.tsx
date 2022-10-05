@@ -7,10 +7,16 @@ export default StyleSheet.create({
     flexGrow: 1,
     paddingTop: isIphoneX() ? getStatusBarHeight() + 20 : 30,
   },
-  list: {
+  listContainer: {
     flex: 1,
     flexGrow: 1,
     paddingVertical: 8,
     marginBottom: 40,
   },
+  myGhilliesContainer: {
+    flex: 1,
+    flexGrow: 1,
+    marginBottom: 10,
+    marginTop: 10,
+  }
 });

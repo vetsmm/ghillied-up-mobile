@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import {
     Text,
     HStack,
@@ -98,7 +98,11 @@ export const PostFeedCard = ({
                         borderWidth="1"
                         _light={{borderColor: "primary.900"}}
                         _dark={{borderColor: "primary.700"}}
-                        source={{uri: post.ghillieImageUrl ? post.ghillieImageUrl : "https://picsum.photos/1000"}}
+                        source={
+                            post.ghillieImageUrl
+                                ? {uri: post.ghillieImageUrl}
+                                : require("../../../assets/logos/icon.png")
+                        }
                         width="10"
                         height="10"
                     />

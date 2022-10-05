@@ -1,11 +1,11 @@
 import {BaseApiException} from "../../models/exceptions/base-api.exception";
 
 type FormErrors = {
-  title?: string | null;
-  content?: string | null;
-  status?: string | null;
-  postTagNames?: string | null;
-  ghillieId?: string | null;
+  title: string | null;
+  content: string | null;
+  status: string | null;
+  postTagNames: string | null;
+  ghillieId: string | null;
 }
 
 const handleCreatePostError = (error: BaseApiException): FormErrors => {

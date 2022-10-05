@@ -1,5 +1,5 @@
 import React from "react";
-import {Center, FlatList, ScrollView, Spinner, Text, View} from "native-base";
+import {Center, Text, View} from "native-base";
 import MainContainer from "../../../components/containers/MainContainer";
 import styles from "../styles";
 import {useSelector} from "react-redux";
@@ -8,86 +8,137 @@ import {UserOutput} from "../../../shared/models/users/user-output.dto";
 import AccountOverviewCard from "../../../components/account-overview-card";
 import {useNavigation} from "@react-navigation/native";
 import {GhillieDetailDto} from "../../../shared/models/ghillies/ghillie-detail.dto";
-import ghillieService from "../../../shared/services/ghillie.service";
-import {GhillieHorizontalList} from "../../../components/ghillie-horizontal-list";
-import {PostListingDto} from "../../../shared/models/posts/post-listing.dto";
 import {PageInfo} from "../../../shared/models/pagination/types";
 import {RefreshControl, TouchableOpacity} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../../../components/colors";
 import AccountTabBar from "../../../components/account-tab-bar";
-import uuid from "react-native-uuid";
-import PostFeedCard from "../../../components/post-feed-card";
 import {Colors} from "../../../shared/styles";
 import BigText from "../../../components/texts/big-text";
 import UserPostCard from "../../../components/user-post-card";
 import postFeedService from "../../../shared/services/post-feed.service";
 import {PostFeedDto} from "../../../shared/models/feed/post-feed.dto";
+import {FlashList} from "@shopify/flash-list";
+import {GhillieCircle} from "../../../components/ghillie-circle";
+import {useStateWithCallback} from "../../../shared/hooks";
+import GhillieService from "../../../shared/services/ghillie.service";
 
 
-function RenderGhillies({
-                            isLoadingUserGhillies,
+const RenderGhillies: React.FC<{
+    isLoadingGhillies: boolean;
+    onGhilliePress: (ghillieId?: string) => void;
+    userGhillies: GhillieDetailDto[];
+    hasNextPage: boolean;
+    getMoreGhillies: () => void;
+    handleRefresh: () => void;
+}> = ({
+                            isLoadingGhillies,
                             onGhilliePress,
-                            userGhillies
-                        }) {
-    return isLoadingUserGhillies ? (
-        <Spinner color="blue"/>
-    ) : (
-        <ScrollView showsVerticalScrollIndicator={false}>
-            <GhillieHorizontalList
-                onGhilliePress={onGhilliePress}
-                ghillieList={userGhillies}
-                height={16}
-                width={16}
+                            userGhillies,
+                            hasNextPage,
+                            getMoreGhillies,
+                            handleRefresh,
+                        }) =>{
+    return (
+        <View style={styles.pastPostContainer}>
+            <FlashList
+                numColumns={2}
+                keyExtractor={(item: any) => item.id}
+                data={userGhillies}
+                estimatedItemSize={35}
+                renderItem={({item, index}: any) => (
+                    <GhillieCircle
+                        key={index}
+                        onPress={onGhilliePress}
+                        image={item.imageUrl}
+                        text={item.name}
+                        ghillieId={item.id}
+                        height={20}
+                        width={20}
+                    />
+                )}
+                onEndReachedThreshold={0.7}
+                onEndReached={() => {
+                    if (hasNextPage) {
+                        getMoreGhillies();
+                    }
+                }}
+                onRefresh={() => handleRefresh()}
+                refreshing={isLoadingGhillies}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isLoadingGhillies}
+                        onRefresh={handleRefresh}
+                        progressBackgroundColor={Colors.secondary}
+                        tintColor={Colors.secondary}
+                    />
+                }
+                ListHeaderComponent={
+                    <View mt={5} mb={5}>
+                        <BigText style={{
+                            marginLeft: 15,
+                        }}>
+                            My Ghillies
+                        </BigText>
+                    </View>
+                }
+                ListEmptyComponent={
+                    <Center>
+                        <Text style={{
+                            color: Colors.secondary
+                        }}>No Ghillies Found</Text>
+                    </Center>
+                }
             />
-        </ScrollView>
+        </View>
     );
 }
 
-function RenderPosts({posts, loadNextPage, isLoading, handleRefresh}: {
-    posts: PostFeedDto[],
-    loadNextPage: () => void,
-    isLoading: boolean,
-    handleRefresh: () => void
-}) {
+const RenderPosts: React.FC<{ posts: PostFeedDto[], loadNextPage: () => void, isLoading: boolean, handleRefresh: () => void }> = ({
+                                                                                                                                      posts,
+                                                                                                                                      loadNextPage,
+                                                                                                                                      isLoading,
+                                                                                                                                      handleRefresh
+                                                                                                                                  }) => {
     const navigation: any = useNavigation();
     const onPostPress = (postId: string) => {
         navigation.navigate("Posts", {params: {postId: postId}, screen: "PostDetail"});
     }
-    return <FlatList
-        keyExtractor={() => uuid.v4()?.toString()}
-        showsVerticalScrollIndicator={false}
-        data={posts}
-        pagingEnabled={false}
-        maxToRenderPerBatch={30}
-        onEndReachedThreshold={0.8}
-        onEndReached={loadNextPage}
-        renderItem={({item}: any) => (
-            <TouchableOpacity onPress={() => onPostPress(item.id)}>
-                <UserPostCard
-                    post={item}
-                />
-            </TouchableOpacity>
-        )}
-        refreshControl={
-            <RefreshControl
-                refreshing={isLoading}
-                onRefresh={handleRefresh}
-                progressBackgroundColor={Colors.secondary}
-                tintColor={Colors.secondary}
+    return (
+        <View style={styles.pastPostContainer}>
+            <FlashList
+                keyExtractor={(item) => item.id}
+                data={posts}
+                onEndReachedThreshold={0.8}
+                onEndReached={loadNextPage}
+                estimatedItemSize={111}
+                renderItem={({item}: any) => (
+                    <TouchableOpacity onPress={() => onPostPress(item.id)}>
+                        <UserPostCard
+                            post={item}
+                        />
+                    </TouchableOpacity>
+                )}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isLoading}
+                        onRefresh={handleRefresh}
+                        progressBackgroundColor={Colors.secondary}
+                        tintColor={Colors.secondary}
+                    />
+                }
+                ListEmptyComponent={
+                    <Center>
+                        <Text style={{
+                            color: Colors.secondary
+                        }}>
+                            No Posts Found
+                        </Text>
+                    </Center>
+                }
             />
-        }
-        ListEmptyComponent={
-            <Center>
-                <Text style={{
-                    color: Colors.secondary
-                }}>
-                    No Posts Found
-                </Text>
-            </Center>
-        }
-        style={styles.list}
-    />;
+        </View>
+    );
 }
 
 function RenderSaved({}) {
@@ -100,13 +151,25 @@ function RenderSaved({}) {
 }
 
 function AccountScreen() {
-    const [isLoadingUserGhillies, setIsLoadingUserGhillies] = React.useState(false);
-    const [userGhillies, setUserGhillies] = React.useState<GhillieDetailDto[]>([]);
+    const initialGhilliePageInfo: PageInfo = {
+        hasNextPage: true,
+        hasPreviousPage: false,
+        startCursor: null,
+        endCursor: null
+    }
+    const [{
+        startCursor,
+        endCursor,
+        hasNextPage,
+        hasPreviousPage
+    }, setPageInfo] = useStateWithCallback<PageInfo>(initialGhilliePageInfo);
+    const [isLoadingUserGhillies, setIsLoadingUserGhillies] = useStateWithCallback(false);
+    const [userGhillies, setUserGhillies] = useStateWithCallback<GhillieDetailDto[]>([]);
 
-    // TODO - Circle back and add this view
-    const [isLoadingUserPosts, setIsLoadingUserPosts] = React.useState(false);
-    const [userPosts, setUserPosts] = React.useState<PostFeedDto[]>([]);
-    const [postCurrentPage, setPostCurrentPage] = React.useState(1);
+    const [isLoadingUserPosts, setIsLoadingUserPosts] = useStateWithCallback(false);
+    const [userPosts, setUserPosts] = useStateWithCallback<PostFeedDto[]>([]);
+    const [postCurrentPage, setPostCurrentPage] = useStateWithCallback(1);
+
     // TODO: Add post bookmarking and add this view
 
     const [tabSelection, setTabSelection] = React.useState(0);
@@ -121,13 +184,37 @@ function AccountScreen() {
         navigation.navigate(screen, {...payload});
     };
 
+    const refreshGhillieState = () => {
+        setPageInfo(initialGhilliePageInfo, () => {
+            setUserGhillies([], () => {
+                getUserGhillies()
+            });
+        });
+    }
+
+    const getUserGhillies = (cursor?: string) => {
+        if (!isLoadingUserGhillies && hasNextPage) {
+            setIsLoadingUserGhillies(true);
+            GhillieService.getCurrentUserGhillies(10, cursor)
+                .then((response) => {
+                    setPageInfo(response.meta);
+                    if (cursor) {
+                        setUserGhillies([...userGhillies, ...response.data]);
+                    } else {
+                        setUserGhillies(response.data);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+                .finally(() => setIsLoadingUserGhillies(false));
+        }
+    }
+
     React.useEffect(() => {
         const initialLoadGhillies = navigation.addListener('focus', async () => {
             setTabSelection(0);
-            setIsLoadingUserGhillies(true);
-            const {data} = await ghillieService.getCurrentUserGhillies();
-            setUserGhillies(data);
-            setIsLoadingUserGhillies(false);
+            refreshGhillieState();
         });
 
         return initialLoadGhillies;
@@ -188,11 +275,7 @@ function AccountScreen() {
         setTabSelection(selection);
 
         if (selection === 0) {
-            setIsLoadingUserGhillies(true);
-            ghillieService.getCurrentUserGhillies().then(({data}) => {
-                setUserGhillies(data);
-            });
-            setIsLoadingUserGhillies(false);
+            getUserGhillies();
         }
     }
 
@@ -217,9 +300,16 @@ function AccountScreen() {
             <View mt={5} flex={1}>
                 {tabSelection === 0 && (
                     <RenderGhillies
-                        isLoadingUserGhillies={isLoadingUserGhillies}
+                        isLoadingGhillies={isLoadingUserGhillies}
                         onGhilliePress={onGhilliePress}
                         userGhillies={userGhillies}
+                        handleRefresh={refreshGhillieState}
+                        hasNextPage={hasNextPage}
+                        getMoreGhillies={() => {
+                            if (hasNextPage) {
+                                getUserGhillies(endCursor!);
+                            }
+                        }}
                     />
                 )}
                 {tabSelection === 1 && (

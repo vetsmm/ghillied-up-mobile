@@ -15,18 +15,22 @@ const boxShadow: any = Platform.select({
 
 export default StyleSheet.create({
   container: {
-    height: 240,
+    height: 150,
+    width: "75%",
     marginBottom: 18,
     backgroundColor: '#eee',
     borderRadius: 24,
     marginHorizontal: 16,
+    alignSelf: 'center',
     ...boxShadow,
   },
   imageContainer: {flex: 1},
   image: {
     flex: 1,
     borderRadius: 24,
-    height: 300,
+    height: "100%",
+    // make the size of the screen wdith
+    width: '100%',
   },
   titleContainer: {
     position: 'absolute',
