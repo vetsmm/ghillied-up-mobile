@@ -66,7 +66,7 @@ function PostFeedHeader({searchText, setSearchText, clearSearch, onFilterClick})
     );
 }
 
-function PostListingScreen(props: any) {
+function PostListingScreen() {
 
     const [posts, setPosts] = React.useState<PostFeedDto[]>([]);
     const [currentPage, setCurrentPage] = React.useState<number>(1);
@@ -100,7 +100,7 @@ function PostListingScreen(props: any) {
         return initialLoad;
     }, [navigation]);
 
-    const handleRefresh = async () => {
+    const handleRefresh = () => {
         getFeed(1);
     };
 
