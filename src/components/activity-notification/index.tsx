@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 import {useNavigation} from "@react-navigation/native";
 import {Avatar, Box, HStack, Pressable, Text, VStack} from "native-base";
 import RegularText from "../texts/regular-texts";
@@ -12,7 +12,7 @@ import {useAppDispatch} from "../../store";
 import {markNotificationsAsRead} from "../../shared/reducers/notifications.reducer";
 import {getNotificationMessage} from "../../shared/messages";
 
-export function ActivityNotification({notification}: { notification: any }) {
+export const ActivityNotification: React.FC<{ notification: any }> = ({notification}) => {
     const dispatch = useAppDispatch();
     const navigation: any = useNavigation();
     const moveTo = (screen, payload?) => {
@@ -98,4 +98,4 @@ export function ActivityNotification({notification}: { notification: any }) {
     );
 }
 
-export default ActivityNotification;
+export default memo(ActivityNotification);

@@ -1,11 +1,9 @@
-import {Center, FlatList, Spinner, Text, View} from "native-base";
-import React, {useCallback} from "react";
+import {Center, Spinner, Text, View} from "native-base";
+import React from "react";
 import styles from "../../ghillies/listing/styles";
 import MainContainer from "../../../components/containers/MainContainer";
-import uuid from "react-native-uuid";
 import {RefreshControl, TouchableOpacity} from "react-native";
 import {Colors} from "../../../shared/styles";
-import {PageInfo} from "../../../shared/models/pagination/types";
 import {BaseNotificationDto} from "../../../shared/models/notifications/notification.dto";
 import notificationService from "../../../shared/services/notifications.service";
 import ActivityNotification from "../../../components/activity-notification";
@@ -16,18 +14,15 @@ import OkCancelModel from "../../../components/modals/ok-cancel-modal";
 import {IRootState, useAppDispatch} from "../../../store";
 import {getUnreadNotifications} from "../../../shared/reducers/notifications.reducer";
 import {useSelector} from "react-redux";
+import {FlashList} from "@shopify/flash-list";
+import {useStateWithCallback} from "../../../shared/hooks";
 
 function NotificationListingScreen() {
-    const [pageInfo, setPageInfo] = React.useState<PageInfo>({
-        hasNextPage: false,
-        hasPreviousPage: false,
-        startCursor: null,
-        endCursor: null,
-    });
-    const [clearAllOpen, setClearAllOpen] = React.useState(false);
+    const [clearAllOpen, setClearAllOpen] = useStateWithCallback(false);
 
-    const [isLoading, setIsLoading] = React.useState(false);
-    const [notifications, setNotifications] = React.useState<BaseNotificationDto[]>([]);
+    const [isLoading, setIsLoading] = useStateWithCallback(false);
+    const [notifications, setNotifications] = useStateWithCallback<BaseNotificationDto[]>([]);
+    const [currentPage, setCurrentPage] = useStateWithCallback<number>(1);
 
     const isReduxLoading = useSelector(
         (state: IRootState) => state.notifications.loading
@@ -39,41 +34,49 @@ function NotificationListingScreen() {
     // Load Initial Data
     React.useEffect(() => {
         const initialLoad = navigation.addListener('focus', async () => {
-            setIsLoading(true);
-            const {data, meta} = await notificationService.getNotifications();
-            setNotifications(data);
-            setPageInfo(meta);
-            setIsLoading(false);
+            getNotifications(1);
         });
 
         return initialLoad;
     }, [navigation]);
 
-    const handleRefresh = useCallback(async () => {
-        await notificationService.getNotifications()
-            .then((response) => {
-                setNotifications(response.data);
-                setPageInfo(response.meta);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, []);
+    const getNotifications = (page: number) => {
+        setIsLoading(true);
+        notificationService.getNotifications(page, 25)
+            .then(res => {
+                if (page > 1) {
+                    if (page === currentPage) {
+                        return;
+                    }
 
-    // const loadNextPage = async () => {
-    //     if (pageInfo.hasNextPage && !isLoading && pageInfo.endCursor) {
-    //         await notificationService.getNotifications({
-    //             cursor: pageInfo.endCursor,
-    //         })
-    //             .then((response) => {
-    //                 setNotifications(response.data);
-    //                 setPageInfo(response.meta);
-    //             })
-    //             .catch((error) => {
-    //                 console.log(error);
-    //             });
-    //     }
-    // }
+                    if (res.data.length > 0) {
+                        setNotifications([...notifications, ...res.data]);
+                        setCurrentPage(page);
+                        return;
+                    }
+                    setCurrentPage(page - 1);
+                } else {
+                    setNotifications(res.data);
+                    setCurrentPage(page);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                if (page > 1) {
+                    setCurrentPage(page - 1);
+                }
+            })
+            .finally(() => setIsLoading(false));
+    }
+
+    const handleRefresh = () => {
+        getNotifications(1);
+        dispatch(getUnreadNotifications());
+    }
+
+    const loadNextPage = () => {
+        getNotifications(currentPage)
+    }
 
     const clearNotifications = async () => {
         await notificationService.markAllNotificationsAsRead()
@@ -104,7 +107,7 @@ function NotificationListingScreen() {
                     justifyContent: 'flex-start',
                     alignItems: 'center',
                 }}>
-
+                {/* Lazy way to have columns */}
                 </View>
                 <View style={{
                     flex: 1,
@@ -137,17 +140,14 @@ function NotificationListingScreen() {
                     </TouchableOpacity>
                 </View>
             </View>
-            <View mb={1} flex={1}>
-                <FlatList
-                    keyExtractor={() => uuid.v4()?.toString()}
-                    backgroundColor={"transparent"}
+            <View style={styles.listContainer} >
+                <FlashList
+                    keyExtractor={(item) => item.notificationId!}
                     showsVerticalScrollIndicator={false}
                     data={notifications}
-                    pagingEnabled={true}
-                    maxToRenderPerBatch={30}
                     onEndReachedThreshold={0.5}
-                    // onEndReached={loadNextPage}
-                    snapToInterval={300}
+                    onEndReached={loadNextPage}
+                    estimatedItemSize={75}
                     renderItem={({item}: any) => (
                         <View mb={1}>
                             <ActivityNotification notification={item}/>
@@ -171,7 +171,6 @@ function NotificationListingScreen() {
                             </Text>
                         </Center>
                     }
-                    style={styles.list}
                 />
             </View>
             <OkCancelModel

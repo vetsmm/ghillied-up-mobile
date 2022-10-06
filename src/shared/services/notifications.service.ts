@@ -6,9 +6,9 @@ import {BaseNotificationDto} from "../models/notifications/notification.dto";
 import {UnreadNotificationsDto} from "../models/notifications/unread-notifications.dto";
 import {ReadNotificationsInputDto} from "../models/notifications/read-notifications-input.dto";
 
-const getNotifications = async ()
-    : Promise<BaseApiResponse<BaseNotificationDto[], PageInfo>> => {
-    return axios.get(`${AppConfig.apiUrl}/notifications/`)
+const getNotifications = async (page: number, take: number)
+    : Promise<BaseApiResponse<BaseNotificationDto[], never>> => {
+    return axios.get(`${AppConfig.apiUrl}/notifications?page=${page}&take=${take}`)
         .then(response => {
             return response.data;
         });
