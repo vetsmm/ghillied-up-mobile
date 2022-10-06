@@ -1,17 +1,13 @@
-import {Center, Column, HStack, Text, View} from "native-base";
+import {Center, Text, View, VStack} from "native-base";
 import React from "react";
 import styles from "../../ghillies/listing/styles";
 import MainContainer from "../../../components/containers/MainContainer";
 import {RefreshControl} from "react-native";
 import {Colors} from "../../../shared/styles";
-import BigText from "../../../components/texts/big-text";
 import postFeedService from "../../../shared/services/post-feed.service";
 import {useSelector} from "react-redux";
 import {IRootState} from "../../../store";
 import PostService from "../../../shared/services/post.service";
-import {TouchableOpacity} from "react-native-gesture-handler";
-import {Ionicons, MaterialIcons} from "@expo/vector-icons";
-import {SearchInput} from "../../../components/search";
 import postReactionService from "../../../shared/services/post-reaction.service";
 import {GhillieRole} from "../../../shared/models/ghillies/ghillie-role";
 import {PostStatus} from "../../../shared/models/posts/post-status";
@@ -20,49 +16,52 @@ import {PostFeedDto} from "../../../shared/models/feed/post-feed.dto";
 import PostFeedCard from "../../../components/post-feed-card";
 import {useNavigation} from "@react-navigation/native";
 import {FlashList} from "@shopify/flash-list";
+import {SvgXml} from "react-native-svg";
+import {GU_LOGO} from "../../../shared/images/logos";
+import RegularText from "../../../components/texts/regular-texts";
+import {useStateWithCallback} from "../../../shared/hooks";
 
 
-function PostFeedHeader({searchText, setSearchText, clearSearch, onFilterClick}) {
+function PostFeedHeader() {
     return (
-        <HStack style={{marginTop: 5}}>
-            <Column width="12%">
-                <TouchableOpacity
-                    style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: 40,
-                        marginBottom: 8,
-                        paddingLeft: 20
-                    }}
-                    onPress={() => onFilterClick()}
-                >
-                    <Ionicons name="filter" size={30} color="white"/>
-                </TouchableOpacity>
-            </Column>
-            <Column width="76%">
-                <SearchInput
-                    placeholder={"Search Posts..."}
-                    searchText={searchText}
-                    setSearchText={setSearchText}
-                />
-            </Column>
-            <Column width="12%">
-                {searchText.length > 0 && (
-                    <TouchableOpacity
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: 40,
-                            marginBottom: 8,
-                            paddingRight: 20
-                        }}
-                        onPress={() => clearSearch()}
-                    >
-                        <MaterialIcons name="clear" size={30} color="white"/>
-                    </TouchableOpacity>
-                )}
-            </Column>
-        </HStack>
+        <View mt={5} mb={1} style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        }}>
+            <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+            }}>
+                {/* Lazy way to have columns */}
+            </View>
+            <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginLeft: 10,
+            }}>
+                <VStack space={2}>
+                    <SvgXml
+                        style={{alignSelf: 'center'}}
+                        xml={GU_LOGO}
+                        height="40"
+                        width="100"
+                    />
+                </VStack>
+            </View>
+            <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                marginRight: 10,
+            }}>
+
+            </View>
+        </View>
     );
 }
 
@@ -71,7 +70,7 @@ function PostListingScreen() {
     const [posts, setPosts] = React.useState<PostFeedDto[]>([]);
     const [currentPage, setCurrentPage] = React.useState<number>(1);
     const [isLoading, setIsLoading] = React.useState(false);
-    const [searchText, setSearchText] = React.useState("");
+    const [isLoadingReactionUpdate, setIsLoadingReactionUpdate] = useStateWithCallback(false);
 
     const navigation: any = useNavigation();
 
@@ -175,38 +174,31 @@ function PostListingScreen() {
     }
 
     const onHandleReaction = (postId: string, reaction: ReactionType | null) => {
-        postReactionService.reactToPost(reaction, postId)
-            .then(async res => {
-                // find the post and update the reaction, set the state with the existing list of posts with updated value
-                const updatedPosts = posts.map(foundPost => {
-                    if (foundPost.id === postId) {
-                        foundPost.currentUserReactionType = reaction;
-                        foundPost.postReactionsCount = getReactionCount(foundPost, reaction);
-                    }
-                    return foundPost;
+        setIsLoadingReactionUpdate(true, () => {
+            postReactionService.reactToPost(reaction, postId)
+                .then(async res => {
+                    setIsLoadingReactionUpdate(false, () => {
+                        // find the post and update the reaction, set the state with the existing list of posts with updated value
+                        const updatedPosts = posts.map(foundPost => {
+                            if (foundPost.id === postId) {
+                                foundPost.currentUserReactionType = reaction;
+                                foundPost.postReactionsCount = getReactionCount(foundPost, reaction);
+                            }
+                            return foundPost;
+                        });
+                        setPosts(updatedPosts);
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                    setIsLoadingReactionUpdate(false)
                 });
-                setPosts(updatedPosts);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+        });
     }
 
     return (
         <MainContainer style={[styles.container]}>
-            <PostFeedHeader
-                clearSearch={async () => {
-                    setSearchText("");
-                    getFeed(1);
-                }}
-                // TODO: Do something with the search
-                searchText={searchText}
-                setSearchText={setSearchText}
-                onFilterClick={() => {
-                    // TODO: Implement filter screen
-                    console.log("onFilter")
-                }}
-            />
+            <PostFeedHeader/>
             <FlashList
                 keyExtractor={(item) => item.id}
                 data={posts}
@@ -222,6 +214,7 @@ function PostListingScreen() {
                         onModeratorRemoval={moderatorRemovePost}
                         onOwnerDelete={ownerDeletePost}
                         onHandleReaction={onHandleReaction}
+                        isLoadingReactionUpdate={isLoadingReactionUpdate}
                     />
                 )}
                 refreshControl={
@@ -234,11 +227,13 @@ function PostListingScreen() {
                 }
                 ListHeaderComponent={
                     <View mt={5} mb={5}>
-                        <BigText style={{
-                            marginLeft: 15
+                        <RegularText style={{
+                            marginLeft: 15,
+                            fontSize: 20,
+                            fontWeight: 'bold',
                         }}>
-                            Your Feed
-                        </BigText>
+                            Recent Posts
+                        </RegularText>
                     </View>
                 }
                 ListEmptyComponent={

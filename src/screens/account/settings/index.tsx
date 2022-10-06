@@ -142,7 +142,6 @@ export const AccountSettings = () => {
                     </View>
                 ))}
 
-                {/* TODO: Fix the logout, its broke AF */}
                 <TouchableOpacity
                     style={styles.logoutButton}
                     onPress={() => dispatch(logout())}

@@ -29,7 +29,11 @@ export const PostHeaderNoActions = ({post}: IPostCardNoActionsProps) => {
             borderWidth="1"
             _light={{borderColor: "primary.900"}}
             _dark={{borderColor: "primary.700"}}
-            source={{uri: post.ghillie?.imageUrl ? post.ghillie?.imageUrl : "https://picsum.photos/1000"}}
+            source={
+              post.ghillie?.imageUrl
+                  ? {uri: post.ghillie?.imageUrl}
+                  : require("../../../assets/logos/icon.png")
+            }
             width="10"
             height="10"
           />
