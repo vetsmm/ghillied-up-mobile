@@ -1,4 +1,5 @@
 import {PostStatus} from "./post-status";
+import {MaxLength} from "class-validator";
 
 export interface CreatePostInput {
   title: string;
@@ -9,8 +10,11 @@ export interface CreatePostInput {
 }
 
 export class CreatePostInputDto {
+
+  @MaxLength(50)
   title: string
 
+  @MaxLength(400)
   content: string
 
   status?: PostStatus

@@ -6,6 +6,7 @@ export const colorsVerifyCode = {
   accent: '#008583',
   darkGray: '#111827',
   lightGray: '#6B7280',
+  lighterGray: '#9CA3AF',
   white: '#fff',
   black: '#000',
   success: '#93D879',

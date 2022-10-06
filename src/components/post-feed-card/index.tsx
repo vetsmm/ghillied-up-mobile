@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect} from "react";
 import {
     Text,
     HStack,
@@ -24,12 +24,16 @@ import {FlagCategory} from "../../shared/models/flags/flag-category";
 import flagService from "../../shared/services/flag.service";
 import {SuccessAlert} from "../alerts/success-alert";
 import {PostFeedDto} from "../../shared/models/feed/post-feed.dto";
+import {colorsVerifyCode} from "../colors";
+import {ActivityIndicator, TouchableOpacity} from "react-native";
+import stringUtils from "../../shared/utils/string.utils";
 
 export interface IPostCardProps {
     post: PostFeedDto;
     isOwner?: boolean;
     isAdmin?: boolean;
     isModerator?: boolean;
+    isLoadingReactionUpdate?: boolean;
     onOwnerDelete: (post: PostFeedDto) => void;
     onModeratorRemoval: (post: PostFeedDto) => void;
     onHandleReaction: (postId: string, reaction: ReactionType | null) => void;
@@ -40,6 +44,7 @@ export const PostFeedCard = ({
                                  onModeratorRemoval,
                                  onOwnerDelete,
                                  onHandleReaction,
+                                 isLoadingReactionUpdate,
                                  isAdmin,
                                  isOwner,
                                  isModerator
@@ -74,163 +79,193 @@ export const PostFeedCard = ({
             });
     };
 
-    return (
-        <Box
-            flexDirection="column"
-            pt={{base: 7, md: 4}}
-            pb={{base: 8, md: 4}}
-            mt={{md: 3}}
-            ml={3}
-            mr={3}
-            // rounded={{ md: 'sm' }}
-            rounded={"lg"}
-            borderColor={"#00C6B1"}
-            borderWidth={3}
-            marginBottom={5}
-            roundedBottomLeft={20}
-            roundedBottomRight={20}
-            roundedTopLeft={20}
-            roundedTopRight={20}
-        >
-            <HStack justifyContent="space-between">
-                <HStack space={2} alignItems="center" px="4">
-                    <Avatar
-                        borderWidth="1"
-                        _light={{borderColor: "primary.900"}}
-                        _dark={{borderColor: "primary.700"}}
-                        source={
-                            post.ghillieImageUrl
-                                ? {uri: post.ghillieImageUrl}
-                                : require("../../../assets/logos/icon.png")
-                        }
-                        width="10"
-                        height="10"
-                    />
-                    <VStack>
-                        <Text fontSize="sm" fontWeight="semibold" color={"white"}>
-                            {post.ownerUsername}
-                        </Text>
-
-                        <Text
-                            _light={{color: "coolGray.300"}}
-                            _dark={{color: "coolGray.200"}}
-                            fontSize="xs"
-                        >
-                            {getMilitaryString(post.ownerBranch, post.ownerServiceStatus)}
-                        </Text>
-                    </VStack>
-                </HStack>
-                <View style={{
-                    width: 100,
-                    marginRight: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-start"
-                }}>
-                    <SmallText>
-                        {getTimeAgoShort(post.createdDate)}
-                    </SmallText>
-                    <IconButton
-                        variant="unstyled"
-                        icon={
-                            <Icon
-                                size="6"
-                                as={MaterialIcons}
-                                name={"more-vert"}
-                                color={"white"}
-                            />
-                        }
-                        onPress={() => setIsOpen(true)}
-                    />
-                </View>
-            </HStack>
-
-            <VStack px="4" space={1} pt={6}>
-                <RegularText style={{
-                    marginBottom: 5,
-                    fontSize: 20,
-                    fontWeight: "bold",
-                }}>
-                    {post.title}
-                </RegularText>
+    const _renderPostContent = () => {
+        const postString = stringUtils.trimPostString(post.content, 240);
+        if (!postString.isTruncated) {
+            return (
                 <RegularText style={{flex: 1, flexWrap: "wrap"}}>
-                    {post.content}
+                    {postString.text}
                 </RegularText>
-                <SmallText>
-                    {post.postReactionsCount > 0
-                        ? `${numberToReadableFormat(post.postReactionsCount)} reaction(s)`
-                        : ""
-                    }
-                </SmallText>
-            </VStack>
+            )
+        }
 
-            <HStack
-                flex={1}
-                flexDirection={"row"}
-                justifyContent="center"
-                alignItems="space-between"
-                px="4"
-                mt={2}
+        return (
+            <View>
+                <RegularText style={{flex: 1, flexWrap: "wrap"}}>
+                    {`${postString.text} `}
+                    <SmallText style={{color: colorsVerifyCode.lighterGray, fontWeight: "bold"}}>more</SmallText>
+                </RegularText>
+            </View>
+        )
+    }
+
+    return (
+        <TouchableOpacity onPress={() => moveTo("Posts", {params: {postId: post.id,}, screen: "PostDetail"})}>
+            <Box
+                flexDirection="column"
+                pt={{base: 7, md: 4}}
+                pb={{base: 8, md: 4}}
+                mt={{md: 3}}
+                ml={3}
+                mr={3}
+                // rounded={{ md: 'sm' }}
+                rounded={"lg"}
+                borderColor={"#00C6B1"}
+                borderWidth={3}
+                marginBottom={5}
+                roundedBottomLeft={20}
+                roundedBottomRight={20}
+                roundedTopLeft={20}
+                roundedTopRight={20}
+                backgroundColor={colorsVerifyCode.dialogPrimary}
             >
-                <ReactionButton
-                    onReact={(reaction) => {
-                        onHandleReaction(post.id, reaction);
-                    }}
-                    onUnReact={() => {
-                        onHandleReaction(post.id, null);
-                    }}
-                    currentReaction={post.currentUserReactionType}
-                />
-                <CommentButton
-                    onPress={() => {
-                        moveTo("Posts", {params: {postId: post.id,}, screen: "PostDetail"});
-                    }}
-                    numberOfComments={post.postCommentsCount}
-                />
-            </HStack>
+                <HStack justifyContent="space-between">
+                    <HStack space={2} alignItems="center" px="4">
+                        <Avatar
+                            borderWidth="1"
+                            _light={{borderColor: "primary.900"}}
+                            _dark={{borderColor: "primary.700"}}
+                            source={
+                                post.ghillieImageUrl
+                                    ? {uri: post.ghillieImageUrl}
+                                    : require("../../../assets/logos/icon.png")
+                            }
+                            width="10"
+                            height="10"
+                        />
+                        <VStack>
+                            <Text fontSize="sm" fontWeight="semibold" color={"white"}>
+                                {post.ownerUsername}
+                            </Text>
 
-            {showReportAlert && (
-                <SuccessAlert
-                    title="Report Sent"
-                    body="Thank you for reporting this post. We appreciate your help in keeping our community safe. If appropriate, we will take the necessary actions."
+                            <Text
+                                _light={{color: "coolGray.300"}}
+                                _dark={{color: "coolGray.200"}}
+                                fontSize="xs"
+                            >
+                                {getMilitaryString(post.ownerBranch, post.ownerServiceStatus)}
+                            </Text>
+                        </VStack>
+                    </HStack>
+                    <View style={{
+                        width: 100,
+                        marginRight: 10,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "flex-start"
+                    }}>
+                        <SmallText>
+                            {getTimeAgoShort(post.createdDate)}
+                        </SmallText>
+                        <IconButton
+                            variant="unstyled"
+                            icon={
+                                <Icon
+                                    size="6"
+                                    as={MaterialIcons}
+                                    name={"more-vert"}
+                                    color={"white"}
+                                />
+                            }
+                            onPress={() => setIsOpen(true)}
+                        />
+                    </View>
+                </HStack>
+
+                <VStack px="4" space={1} pt={6}>
+                    <RegularText style={{
+                        marginBottom: 5,
+                        fontSize: 20,
+                        fontWeight: "bold",
+                    }}>
+                        {post.title}
+                    </RegularText>
+
+                    {_renderPostContent()}
+
+                    <SmallText style={{ marginTop: 5 }}>
+                        {post.postReactionsCount > 0
+                            ? `${numberToReadableFormat(post.postReactionsCount)} reaction(s)`
+                            : ""
+                        }
+                    </SmallText>
+                </VStack>
+
+                <HStack
+                    flex={1}
+                    flexDirection={"row"}
+                    justifyContent="center"
+                    alignItems="space-between"
+                    px="4"
+                    mt={2}
+                >
+                    {isLoadingReactionUpdate ? (
+                        <ActivityIndicator size="small" color="#00C6B1"/>
+                    ) : (
+                        <ReactionButton
+                            onReact={(reaction) => {
+                                onHandleReaction(post.id, reaction);
+                            }}
+                            onUnReact={() => {
+                                onHandleReaction(post.id, null);
+                            }}
+                            currentReaction={post.currentUserReactionType}
+                        />
+                    )}
+                    <CommentButton
+                        onPress={() => {
+                            moveTo("Posts", {params: {postId: post.id,}, screen: "PostDetail"});
+                        }}
+                        numberOfComments={post.postCommentsCount}
+                    />
+                </HStack>
+
+                {showReportAlert && (
+                    <SuccessAlert
+                        title="Report Sent"
+                        body="Thank you for reporting this post. We appreciate your help in keeping our community safe. If appropriate, we will take the necessary actions."
+                    />
+                )}
+
+                <PostActionSheet
+                    isOpen={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    onDelete={() => {
+                        setIsOpen(false);
+                        onOwnerDelete(post);
+                    }}
+                    onRemove={() => {
+                        setIsOpen(false);
+                        onModeratorRemoval(post);
+                    }}
+                    onViewGhillie={() => {
+                        setIsOpen(false);
+                        moveTo("GhillieDetail", {ghillieId: post.ghillieId});
+                    }}
+                    onReport={() => {
+                        setIsOpen(false);
+                        setIsReportDialogOpen(true);
+                    }}
+                    onEdit={() => {
+                        setIsOpen(false);
+                        moveTo("Posts", {
+                            params: {post: post, ghillieImageUrl: post.ghillieImageUrl},
+                            screen: "UpdatePost"
+                        });
+                    }}
+                    isAdmin={isAdmin}
+                    isModerator={isModerator}
+                    isOwner={isOwner}
                 />
-            )}
 
-            <PostActionSheet
-                isOpen={isOpen}
-                onClose={() => setIsOpen(false)}
-                onDelete={() => {
-                    setIsOpen(false);
-                    onOwnerDelete(post);
-                }}
-                onRemove={() => {
-                    setIsOpen(false);
-                    onModeratorRemoval(post);
-                }}
-                onViewGhillie={() => {
-                    setIsOpen(false);
-                    moveTo("GhillieDetail", {ghillieId: post.ghillieId});
-                }}
-                onReport={() => {
-                    setIsOpen(false);
-                    setIsReportDialogOpen(true);
-                }}
-                onEdit={() => {
-                    setIsOpen(false);
-                    moveTo("Posts", {params: {post: post, ghillieImageUrl: post.ghillieImageUrl}, screen: "UpdatePost"});
-                }}
-                isAdmin={isAdmin}
-                isModerator={isModerator}
-                isOwner={isOwner}
-            />
-
-            <ReportMenuDialog
-                isOpen={isReportDialogOpen}
-                onClose={() => setIsReportDialogOpen(false)}
-                cancelRef={cancelRef}
-                onReport={reportPost}
-            />
-        </Box>
+                <ReportMenuDialog
+                    isOpen={isReportDialogOpen}
+                    onClose={() => setIsReportDialogOpen(false)}
+                    cancelRef={cancelRef}
+                    onReport={reportPost}
+                />
+            </Box>
+        </TouchableOpacity>
     );
 };
 

@@ -1,30 +1,13 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {
-    Text,
     HStack,
     VStack,
-    Pressable,
-    Card,
-    IconButton,
-    Icon,
     Avatar,
     View, Box
 } from "native-base";
-import {MaterialIcons} from "@expo/vector-icons";
-import {getMilitaryString} from "../../shared/utils/military-utils";
 import RegularText from "../texts/regular-texts";
 import SmallText from "../texts/small-text";
 import {getTimeAgo} from "../../shared/utils/date-utils";
-import ReactionButton from "../buttons/reaction-button";
-import CommentButton from "../buttons/comment-button";
-import PostActionSheet from "../bottom-sheets/post-action-sheet";
-import {useNavigation} from "@react-navigation/native";
-import {ReportMenuDialog} from "../reporting/report-menu-dialog";
-import {numberToReadableFormat} from "../../shared/utils/number-utils";
-import {ReactionType} from "../../shared/models/reactions/reaction-type";
-import {FlagCategory} from "../../shared/models/flags/flag-category";
-import flagService from "../../shared/services/flag.service";
-import {SuccessAlert} from "../alerts/success-alert";
 import {PostFeedDto} from "../../shared/models/feed/post-feed.dto";
 import stringUtils from "../../shared/utils/string.utils";
 
@@ -57,7 +40,11 @@ export const UserPostCard = ({post}: IPostCardProps) => {
                         borderWidth="1"
                         _light={{borderColor: "primary.900"}}
                         _dark={{borderColor: "primary.700"}}
-                        source={{uri: post.ghillieImageUrl ? post.ghillieImageUrl : "https://picsum.photos/1000"}}
+                        source={
+                            post.ghillieImageUrl
+                                ? {uri: post.ghillieImageUrl}
+                                : require("../../../assets/logos/icon.png")
+                        }
                         width="10"
                         height="10"
                     />
