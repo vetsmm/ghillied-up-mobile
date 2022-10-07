@@ -7,16 +7,18 @@ import {
   validateServiceStatus,
   validateUsername
 } from "./validators";
+import {updateFormValidator} from "./update-form.validator";
 
-const authValidators = {
+const validators = {
   loginFormValidator,
   registerFormValidator,
+  updateFormValidator,
   validateUsername,
   validateEmail,
   validatePasswords,
   validatePassword,
   validateBranch,
-  validateServiceStatus
+  validateServiceStatus,
 }
 
-export default authValidators;
+export default validators;

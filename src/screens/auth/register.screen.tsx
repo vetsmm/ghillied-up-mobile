@@ -16,7 +16,7 @@ import PressableText from "../../components/texts/pressable-text";
 import StyledSelect from "../../components/select/styled-select";
 import {ServiceBranch, ServiceStatus, stringToServiceBranch, stringToServiceStatus} from "../../shared/models/users";
 import stringUtils from "../../shared/utils/string.utils";
-import authValidators from "../../shared/validators/auth";
+import validators from "../../shared/validators/auth";
 import AuthService from "../../shared/services/auth.service";
 import {FormValidationResponse} from "../../shared/validators/auth/register-form.validator";
 import authErrorHandler from "../../shared/handlers/errors/auth-error.handler";
@@ -99,7 +99,7 @@ const RegisterScreen = ({navigation}) => {
   const _isFormInvalid = (formData): boolean => {
     setMessage(null);
 
-    const errors: FormValidationResponse = authValidators.registerFormValidator(formData);
+    const errors: FormValidationResponse = validators.registerFormValidator(formData);
 
     setFormErrors({
       email: errors.email,

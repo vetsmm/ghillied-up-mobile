@@ -42,3 +42,16 @@ applyAuthTokenInterceptor(axiosInstance, {
         'Content-Type': 'application/json'
     }
 })
+
+const applyAxiosErrorInterceptor = (axiosInstance: any) => {
+    axiosInstance.interceptors.response.use(
+        (response: any) => {
+            return response;
+        },
+        (error: any) => {
+            return Promise.reject(error.response);
+        }
+    );
+}
+
+applyAxiosErrorInterceptor(axiosInstance);

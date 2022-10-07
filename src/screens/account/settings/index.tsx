@@ -58,6 +58,10 @@ export const AccountSettings = () => {
                     onPress: () => moveTo("MyAccount", {})
                 },
                 {
+                    title: "Update User Information",
+                    onPress: () => moveTo("AccountUserInformation", {})
+                },
+                {
                     title: "Notifications",
                     onPress: () => moveTo("AccountPushNotificationSettings", {})
                 }

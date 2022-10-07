@@ -11,4 +11,5 @@ export const colorsVerifyCode = {
   black: '#000',
   success: '#93D879',
   fail: '#b62c38',
+  failLighter: '#df7a83',
 };

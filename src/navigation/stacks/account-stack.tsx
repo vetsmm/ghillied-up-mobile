@@ -6,6 +6,7 @@ import {colorsVerifyCode} from "../../components/colors";
 import PushNotificationSettings from "../../screens/account/notification-settings";
 import MyAccount from "../../screens/account/my-account";
 import ChangePassword from "../../screens/account/change-password";
+import UpdateUserInformation from "../../screens/account/update-user-information";
 
 interface AccountScreenProps {
     name: string;
@@ -70,6 +71,26 @@ export const accountScreens: Array<AccountScreenProps> = [
         component: MyAccount,
         options: {
             title: "My Account",
+            headerShown: true,
+            gestureEnabled: true,
+            // title bar color
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+        }
+    },
+    {
+        name: "AccountUserInformation",
+        route: "account-update-user-information",
+        component: UpdateUserInformation,
+        options: {
+            title: "Update User Information",
             headerShown: true,
             gestureEnabled: true,
             // title bar color

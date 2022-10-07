@@ -19,6 +19,7 @@ export type StyledSelectProps = {
   options: Array<ISelectOption>;
   onSelect: (value: string) => void;
   isError?: boolean;
+  initialValue?: string;
 }
 
 
@@ -44,7 +45,7 @@ export const StyledSelect: React.FunctionComponent<StyledSelectProps> = (props) 
         accessibilityLabel={props.accessibilityLabel || "Select an option"}
         placeholder={props.placeholder || "Select an option"}
         onValueChange={(value) => props.onSelect(value)}
-        defaultValue={props.options[0].value}
+        defaultValue={props.initialValue || props.options[0].value}
       >
         {props.options && props.options.map((option) => (
           <Select.Item
