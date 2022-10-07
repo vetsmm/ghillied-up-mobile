@@ -22,6 +22,10 @@ import {FlashList} from "@shopify/flash-list";
 import {GhillieCircle} from "../../../components/ghillie-circle";
 import {useStateWithCallback} from "../../../shared/hooks";
 import GhillieService from "../../../shared/services/ghillie.service";
+import {BookmarkPostFeedDto} from "../../../shared/models/feed/bookmarked-post-feed.dto";
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import DeleteAction from "../../../components/swipe-actions/delete-action";
+import postService from "../../../shared/services/post.service";
 
 
 const RenderGhillies: React.FC<{
@@ -32,13 +36,13 @@ const RenderGhillies: React.FC<{
     getMoreGhillies: () => void;
     handleRefresh: () => void;
 }> = ({
-                            isLoadingGhillies,
-                            onGhilliePress,
-                            userGhillies,
-                            hasNextPage,
-                            getMoreGhillies,
-                            handleRefresh,
-                        }) =>{
+          isLoadingGhillies,
+          onGhilliePress,
+          userGhillies,
+          hasNextPage,
+          getMoreGhillies,
+          handleRefresh,
+      }) => {
     return (
         <View style={styles.pastPostContainer}>
             <FlashList
@@ -94,61 +98,117 @@ const RenderGhillies: React.FC<{
     );
 }
 
-const RenderPosts: React.FC<{ posts: PostFeedDto[], loadNextPage: () => void, isLoading: boolean, handleRefresh: () => void }> = ({
-                                                                                                                                      posts,
-                                                                                                                                      loadNextPage,
-                                                                                                                                      isLoading,
-                                                                                                                                      handleRefresh
-                                                                                                                                  }) => {
-    const navigation: any = useNavigation();
-    const onPostPress = (postId: string) => {
-        navigation.navigate("Posts", {params: {postId: postId}, screen: "PostDetail"});
-    }
-    return (
-        <View style={styles.pastPostContainer}>
-            <FlashList
-                keyExtractor={(item) => item.id}
-                data={posts}
-                onEndReachedThreshold={0.8}
-                onEndReached={loadNextPage}
-                estimatedItemSize={111}
-                renderItem={({item}: any) => (
-                    <TouchableOpacity onPress={() => onPostPress(item.id)}>
-                        <UserPostCard
-                            post={item}
+const RenderPosts: React.FC<{ posts: PostFeedDto[], loadNextPage: () => void, isLoading: boolean, handleRefresh: () => void }> =
+    ({
+         posts,
+         loadNextPage,
+         isLoading,
+         handleRefresh
+     }) => {
+        const navigation: any = useNavigation();
+        const onPostPress = (postId: string) => {
+            navigation.navigate("Posts", {params: {postId: postId}, screen: "PostDetail"});
+        }
+        return (
+            <View style={styles.pastPostContainer}>
+                <FlashList
+                    keyExtractor={(item) => item.id}
+                    data={posts}
+                    onEndReachedThreshold={0.8}
+                    onEndReached={loadNextPage}
+                    estimatedItemSize={111}
+                    renderItem={({item}: any) => (
+                        <TouchableOpacity onPress={() => onPostPress(item.id)}>
+                            <UserPostCard
+                                post={item}
+                            />
+                        </TouchableOpacity>
+                    )}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isLoading}
+                            onRefresh={handleRefresh}
+                            progressBackgroundColor={Colors.secondary}
+                            tintColor={Colors.secondary}
                         />
-                    </TouchableOpacity>
-                )}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={isLoading}
-                        onRefresh={handleRefresh}
-                        progressBackgroundColor={Colors.secondary}
-                        tintColor={Colors.secondary}
-                    />
-                }
-                ListEmptyComponent={
-                    <Center>
-                        <Text style={{
-                            color: Colors.secondary
-                        }}>
-                            No Posts Found
-                        </Text>
-                    </Center>
-                }
-            />
-        </View>
-    );
-}
+                    }
+                    ListEmptyComponent={
+                        <Center>
+                            <Text style={{
+                                color: Colors.secondary
+                            }}>
+                                No Posts Found
+                            </Text>
+                        </Center>
+                    }
+                />
+            </View>
+        );
+    }
 
-function RenderSaved({}) {
-    return <Text style={{
-        color: colorsVerifyCode.secondary,
-        fontWeight: "bold",
-        fontSize: 20,
-        textAlign: "center"
-    }}>Coming Soon...</Text>;
-}
+const RenderSaved: React.FC<{ bookmarkedPosts: BookmarkPostFeedDto[], loadNextPage: () => void, isLoading: boolean, handleRefresh: () => void }> =
+    ({
+         bookmarkedPosts,
+         loadNextPage,
+         isLoading,
+         handleRefresh
+     }) => {
+        const navigation: any = useNavigation();
+        const onPostPress = (postId: string) => {
+            navigation.navigate("Posts", {params: {postId: postId}, screen: "PostDetail"});
+        }
+
+        const deleteBookmark = async (postId: string) => {
+            await postService.unBookmarkPost(postId);
+            handleRefresh();
+        }
+
+        const _renderDeleteAction = (postId: string) => {
+            return (
+                <DeleteAction onPress={() => deleteBookmark(postId)}/>
+            );
+        }
+
+        return (
+            <View style={styles.pastPostContainer}>
+                <FlashList
+                    keyExtractor={(item) => item.id}
+                    data={bookmarkedPosts}
+                    onEndReachedThreshold={0.8}
+                    onEndReached={loadNextPage}
+                    estimatedItemSize={111}
+                    renderItem={({item}: any) => (
+                        <Swipeable
+                            renderRightActions={() => _renderDeleteAction(item.postId)}
+                        >
+                            <TouchableOpacity onPress={() => onPostPress(item.postId)}>
+                                <UserPostCard
+                                    post={item}
+                                />
+                            </TouchableOpacity>
+                        </Swipeable>
+                    )}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isLoading}
+                            onRefresh={handleRefresh}
+                            progressBackgroundColor={Colors.secondary}
+                            tintColor={Colors.secondary}
+                        />
+                    }
+                    ListEmptyComponent={
+                        <Center>
+                            <Text style={{
+                                color: Colors.secondary
+                            }}>
+                                No Posts Found
+                            </Text>
+                        </Center>
+                    }
+                />
+            </View>
+        );
+    }
 
 function AccountScreen() {
     const initialGhilliePageInfo: PageInfo = {
@@ -166,9 +226,15 @@ function AccountScreen() {
     const [isLoadingUserGhillies, setIsLoadingUserGhillies] = useStateWithCallback(false);
     const [userGhillies, setUserGhillies] = useStateWithCallback<GhillieDetailDto[]>([]);
 
+    // User Posts
     const [isLoadingUserPosts, setIsLoadingUserPosts] = useStateWithCallback(false);
     const [userPosts, setUserPosts] = useStateWithCallback<PostFeedDto[]>([]);
     const [postCurrentPage, setPostCurrentPage] = useStateWithCallback(1);
+
+    // Book Marks
+    const [isLoadingBookmarkedPosts, setIsLoadingBookmarkedPosts] = useStateWithCallback(false);
+    const [bookmarkedPosts, setBookmarkedPosts] = useStateWithCallback<BookmarkPostFeedDto[]>([]);
+    const [bookmarkedPostCurrentPage, setBookmarkedPostsCurrentPage] = useStateWithCallback(1);
 
     // TODO: Add post bookmarking and add this view
 
@@ -223,6 +289,8 @@ function AccountScreen() {
     React.useEffect(() => {
         if (tabSelection === 1) {
             getFeed(1)
+        } else if (tabSelection === 2) {
+            getBookmarkedPosts(1)
         }
     }, [tabSelection]);
 
@@ -263,12 +331,49 @@ function AccountScreen() {
             .finally(() => setIsLoadingUserPosts(false));
     };
 
-    const handleRefresh = async () => {
+    const getBookmarkedPosts = (page: number) => {
+        setIsLoadingBookmarkedPosts(true);
+        postFeedService.getBookmarkedPosts(page, 25)
+            .then(res => {
+                if (page > 1) {
+                    if (page === bookmarkedPostCurrentPage) {
+                        return;
+                    }
+
+                    if (res.data.length > 0) {
+                        setBookmarkedPosts([...bookmarkedPosts, ...res.data]);
+                        setBookmarkedPostsCurrentPage(page);
+                        return;
+                    }
+
+                    setPostCurrentPage(page - 1);
+                } else {
+                    setBookmarkedPosts(res.data);
+                    setBookmarkedPostsCurrentPage(page);
+                }
+            })
+            .catch(err => {
+                if (page > 1) {
+                    setBookmarkedPostsCurrentPage(page - 1);
+                }
+            })
+            .finally(() => setIsLoadingBookmarkedPosts(false));
+    };
+
+    const handleRefresh = () => {
         getFeed(1);
     };
 
-    const loadNextPage = async () => {
+    const handleRefreshBookmarked = () => {
+        getBookmarkedPosts(1);
+    }
+
+    const loadNextPage = () => {
         getFeed(postCurrentPage);
+    }
+
+    const loadNextPageBookmarked = () => {
+        getBookmarkedPosts(postCurrentPage);
     }
 
     const onTabSelection = (selection: number) => {
@@ -321,7 +426,12 @@ function AccountScreen() {
                     />
                 )}
                 {tabSelection === 2 && (
-                    <RenderSaved/>
+                    <RenderSaved
+                        bookmarkedPosts={bookmarkedPosts}
+                        handleRefresh={handleRefreshBookmarked}
+                        isLoading={isLoadingBookmarkedPosts}
+                        loadNextPage={loadNextPageBookmarked}
+                    />
                 )}
             </View>
         </MainContainer>

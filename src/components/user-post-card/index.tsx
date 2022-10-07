@@ -10,9 +10,10 @@ import SmallText from "../texts/small-text";
 import {getTimeAgo} from "../../shared/utils/date-utils";
 import {PostFeedDto} from "../../shared/models/feed/post-feed.dto";
 import stringUtils from "../../shared/utils/string.utils";
+import {BookmarkPostFeedDto} from "../../shared/models/feed/bookmarked-post-feed.dto";
 
 export interface IPostCardProps {
-    post: PostFeedDto;
+    post: PostFeedDto | BookmarkPostFeedDto;
 }
 
 export const UserPostCard = ({post}: IPostCardProps) => {

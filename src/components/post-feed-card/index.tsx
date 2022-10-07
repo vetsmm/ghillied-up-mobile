@@ -27,6 +27,7 @@ import {PostFeedDto} from "../../shared/models/feed/post-feed.dto";
 import {colorsVerifyCode} from "../colors";
 import {ActivityIndicator, TouchableOpacity} from "react-native";
 import stringUtils from "../../shared/utils/string.utils";
+import PostService from "../../shared/services/post.service";
 
 export interface IPostCardProps {
     post: PostFeedDto;
@@ -52,6 +53,7 @@ export const PostFeedCard = ({
     const [isOpen, setIsOpen] = React.useState(false);
     const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
     const [showReportAlert, setShowReportAlert] = React.useState(false);
+    const [showBookmarkAlert, setShowBookmarkAlert] = React.useState(false);
 
     const cancelRef = React.useRef(null);
     const navigation: any = useNavigation();
@@ -66,7 +68,22 @@ export const PostFeedCard = ({
                 setShowReportAlert(false);
             }, 3000);
         }
-    }, [showReportAlert]);
+        if (showBookmarkAlert) {
+            setTimeout(() => {
+                setShowBookmarkAlert(false);
+            }, 3000);
+        }
+    }, [showReportAlert, showBookmarkAlert]);
+
+    const onBookmarkPost = (post) => {
+        PostService.bookmarkPost(post.id)
+            .then(() => {
+                setShowBookmarkAlert(true);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
 
     const reportPost = (category: FlagCategory, details: string) => {
         flagService.flagPost({
@@ -227,6 +244,13 @@ export const PostFeedCard = ({
                     />
                 )}
 
+                {showBookmarkAlert && (
+                    <SuccessAlert
+                        title="Bookmark Added"
+                        body="This post has been added to your bookmarks."
+                    />
+                )}
+
                 <PostActionSheet
                     isOpen={isOpen}
                     onClose={() => setIsOpen(false)}
@@ -237,6 +261,10 @@ export const PostFeedCard = ({
                     onRemove={() => {
                         setIsOpen(false);
                         onModeratorRemoval(post);
+                    }}
+                    onBookmark={() => {
+                        setIsOpen(false);
+                        onBookmarkPost(post);
                     }}
                     onViewGhillie={() => {
                         setIsOpen(false);

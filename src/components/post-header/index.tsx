@@ -32,6 +32,7 @@ export interface IPostCardProps {
   isOwner?: boolean;
   isAdmin?: boolean;
   isModerator?: boolean;
+  onBookmarkPost: (post: PostListingDto | PostDetailDto) => void;
   onReport: (category: FlagCategory, details: string) => void;
   onOwnerDelete: (post: PostListingDto | PostDetailDto) => void;
   onModeratorRemoval: (post: PostListingDto | PostDetailDto) => void;
@@ -41,6 +42,7 @@ export interface IPostCardProps {
 export const PostHeader = ({
                              post,
                              onModeratorRemoval,
+                             onBookmarkPost,
                              onOwnerDelete,
                              onHandleReaction,
                              onReport,
@@ -187,6 +189,10 @@ export const PostHeader = ({
         onEdit={() => {
           setIsOpen(false);
           moveTo("Posts", {params: {post: post, ghillieImageUrl: post.ghillie.imageUrl}, screen: "UpdatePost"});
+        }}
+        onBookmark={() => {
+          setIsOpen(false);
+          onBookmarkPost(post);
         }}
         isAdmin={isAdmin}
         isModerator={isModerator}
