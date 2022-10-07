@@ -4,7 +4,6 @@ import {
     HStack,
     VStack,
     Pressable,
-    Card,
     IconButton,
     Icon,
     Avatar,
@@ -50,6 +49,7 @@ export const PostCard = ({
     const [isOpen, setIsOpen] = React.useState(false);
     const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
     const [showReportAlert, setShowReportAlert] = React.useState(false);
+    const [showBookmarkAlert, setShowBookmarkAlert] = React.useState(false);
 
     const cancelRef = React.useRef(null);
     const navigation: any = useNavigation();
@@ -201,9 +201,19 @@ export const PostCard = ({
                 />
             )}
 
+            {showBookmarkAlert && (
+                <SuccessAlert
+                    title="Bookmarked!"
+                    body="Post has been bookmarked!"
+                />
+            )}
+
             <PostActionSheet
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
+                onBookmark={() => {
+                    setIsOpen(false);
+                }}
                 onDelete={() => {
                     setIsOpen(false);
                     onOwnerDelete(post);

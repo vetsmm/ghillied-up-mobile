@@ -62,6 +62,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const [levelOneComments, setLevelOneComments] = React.useState<Immutable.OrderedMap<string, CommentDetailDto>>(Immutable.OrderedMap()); // key is commentId
     const [levelTwoComments, setLevelTwoComments] = React.useState<Immutable.OrderedMap<string, CommentDetailDto>>(Immutable.OrderedMap()); // Key is the parent comment id
     const [showReportAlert, setShowReportAlert] = React.useState(false);
+    const [showBookmarkAlert, setShowBookmarkAlert] = React.useState(false);
 
 
     useEffect(() => {
@@ -70,7 +71,12 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 setShowReportAlert(false);
             }, 3000);
         }
-    }, [showReportAlert]);
+        if (showBookmarkAlert) {
+            setTimeout(() => {
+                setShowBookmarkAlert(false);
+            }, 3000);
+        }
+    }, [showReportAlert, showBookmarkAlert]);
 
     const isAdmin = useSelector(
         (state: IRootState) => state.authentication.isAdmin,
@@ -176,6 +182,16 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 console.log(err);
             });
     };
+
+    const onBookmarkPost = (post) => {
+        postService.bookmarkPost(post.id)
+            .then(() => {
+                setShowBookmarkAlert(true);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
 
     const reportPost = (category: FlagCategory, details: string) => {
         flagService.flagPost({
@@ -345,6 +361,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                         <PostSharedElement
                             postId={postId}
                             post={post}
+                            onBookmarkPost={onBookmarkPost}
                             reportPost={reportPost}
                             ownerDeletePost={ownerDeletePost}
                             moderatorRemovePost={moderatorRemovePost}
@@ -358,6 +375,12 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                             <SuccessAlert
                                 title="Report Sent"
                                 body="Thank you for reporting this post. We appreciate your help in keeping our community safe. If appropriate, we will take the necessary actions."
+                            />
+                        )}
+                        {showBookmarkAlert && (
+                            <SuccessAlert
+                                title="Bookmark Added"
+                                body="This post has been added to your bookmarks."
                             />
                         )}
                     </>

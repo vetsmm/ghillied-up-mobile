@@ -42,6 +42,20 @@ const updatePost = async (id: string, post: UpdatePostInputDto): Promise<BaseApi
         });
 }
 
+const bookmarkPost = async (id: string): Promise<void> => {
+    return axios.put(`${AppConfig.apiUrl}/posts/${id}/bookmark`)
+        .then(response => {
+            return response.data;
+        });
+}
+
+const unBookmarkPost = async (id: string): Promise<void> => {
+    return axios.put(`${AppConfig.apiUrl}/posts/${id}/unbookmark`)
+        .then(response => {
+            return response.data;
+        });
+}
+
 const deletePost = async (id: string): Promise<BaseApiResponse<void, any>> => {
     return axios.delete(`${AppConfig.apiUrl}/posts/${id}`)
         .then(response => {
@@ -55,7 +69,9 @@ const postService = {
     updatePost,
     deletePost,
     getPostsForGhillie,
-    getPostsForCurrentUser
+    getPostsForCurrentUser,
+    bookmarkPost,
+    unBookmarkPost
 }
 
 export default postService;
