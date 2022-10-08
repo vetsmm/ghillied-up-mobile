@@ -2,7 +2,6 @@ import {GhillieDetailDto} from "../models/ghillies/ghillie-detail.dto";
 import {axiosInstance as axios} from './api'
 import AppConfig from "../../config/app.config";
 import {BaseApiResponse} from "../models/base-api-response";
-import {GhillieListingMeta} from "../models/ghillies/ghillie-listing-meta";
 import {CreateGhillieInputDto} from "../models/ghillies/create-ghillie-input.dto";
 import {GhillieSearchCriteria} from "../models/ghillies/ghillie-search.criteria";
 import {PageInfo} from "../models/pagination/types";

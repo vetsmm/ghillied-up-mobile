@@ -20,7 +20,12 @@ import {VERIFIED_MARK} from "../../shared/images/verified-mark";
 import {TouchableOpacity} from "react-native";
 import {ID_ME_VERIFY} from "../../shared/images/id-me-verify";
 
-export const AccountOverviewCard = ({account, onVerifyClick}: { account: UserOutput, onVerifyClick: () => void}) => {
+interface AccountOverviewCardProps {
+    account: UserOutput;
+    onVerifyClick: () => void;
+}
+
+export const AccountOverviewCard = ({account, onVerifyClick,}: AccountOverviewCardProps) => {
 
     const isVerifiedMilitary = account?.authorities?.includes("ROLE_VERIFIED_MILITARY");
 
@@ -92,13 +97,13 @@ export const AccountOverviewCard = ({account, onVerifyClick}: { account: UserOut
                                 height="50"
                                 width="50"
                             />
-                            <RegularText style={{ color: colorsVerifyCode.secondary }}>
+                            <RegularText style={{color: colorsVerifyCode.secondary}}>
                                 Verified Military
                             </RegularText>
                         </>
-                    ): (
+                    ) : (
                         <TouchableOpacity onPress={() => onVerifyClick()}>
-                            <RegularText style={{ color: colorsVerifyCode.secondary, alignSelf: 'center' }}>
+                            <RegularText style={{color: colorsVerifyCode.secondary, alignSelf: 'center'}}>
                                 Verify Military Status
                             </RegularText>
                             <SvgXml
