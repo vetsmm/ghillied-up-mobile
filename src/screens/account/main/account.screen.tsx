@@ -1,9 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import {Center, Text, View} from "native-base";
 import MainContainer from "../../../components/containers/MainContainer";
 import styles from "../styles";
 import {useSelector} from "react-redux";
-import {IRootState} from "../../../store";
+import {IRootState, useAppDispatch} from "../../../store";
 import {UserOutput} from "../../../shared/models/users/user-output.dto";
 import AccountOverviewCard from "../../../components/account-overview-card";
 import {useNavigation} from "@react-navigation/native";
@@ -26,6 +26,9 @@ import {BookmarkPostFeedDto} from "../../../shared/models/feed/bookmarked-post-f
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import DeleteAction from "../../../components/swipe-actions/delete-action";
 import postService from "../../../shared/services/post.service";
+import idmeService from "../../../shared/services/idme.service";
+import {getAccount} from "../../../shared/reducers/authentication.reducer";
+import MessageModal from "../../../components/modals/message-modal";
 
 
 const RenderGhillies: React.FC<{
@@ -236,9 +239,16 @@ function AccountScreen() {
     const [bookmarkedPosts, setBookmarkedPosts] = useStateWithCallback<BookmarkPostFeedDto[]>([]);
     const [bookmarkedPostCurrentPage, setBookmarkedPostsCurrentPage] = useStateWithCallback(1);
 
-    // TODO: Add post bookmarking and add this view
+    // Alert
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMessageType, setModalMessageType] = useState(undefined);
+    const [headerText, setHeaderText] = useState('');
+    const [modalMessage, setModalMessage] = useState('');
+    const [buttonText, setButtonText] = useState('');
 
     const [tabSelection, setTabSelection] = React.useState(0);
+
+    const dispatch = useAppDispatch();
 
     const myAccount: UserOutput = useSelector(
         (state: IRootState) => state.authentication.account
@@ -248,6 +258,14 @@ function AccountScreen() {
 
     const moveTo = (screen, payload?) => {
         navigation.navigate(screen, {...payload});
+    };
+
+    const showModal = (type, headerText, message, buttonText) => {
+        setModalMessageType(type);
+        setHeaderText(headerText);
+        setModalMessage(message);
+        setButtonText(buttonText);
+        setModalVisible(true);
     };
 
     const refreshGhillieState = () => {
@@ -294,8 +312,18 @@ function AccountScreen() {
         }
     }, [tabSelection]);
 
-    const verifyMilitaryStatus = () => {
-        console.log("Verify Military Status");
+    const verifyMilitaryStatus = async () => {
+        try {
+            const response = await idmeService.verifyMilitaryStatus();
+            if (response.status === "SUCCESS") {
+                showModal('success', 'Military Status Verified', response.message, 'Ok');
+                dispatch(getAccount());
+            } else {
+                showModal('fail', 'Military Status Verification Failed', response.message, 'Ok');
+            }
+        } catch (error) {
+            showModal('fail', 'Military Status Verification Failed', error.data.error.message, 'Ok');
+        }
     }
 
     const onGhilliePress = (ghillieId?: string) => {
@@ -434,6 +462,14 @@ function AccountScreen() {
                     />
                 )}
             </View>
+            <MessageModal
+                modalVisible={modalVisible}
+                buttonHandler={() => setModalVisible(false)}
+                type={modalMessageType}
+                headerText={headerText}
+                message={modalMessage}
+                buttonText={buttonText}
+            />
         </MainContainer>
     );
 }

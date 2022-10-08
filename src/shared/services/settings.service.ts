@@ -8,7 +8,7 @@ const addPushTokenToAccount = async (token): Promise<void> => {
     phonePlatform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID',
   })
     .catch(error => {
-      console.log("Error adding push token to account", error);
+      console.log("Error adding push token to account", error.data.error.context);
       // Sentry.Native.captureException(new Error(error));
     })
 }
