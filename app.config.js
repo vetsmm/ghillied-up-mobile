@@ -32,10 +32,12 @@ export default {
     },
     assetBundlePatterns: ["**/*"],
     ios: {
+        autoIncrement: true,
         supportsTablet: true,
         bundleIdentifier: "com.ghilliedup",
     },
     android: {
+        autoIncrement: true,
         adaptiveIcon: {
             foregroundImage: "./assets/logos/ic_launcher.png",
             backgroundColor: "#1E4C69"
@@ -60,7 +62,7 @@ export default {
     extra: {
         amplitudeApiKey: process.env.AMPLITUDE_API_KEY,
         sentry: {
-            dsn: process.env.SENTRY_EXPO_DSN
+            dsn: process.env.SENTRY_EXPO_DSN,
         },
         idme: {
             redirectUri: "com.ghilliedup.auth.app://idme",

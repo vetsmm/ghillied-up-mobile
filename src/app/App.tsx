@@ -14,6 +14,7 @@ import AppConfig from "../config/app.config";
 
 Sentry.init({
     dsn: AppConfig.sentryDsn,
+    environment: AppConfig.sentryEnviorment,
     enableInExpoDevelopment: false,
     debug: __DEV__, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
 });
