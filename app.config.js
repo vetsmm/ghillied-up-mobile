@@ -32,12 +32,10 @@ export default {
     },
     assetBundlePatterns: ["**/*"],
     ios: {
-        autoIncrement: true,
         supportsTablet: true,
         bundleIdentifier: "com.ghilliedup",
     },
     android: {
-        autoIncrement: true,
         adaptiveIcon: {
             foregroundImage: "./assets/logos/ic_launcher.png",
             backgroundColor: "#1E4C69"
@@ -60,6 +58,9 @@ export default {
         ]
     },
     extra: {
+        eas: {
+            projectId: "975262d5-696e-4258-a256-1b9cbd12ff53"
+        },
         amplitudeApiKey: process.env.AMPLITUDE_API_KEY,
         sentry: {
             dsn: process.env.SENTRY_EXPO_DSN,

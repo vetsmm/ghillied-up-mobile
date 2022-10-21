@@ -7,7 +7,6 @@ import {RefreshControl} from "react-native";
 import {TouchableOpacity} from "react-native-gesture-handler";
 import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import styles from "./styles";
-import {SearchInput} from "../../../components/search";
 import {GhillieCard} from "../../../components/cards/ghillie-listing";
 import {Colors} from "../../../shared/styles";
 import {useNavigation} from "@react-navigation/native";
@@ -45,10 +44,7 @@ function GhillieListingHeader({searchText, setSearchText, clearSearch, isVerifie
                 )}
             </Column>
             <Column width="76%">
-                <SearchInput
-                    searchText={searchText}
-                    setSearchText={setSearchText}
-                />
+
             </Column>
             <Column width="12%">
                 {searchText.length > 0 && (
