@@ -1,27 +1,32 @@
 {
   "build": {
     "production": {
+      "channel": "production",
+      "distribution": "store",
+      "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
       },
-      "channel": "production",
       "env": {
         "APP_ENV": "production"
       }
     },
     "development": {
+      "channel": "development",
+      "autoIncrement": true,
       "developmentClient": true,
       "distribution": "internal",
       "env": {
         "APP_ENV": "development"
-      }
-    },
-    "preview": {
-      "channel": "staging",
-      "distribution": "internal",
+      },
       "ios": {
         "simulator": true
-      },
+      }
+    },
+    "staging": {
+      "channel": "staging",
+      "autoIncrement": true,
+      "distribution": "store",
       "env": {
         "APP_ENV": "staging"
       },
@@ -34,7 +39,7 @@
     "production": {}
   },
   "cli": {
-    "version": ">= 0.55.1",
+    "version": ">=2.5.1",
     "appVersionSource": "remote"
   }
 }

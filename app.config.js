@@ -7,14 +7,14 @@ export default {
     icon: "./assets/logos/logo-square.png",
     scheme: "ghilliedup",
     notification: {
-        "icon": "./assets/logos/logo-square.png"
+        "icon": "./assets/logos/notification/Icon-1024.png"
     },
     plugins: [
         "sentry-expo",
         [
             "expo-notifications",
             {
-                "icon": "./assets/logos/primary/logo-96.png",
+                "icon": "./assets/logos/notification/Icon-96.png",
                 "color": "#1e4c69"
             }
         ]
@@ -25,7 +25,11 @@ export default {
         backgroundColor: "#1E4C69"
     },
     updates: {
-        fallbackToCacheTimeout: 0
+        fallbackToCacheTimeout: 0,
+        url: "https://u.expo.dev/975262d5-696e-4258-a256-1b9cbd12ff53"
+    },
+    runtimeVersion: {
+        policy: "sdkVersion"
     },
     assetBundlePatterns: ["**/*"],
     ios: {
