@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, StatusBar, Center, Stack } from 'native-base';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 type GuestLayoutProps = {
   children: React.ReactNode;
 };

@@ -5,7 +5,7 @@ const extra = Constants.manifest?.extra ?? {};
 
 const ENV = {
     dev: {
-        apiUrl: 'http://192.168.0.210:3333',
+        apiUrl: 'https://api.ghilliedupqa.com',
         amplitudeApiKey: null,
         idme: {
             authorizationEndpoint: 'https://api.id.me/oauth/authorize',
