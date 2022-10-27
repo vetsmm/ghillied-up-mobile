@@ -15,10 +15,7 @@ export default {
             "expo-notifications",
             {
                 "icon": "./assets/logos/primary/logo-96.png",
-                "color": "#1e4c69",
-                "sounds": [
-                    "./assets/notification/notification.wav",
-                ]
+                "color": "#1e4c69"
             }
         ]
     ],
