@@ -58,6 +58,7 @@ export default {
     debugMode: __DEV__,
     extra,
     AuthObject: "GhilliedUpAuthObject",
+    CredentialsObject: "GhilliedUpCredentialsObject",
     sentryDsn: extra.sentry.dsn,
     sentryEnviorment: sentryEnviorment,
     amplitudeApiKey: amplitudeApiKey,

@@ -13,10 +13,9 @@ import PressableText from "../../components/texts/pressable-text";
 import {Hidden, HStack, Text, VStack} from "native-base";
 import { IRootState, useAppDispatch } from "../../store";
 import AuthService from "../../shared/services/auth.service";
-import {login, setLoginError} from "../../shared/reducers/authentication.reducer";
+import {login} from "../../shared/reducers/authentication.reducer";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import { useSelector } from "react-redux";
-import * as Sentry from "sentry-expo";
 
 const {primary} = colorsVerifyCode;
 
@@ -66,7 +65,10 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
 
     AuthService.login(credentials)
       .then((res) => {
-        dispatch(login(res.data))
+        dispatch(login({
+          authTokenOutput: res.data,
+          credentials: credentials
+        }))
       })
       .catch((error) => {
         const err = JSON.parse(JSON.stringify(error));

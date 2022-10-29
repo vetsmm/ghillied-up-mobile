@@ -4,10 +4,13 @@ import axios, {AxiosInstance, AxiosRequestConfig} from 'axios'
 import * as SecureStore from "expo-secure-store";
 import AppConfig from "../../config/app.config";
 import {AuthTokenOutput} from "../models/auth/auth-token-output.dto";
+import {AuthLoginInputDto} from "../models/auth/auth-login-input.dto";
 
 // a little time before expiration to try refresh (seconds)
 const EXPIRE_FUDGE = 10
 export const STORAGE_KEY = AppConfig.AuthObject;
+export const CREDENTIALS_STORAGE_KEY = AppConfig.CredentialsObject;
+
 
 type Token = string
 
@@ -22,6 +25,9 @@ export const isLoggedIn = async (): Promise<boolean> => {
     const token = await getRefreshToken()
     return !!token
 }
+
+export const setAuthenticationCredentials = async (authenticationCredentials: AuthLoginInputDto): Promise<void> =>
+    SecureStore.setItemAsync(CREDENTIALS_STORAGE_KEY, JSON.stringify(authenticationCredentials));
 
 /**
  * Sets the access and refresh tokens
@@ -53,6 +59,13 @@ export const setAccessToken = async (token: Token): Promise<void> => {
  * @returns {Promise}
  */
 export const clearAuthTokens = async (): Promise<void> => SecureStore.deleteItemAsync(STORAGE_KEY)
+
+/**
+ * Clears the user's authentication credentials
+ * @async
+ * @returns {Promise}
+ */
+export const clearAuthenticationCredentials = async (): Promise<void> => SecureStore.deleteItemAsync(CREDENTIALS_STORAGE_KEY);
 
 /**
  * Returns the stored refresh token
@@ -125,6 +138,23 @@ const getAuthTokens = async (): Promise<AuthTokenOutput | undefined> => {
         return JSON.parse(rawTokens)
     } catch (error) {
         throw new Error(`Failed to parse auth tokens: ${rawTokens}`)
+    }
+}
+
+/**
+ * Returns the user's authentication credentials via the secure store
+ * @async
+ * @returns {Promise<AuthLoginInputDto>} Authentication credentials
+ */
+export const getUserCredentials = async (): Promise<AuthLoginInputDto | undefined> => {
+    const credentials = await SecureStore.getItemAsync(CREDENTIALS_STORAGE_KEY);
+    if (!credentials) return;
+
+    try {
+        // parse stored tokens JSON
+        return JSON.parse(credentials)
+    } catch (error) {
+        throw new Error(`Failed to parse user credentials`)
     }
 }
 
@@ -204,6 +234,8 @@ const refreshToken = async (requestRefresh: TokenRefreshRequest): Promise<Token>
 }
 
 export type TokenRefreshRequest = (refreshToken: string) => Promise<Token | AuthTokenOutput>
+
+export type AutoUserLoginRequest = (username: string, password: string) => Promise<Token | AuthTokenOutput>
 
 export interface AuthTokenInterceptorConfig {
     header?: string
