@@ -18,7 +18,6 @@ import axios from "axios";
 const login = async (loginInput: AuthLoginInputDto): Promise<BaseApiResponse<AuthTokenOutput, never>> => {
   return await axios.post(`${AppConfig.apiUrl}/auth/login`, loginInput)
     .then(res => {
-        console.log(typeof res.data);
       return res.data;
     });
 }

@@ -6,7 +6,7 @@ import {AuthPasswordResetInitDto} from "../models/auth/auth-password-reset-init.
 import {AuthPasswordResetFinishDto} from "../models/auth/auth-password-reset-finish.dto";
 import {UserOutput} from "../models/users/user-output.dto";
 import {AuthTokenOutput} from "../models/auth/auth-token-output.dto";
-import {clearAuthTokens, setAuthTokens} from "../jwt";
+import {clearAuthenticationCredentials, clearAuthTokens, setAuthenticationCredentials, setAuthTokens} from "../jwt";
 
 export const initialState = {
     loading: false,
@@ -26,14 +26,19 @@ export type AuthenticationState = Readonly<typeof initialState>;
 
 export const login = createAsyncThunk(
     "auth/login",
-    async (authTokenOutput: AuthTokenOutput, thunkAPI) => {
+    async (input: {
+        authTokenOutput: AuthTokenOutput,
+        credentials: { username: string, password: string }
+    }, thunkAPI) => {
         await setAuthTokens({
-            accessToken: authTokenOutput.accessToken,
-            refreshToken: authTokenOutput.refreshToken
+            accessToken: input.authTokenOutput.accessToken,
+            refreshToken: input.authTokenOutput.refreshToken
         })
 
+        await setAuthenticationCredentials(input.credentials);
+
         thunkAPI.dispatch(getAccount())
-        return authTokenOutput;
+        return input.authTokenOutput;
     });
 
 export const setLoginError = createAsyncThunk(
@@ -106,7 +111,8 @@ export const getAccount = createAsyncThunk(
 
 
 export const logout = (): any => async (dispatch: any) => {
-    await clearAuthTokens();
+    await clearAuthenticationCredentials(); // clear the user's credentials
+    await clearAuthTokens(); // clear the user's tokens
     dispatch(logoutSession());
 };
 
