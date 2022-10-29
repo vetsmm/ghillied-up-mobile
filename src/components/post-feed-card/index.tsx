@@ -28,6 +28,7 @@ import {colorsVerifyCode} from "../colors";
 import {ActivityIndicator, TouchableOpacity} from "react-native";
 import stringUtils from "../../shared/utils/string.utils";
 import PostService from "../../shared/services/post.service";
+import AppConfig from '../../config/app.config';
 
 export interface IPostCardProps {
     post: PostFeedDto;
@@ -71,7 +72,7 @@ export const PostFeedCard = ({
         if (showBookmarkAlert) {
             setTimeout(() => {
                 setShowBookmarkAlert(false);
-            }, 3000);
+            }, AppConfig.timeouts.reportDialogs);
         }
     }, [showReportAlert, showBookmarkAlert]);
 

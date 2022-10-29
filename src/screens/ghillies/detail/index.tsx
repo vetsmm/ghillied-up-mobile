@@ -28,6 +28,11 @@ import {MemberStatus} from "../../../shared/models/members/member-status";
 import {PostStatus} from "../../../shared/models/posts/post-status";
 import {ReactionType} from "../../../shared/models/reactions/reaction-type";
 import postFeedService from "../../../shared/services/post-feed.service";
+import {ReportMenuDialog} from '../../../components/reporting/report-menu-dialog';
+import {FlagCategory} from '../../../shared/models/flags/flag-category';
+import flagService from '../../../shared/services/flag.service';
+import {SuccessAlert} from '../../../components/alerts/success-alert';
+import AppConfig from '../../../config/app.config';
 
 const {primary, secondary, fail} = colorsVerifyCode;
 
@@ -44,7 +49,11 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const [postCurrentPage, setPostCurrentPage] = React.useState(1);
     const [isLoadingGhillies, setIsLoadingGhillies] = React.useState(false);
     const [postList, setPostList] = React.useState<PostFeedDto[]>([]);
-    const [isLoadingPosts, setIsLoadingPosts] = React.useState(false);
+    const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
+    const [showReportAlert, setShowReportAlert] = React.useState(false);
+    
+    
+    const cancelRef = React.useRef(null);
 
     const currentUser = useSelector(
         (state: IRootState) => state.authentication.account
@@ -88,6 +97,8 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const {ghillieId} = route?.params;
 
     const dispatch = useAppDispatch();
+    
+    const navigation: any = useNavigation();
 
     useEffect(() => {
         const initialLoad = navigation.addListener('focus', async () => {
@@ -97,8 +108,15 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
 
         return initialLoad;
     }, [dispatch, ghillieId]);
-
-    const navigation: any = useNavigation();
+    
+    useEffect(() => {
+        if (showReportAlert) {
+            setTimeout(() => {
+                setShowReportAlert(false);
+            }, AppConfig.timeouts.reportDialogs);
+        }
+    }, [showReportAlert]);
+    
 
     const goBack = useCallback(() => {
         navigation.goBack();
@@ -141,6 +159,20 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             console.log(e);
         }
     };
+    
+    const reportGhillie = (category: FlagCategory, details: string) => {
+        flagService.flagGhillie({
+            ghillieId: ghillieId,
+            flagCategory: category,
+            details
+        })
+          .then(() => {
+              setShowReportAlert(true);
+          })
+          .catch((err) => {
+              console.log("Report report failed");
+          });
+    }
 
     const onHandleReaction = (postId: string, reaction: ReactionType | null) => {
         postReactionService.reactToPost(reaction, postId)
@@ -226,10 +258,14 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             <TouchableOpacity style={styles.backButton} onPress={goBack}>
                 <Ionicons name="arrow-back-circle-outline" size={40} color={secondary}/>
             </TouchableOpacity>
-            {(isAdmin || isGhillieOwner) && (
+            {(isAdmin || isGhillieOwner) ? (
                 <TouchableOpacity style={styles.updateButton} onPress={handleGhillieUpdate}>
                     <Ionicons name="cog" size={40} color={secondary}/>
                 </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.updateButton} onPress={() => setIsReportDialogOpen(true)}>
+                  <Ionicons name="alert-circle" size={40} color={secondary}/>
+              </TouchableOpacity>
             )}
             <VirtualizedView
                 showsVerticalScrollIndicator={false}
@@ -253,10 +289,15 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                 ? {uri: ghillie?.imageUrl}
                                 : require("../../../../assets/logos/logo.png")
                         }
-                        // resizeMode={"cover"}
                     />
                 </SharedElement>
                 <View marginBottom={50}>
+                    {showReportAlert && (
+                      <SuccessAlert
+                        title="Report Sent"
+                        body="Thank you for reporting this Ghillie. We appreciate your help in keeping our community safe. If appropriate, we will take the necessary actions."
+                      />
+                    )}
                     <Center>
                         <Text style={[styles.title, {color: colorsVerifyCode.white}]}>{ghillie?.name}</Text>
                         <Badge variant="solid" color="default">
@@ -374,7 +415,6 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                             }}
                                         />
                                     )}
-                                    {/* TODO: Add create post for this ghillie */}
                                     {/* TODO: Add pinned posts, ** REQUIRES DATA CHANGE ** */}
                                 </View>
                             )}
@@ -405,6 +445,12 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 )}
 
             </VirtualizedView>
+            <ReportMenuDialog
+              isOpen={isReportDialogOpen}
+              onClose={() => setIsReportDialogOpen(false)}
+              cancelRef={cancelRef}
+              onReport={reportGhillie}
+            />
         </View>
     );
 };
