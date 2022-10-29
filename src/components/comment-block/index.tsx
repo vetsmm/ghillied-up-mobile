@@ -11,6 +11,7 @@ import {PostDetailDto} from "../../shared/models/posts/post-detail.dto";
 import {FlagCategory} from "../../shared/models/flags/flag-category";
 import flagService from "../../shared/services/flag.service";
 import {SuccessAlert} from "../alerts/success-alert";
+import AppConfig from '../../config/app.config';
 
 export interface CommentBlockProps {
   post: PostDetailDto;
@@ -66,7 +67,7 @@ export const CommentBlock: ({
     if (showReportAlert) {
       setTimeout(() => {
         setShowReportAlert(false);
-      }, 3000);
+      }, AppConfig.timeouts.reportDialogs);
     }
   }, [showReportAlert]);
 

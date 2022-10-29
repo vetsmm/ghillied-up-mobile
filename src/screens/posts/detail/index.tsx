@@ -29,6 +29,7 @@ import postCommentReactionService from "../../../shared/services/post-comment-re
 import {FlagCategory} from "../../../shared/models/flags/flag-category";
 import flagService from "../../../shared/services/flag.service";
 import {SuccessAlert} from "../../../components/alerts/success-alert";
+import AppConfig from '../../../config/app.config';
 
 const {primary} = colorsVerifyCode;
 
@@ -74,7 +75,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         if (showBookmarkAlert) {
             setTimeout(() => {
                 setShowBookmarkAlert(false);
-            }, 3000);
+            }, AppConfig.timeouts.reportDialogs);
         }
     }, [showReportAlert, showBookmarkAlert]);
 

@@ -75,5 +75,8 @@ export default {
                 tokenEndpoint: idme.tokenEndpoint,
             }
         }
+    },
+    timeouts: {
+        reportDialogs: 5000
     }
 };
