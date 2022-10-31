@@ -3,7 +3,6 @@ import {badWords} from "../../utils/bad-words";
 export type CreateGhillieFormValidationResponse = {
   name: string|null;
   about: string|null;
-  imageUrl: string|null;
   topicNames: string|null;
 }
 
@@ -11,16 +10,14 @@ export const createGhillieFormValidator = (
   formData: {
     name: string;
     about: string;
-    imageUrl: string;
     topicNames: Set<string>;
   }
 ): CreateGhillieFormValidationResponse => {
-  const { name, about, imageUrl, topicNames } = formData;
+  const { name, about, topicNames } = formData;
 
   return {
     name: validateName(name),
     about: validateAbout(about),
-    imageUrl: validateImageUrl(imageUrl),
     topicNames: validateTopicNames(topicNames)
   };
 }
@@ -47,14 +44,6 @@ const validateName = (name: string): string|null => {
 const validateAbout = (about: string): string|null => {
   if (about.length > 400) {
     return 'About must be less than 400 characters long';
-  }
-
-  return null;
-}
-
-const validateImageUrl = (imageUrl: string): string|null => {
-  if (imageUrl.length > 300) {
-    return 'Image URL must be less than 300 characters long';
   }
 
   return null;

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Formik} from 'formik';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 
 
 // custom components
@@ -21,6 +21,8 @@ import {IRootState} from "../../../store";
 import TopicListInput from "../../../components/inputs/topic-list.input";
 import GhillieService from "../../../shared/services/ghillie.service";
 import ghillieErrorHandler from "../../../shared/handlers/errors/ghillie-error.handler";
+import {ImageInfo} from 'expo-image-picker';
+import ImageUploader from '../../../components/upload/image-upload';
 
 
 const {primary} = colorsVerifyCode;
@@ -60,14 +62,14 @@ const GhillieCreateScreen = ({navigation}) => {
     name: string | null;
     about: string | null;
     readOnly: boolean | null;
-    imageUrl: string | null;
+    ghillieLogo: string | null;
     topicNames: string | null;
   }
   const [formErrors, setFormErrors] = useState<FormErrors>({
     name: null,
     about: null,
     readOnly: null,
-    imageUrl: null,
+    ghillieLogo: null,
     topicNames: null,
   });
 
@@ -77,8 +79,31 @@ const GhillieCreateScreen = ({navigation}) => {
 
   const handleCreate = async (formData, setSubmitting) => {
     setMessage(null);
+  
+    const data = new FormData();
+    data.append('name', formData.name);
+    data.append('about', formData.about);
+    data.append('readOnly', formData.readOnly);
+    
+    if (formData.ghillieLogo) {
+      // TODO: Investigate using compression on these images
+      const ghillieLogo = {
+        name: `ghillie-logo-${formData.name}`,
+        type: 'image/jpeg',
+        uri: Platform.OS === 'ios' ? formData.ghillieLogo.uri.replace('file://', '') : formData.ghillieLogo.uri,
+      };
+      data.append('ghillieLogo', JSON.parse(JSON.stringify(ghillieLogo)));
+    }
+  
+    formData.topicNames.forEach((topicName: string, index) => {
+      data.append(
+        `topicNames[${index}]`,
+        // Remove any trailing spaces and extra quotes
+        topicName.trim().replace(/['"]+/g, ''),
+      );
+    });
 
-    GhillieService.createGhillie(formData)
+    GhillieService.createGhillie(data)
       .then((res) => {
         setIsSuccessMessage(true);
         setSubmitting(false);
@@ -101,7 +126,7 @@ const GhillieCreateScreen = ({navigation}) => {
     setFormErrors({
       name: errors.name,
       about: errors.about,
-      imageUrl: errors.imageUrl,
+      ghillieLogo: null,
       topicNames: errors.topicNames,
       readOnly: null,
     });
@@ -118,7 +143,7 @@ const GhillieCreateScreen = ({navigation}) => {
             initialValues={{
               name: '',
               about: '',
-              imageUrl: '',
+              ghillieLogo: null as unknown as ImageInfo,
               topicNames: [] as string[],
               readOnly: false,
             }}
@@ -139,6 +164,16 @@ const GhillieCreateScreen = ({navigation}) => {
                 isSubmitting
               }) => (
               <>
+  
+                <ImageUploader
+                  setImage={(image) => setFieldValue('ghillieLogo', image)}
+                  imageUri={values?.ghillieLogo?.uri}
+                />
+  
+                <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
+                  {formErrors.ghillieLogo || ' '}
+                </MsgBox>
+                
                 <StyledTextInput
                   label="Ghillie Name"
                   icon="account-outline"
@@ -155,22 +190,6 @@ const GhillieCreateScreen = ({navigation}) => {
                   {formErrors.name && formErrors.name}
                 </MsgBox>
 
-                <StyledTextInput
-                  label="Image URL"
-                  icon="email-variant"
-                  placeholder="https://www.example.com/image.png"
-                  keyboardType="url"
-                  onChangeText={handleChange('imageUrl')}
-                  onBlur={handleBlur('imageUrl')}
-                  value={values.imageUrl}
-                  style={{marginBottom: 15}}
-                  isError={formErrors.imageUrl !== null}
-                />
-
-                <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                  {formErrors.imageUrl || ' '}
-                </MsgBox>
-
                 <StyledTextFieldInput
                   label="About"
                   icon="email-variant"
@@ -180,7 +199,7 @@ const GhillieCreateScreen = ({navigation}) => {
                   onBlur={handleBlur('about')}
                   value={values.about}
                   style={{marginBottom: 15}}
-                  isError={formErrors.imageUrl !== null}
+                  isError={formErrors.about !== null}
                 />
 
                 <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>

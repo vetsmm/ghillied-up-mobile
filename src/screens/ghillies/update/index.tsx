@@ -1,9 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 
 import {Formik} from 'formik';
-import {ActivityIndicator, TouchableOpacity} from 'react-native';
-
-// custom components
+import {ActivityIndicator, Platform, TouchableOpacity} from 'react-native';
 
 import {Center, Hidden, HStack, Text, VStack} from "native-base";
 import {colorsVerifyCode} from "../../../components/colors";
@@ -26,6 +24,8 @@ import {useNavigation} from "@react-navigation/native";
 import {getGhillie, updateGhillie} from "../../../shared/reducers/ghillie.reducer";
 import {GhillieDetailDto} from "../../../shared/models/ghillies/ghillie-detail.dto";
 import MessageModal from "../../../components/modals/message-modal";
+import ImageUploader from '../../../components/upload/image-upload';
+import {ImageInfo} from 'expo-image-picker';
 
 
 const {primary, secondary} = colorsVerifyCode;
@@ -99,14 +99,14 @@ export const GhillieUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
     name: string | null;
     about: string | null;
     readOnly: boolean | null;
-    imageUrl: string | null;
+    ghillieLogo: string | null;
     topicNames: string | null;
   }
   const [formErrors, setFormErrors] = useState<FormErrors>({
     name: null,
     about: null,
     readOnly: null,
-    imageUrl: null,
+    ghillieLogo: null,
     topicNames: null,
   });
 
@@ -124,8 +124,32 @@ export const GhillieUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
 
   const handleUpdate = async (formData, setSubmitting) => {
     setMessage(null);
-
-    GhillieService.updateGhillie(ghillie.id, formData)
+    
+    
+    const data = new FormData();
+    data.append('name', formData.name);
+    data.append('about', formData.about);
+    data.append('readOnly', formData.readOnly);
+    
+    if (formData.ghillieLogo) {
+      // TODO: Investigate using compression on these images
+      const ghillieLogo = {
+        name: `ghillie-logo-${ghillie.name}`,
+        type: 'image/jpeg',
+        uri: Platform.OS === 'ios' ? formData.ghillieLogo.uri.replace('file://', '') : formData.ghillieLogo.uri,
+      };
+      data.append('ghillieLogo', JSON.parse(JSON.stringify(ghillieLogo)));
+    }
+    
+    formData.topicNames.forEach((topicName: string, index) => {
+      data.append(
+        `topicNames[${index}]`,
+        // Remove any trailing spaces and extra quotes
+        topicName.trim().replace(/['"]+/g, ''),
+      );
+    });
+    
+    GhillieService.updateGhillie(ghillie.id, data)
       .then((res) => {
         setIsSuccessMessage(true);
         setSubmitting(false);
@@ -149,8 +173,8 @@ export const GhillieUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
     setFormErrors({
       name: errors.name,
       about: errors.about,
-      imageUrl: errors.imageUrl,
       topicNames: errors.topicNames,
+      ghillieLogo: null,
       readOnly: null,
     });
 
@@ -166,9 +190,9 @@ export const GhillieUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
             initialValues={{
               name: ghillie.name || '',
               about: ghillie.about || '',
-              imageUrl: ghillie.imageUrl || '',
               topicNames: ghillie.topics.map(topic => topic.name) || [] as string[],
               readOnly: ghillie.readOnly || false,
+              ghillieLogo: null as unknown as ImageInfo,
             }}
             onSubmit={(values, {setSubmitting}) => {
               if (!_isFormInvalid(values)) {
@@ -187,6 +211,15 @@ export const GhillieUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
                 isSubmitting
               }) => (
               <>
+                <ImageUploader
+                  setImage={(image) => setFieldValue('ghillieLogo', image)}
+                  imageUri={values?.ghillieLogo?.uri ?? ghillie.imageUrl}
+                />
+  
+                <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
+                  {formErrors.ghillieLogo || ' '}
+                </MsgBox>
+                
                 <StyledTextInput
                   label="Ghillie Name"
                   icon="account-outline"
@@ -203,21 +236,17 @@ export const GhillieUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
                   {formErrors.name || ''}
                 </MsgBox>
 
-                <StyledTextInput
-                  label="Image URL"
-                  icon="email-variant"
-                  placeholder="https://www.example.com/image.png"
-                  keyboardType="url"
-                  onChangeText={handleChange('imageUrl')}
-                  onBlur={handleBlur('imageUrl')}
-                  value={values.imageUrl}
-                  style={{marginBottom: 15}}
-                  isError={formErrors.imageUrl !== null}
-                />
-
-                <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                  {formErrors.imageUrl || ' '}
-                </MsgBox>
+                {/*<StyledTextInput*/}
+                {/*  label="Image URL"*/}
+                {/*  icon="email-variant"*/}
+                {/*  placeholder="https://www.example.com/image.png"*/}
+                {/*  keyboardType="url"*/}
+                {/*  onChangeText={handleChange('imageUrl')}*/}
+                {/*  onBlur={handleBlur('imageUrl')}*/}
+                {/*  value={values.imageUrl}*/}
+                {/*  style={{marginBottom: 15}}*/}
+                {/*  isError={formErrors.imageUrl !== null}*/}
+                {/*/>*/}
 
                 <StyledTextFieldInput
                   label="About"
@@ -228,7 +257,7 @@ export const GhillieUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
                   onBlur={handleBlur('about')}
                   value={values.about}
                   style={{marginBottom: 15}}
-                  isError={formErrors.imageUrl !== null}
+                  isError={formErrors.about !== null}
                 />
 
                 <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>

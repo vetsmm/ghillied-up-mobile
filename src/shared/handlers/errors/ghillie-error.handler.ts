@@ -4,7 +4,7 @@ type FormErrors = {
   name: string | null;
   about: string | null;
   readOnly: boolean | null;
-  imageUrl : string | null;
+  ghillieLogo : string | null;
   topicNames: string | null;
 }
 
@@ -13,7 +13,7 @@ const handleCreateGhillieError = (error: BaseApiException): FormErrors => {
     name: null,
     about: null,
     readOnly: null,
-    imageUrl: null,
+    ghillieLogo: null,
     topicNames: null,
   };
 
