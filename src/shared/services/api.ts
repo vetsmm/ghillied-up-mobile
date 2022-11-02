@@ -1,6 +1,7 @@
 import axios from 'axios'
 import AppConfig from "../../config/app.config";
 import {applyAuthTokenInterceptor, TokenRefreshRequest} from "../jwt";
+import * as Sentry from "sentry-expo";
 
 const BASE_URL = AppConfig.apiUrl;
 const TIMEOUT = 50 * 1000;
@@ -49,6 +50,10 @@ const applyAxiosErrorInterceptor = (axiosInstance: any) => {
             return response;
         },
         (error: any) => {
+            if (!error.response) {
+                Sentry.Native.captureException(error);
+            }
+            console.log(error);
             return Promise.reject(error.response);
         }
     );

@@ -1,9 +1,11 @@
 import {badWords} from "../../utils/bad-words";
+import {ImageInfo} from 'expo-image-picker';
 
 export type CreateGhillieFormValidationResponse = {
   name: string|null;
   about: string|null;
   topicNames: string|null;
+  ghillieLogo: string|null;
 }
 
 export const createGhillieFormValidator = (
@@ -11,6 +13,7 @@ export const createGhillieFormValidator = (
     name: string;
     about: string;
     topicNames: Set<string>;
+    ghillieLogo: ImageInfo|null;
   }
 ): CreateGhillieFormValidationResponse => {
   const { name, about, topicNames } = formData;
@@ -18,13 +21,22 @@ export const createGhillieFormValidator = (
   return {
     name: validateName(name),
     about: validateAbout(about),
-    topicNames: validateTopicNames(topicNames)
+    topicNames: validateTopicNames(topicNames),
+    ghillieLogo: validateLogo(formData.ghillieLogo),
   };
 }
 
 const isBadWord = (name: string): boolean => {
   // if the name string contains a bad word, return true
   return badWords.some(badWord => name.includes(badWord));
+}
+
+const validateLogo = (logo: ImageInfo|null): string|null => {
+  if (logo === null) {
+    return 'You must select a logo';
+  }
+
+  return null;
 }
 
 const validateName = (name: string): string|null => {

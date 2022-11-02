@@ -21,7 +21,7 @@ export default {
         [
             "expo-image-picker",
             {
-                "photosPermission": "The app accesses your photos to let you share them with your friends."
+                "photosPermission": "The app accesses your photos when creating ghillies."
             }
         ]
     ],
@@ -32,9 +32,6 @@ export default {
     },
     updates: {
         fallbackToCacheTimeout: 0
-    },
-    runtimeVersion: {
-        policy: "sdkVersion"
     },
     assetBundlePatterns: ["**/*"],
     ios: {

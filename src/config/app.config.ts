@@ -11,7 +11,7 @@ const ENV = {
             authorizationEndpoint: 'https://api.id.me/oauth/authorize',
             tokenEndpoint: 'https://api.id.me/oauth/token',
         },
-        sentryEnviorment: 'development',
+        sentryEnvironment: 'development',
     },
     qa: {
         apiUrl: 'https://api.ghilliedupqa.com',
@@ -20,7 +20,7 @@ const ENV = {
             authorizationEndpoint: 'https://api.id.me/oauth/authorize',
             tokenEndpoint: 'https://api.id.me/oauth/token',
         },
-        sentryEnviorment: 'qa'
+        sentryEnvironment: 'qa'
     },
     prod: {
         apiUrl: 'https://api.ghilliedup.com',
@@ -29,7 +29,7 @@ const ENV = {
             authorizationEndpoint: 'https://api.id.me/oauth/authorize',
             tokenEndpoint: 'https://api.id.me/oauth/token',
         },
-        sentryEnviorment: 'prod'
+        sentryEnvironment: 'prod'
     },
 };
 
@@ -48,7 +48,7 @@ const getEnvVars = (env = Constants.manifest?.releaseChannel) => {
     return ENV.qa;
 };
 
-const {apiUrl, amplitudeApiKey, idme, sentryEnviorment} = getEnvVars();
+const {apiUrl, amplitudeApiKey, idme, sentryEnvironment} = getEnvVars();
 
 export default {
     // use 10.0.2.2 for Android to connect to host machine
@@ -59,8 +59,8 @@ export default {
     extra,
     AuthObject: "GhilliedUpAuthObject",
     CredentialsObject: "GhilliedUpCredentialsObject",
-    sentryDsn: extra.sentry.dsn,
-    sentryEnviorment: sentryEnviorment,
+    sentryDsn: "https://2d1a539e23db489fba7b6ef7ad1382ba@o228030.ingest.sentry.io/6615776",
+    sentryEnvironment: sentryEnvironment,
     amplitudeApiKey: amplitudeApiKey,
     useExpoAuthProxy: Platform.select({ web: false, default: true }),
     oauth: {

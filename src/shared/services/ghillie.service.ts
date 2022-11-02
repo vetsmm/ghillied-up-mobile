@@ -4,6 +4,10 @@ import AppConfig from "../../config/app.config";
 import {BaseApiResponse} from "../models/base-api-response";
 import {GhillieSearchCriteria} from "../models/ghillies/ghillie-search.criteria";
 import {PageInfo} from "../models/pagination/types";
+import {UpdateGhillieDto} from '../models/ghillies/update-ghillie.dto';
+import {ImageInfo} from 'expo-image-picker';
+import {Platform} from 'react-native';
+import {CreateGhillieInputDto} from '../models/ghillies/create-ghillie-input.dto';
 
 const getGhillies = async (criteria: GhillieSearchCriteria): Promise<BaseApiResponse<Array<GhillieDetailDto>, PageInfo>> => {
   return await axios.post(`${AppConfig.apiUrl}/ghillies/all`, criteria)
@@ -34,28 +38,39 @@ const getGhillie = async (id: string): Promise<BaseApiResponse<GhillieDetailDto,
     });
 }
 
-const createGhillie = async (ghillie: FormData): Promise<BaseApiResponse<GhillieDetailDto, never>> => {
-  return await axios.post(`${AppConfig.apiUrl}/ghillies`, ghillie, {
+const createGhillie = async (ghillie: CreateGhillieInputDto): Promise<BaseApiResponse<GhillieDetailDto, never>> => {
+  return await axios.post(`${AppConfig.apiUrl}/ghillies`, ghillie)
+    .then(response => {
+      return response.data;
+    });
+}
+
+const updateGhillie = async (id: string, ghillie: UpdateGhillieDto): Promise<BaseApiResponse<GhillieDetailDto, never>> => {
+  return await axios.put(`${AppConfig.apiUrl}/ghillies/${id}`, ghillie)
+    .then(response => {
+      return response.data;
+    });
+}
+
+const updateGhillieImage = async (id: string, image: ImageInfo): Promise<GhillieDetailDto> => {
+  const data = new FormData();
+  
+  data.append('image', {
+    name: new Date() + "_logo",
+    type: `image/jpg`,
+    uri: Platform.OS === 'ios' ? image.uri.replace('file://', '') : image.uri
+  });
+  
+  return await axios.put(`${AppConfig.apiUrl}/ghillies/${id}/logo`, data, {
     headers: {
-      'Content-Type': 'multipart/form-data'
+      Accept: 'application/json',
+      'Content-Type': 'multipart/form-data',
     }
   })
     .then(response => {
       return response.data;
     });
 }
-
-const updateGhillie = async (id: string, ghillie: FormData): Promise<BaseApiResponse<GhillieDetailDto, never>> => {
-  return await axios.put(`${AppConfig.apiUrl}/ghillies/${id}`, ghillie, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
-    .then(response => {
-      return response.data;
-    });
-}
-
 const getMyGhillies = async (): Promise<BaseApiResponse<Array<GhillieDetailDto>, any>> => {
   return await axios.get(`${AppConfig.apiUrl}/ghillies/my/all`)
     .then(response => {
@@ -71,7 +86,8 @@ const ghillieService = {
   createGhillie,
   updateGhillie,
   getMyGhillies,
-  getCurrentUserGhillies
+  getCurrentUserGhillies,
+  updateGhillieImage
 }
 
 export default ghillieService;
