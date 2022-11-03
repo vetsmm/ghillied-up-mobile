@@ -100,7 +100,7 @@ export const PostHeader = ({
         </HStack>
         <View style={{
           width: 100,
-          marginRight: 10,
+          marginRight: 30,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "flex-start"
