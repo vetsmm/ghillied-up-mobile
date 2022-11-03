@@ -6,6 +6,8 @@ import {SharedElement} from 'react-navigation-shared-element';
 import styles from './styles';
 import {GhillieDetailDto} from "../../../shared/models/ghillies/ghillie-detail.dto";
 import {numberToReadableFormat} from "../../../shared/utils/number-utils";
+import {colorsVerifyCode} from '../../colors';
+import {View} from 'native-base';
 
 
 export const GhillieCard: React.FC<{
@@ -34,14 +36,12 @@ export const GhillieCard: React.FC<{
           style={styles.image}
         />
       </SharedElement>
-      <LinearGradient
-        colors={['#0000', '#000A', '#000']}
-        style={styles.titleContainer}>
+      <View style={styles.titleContainer}>
         <Text style={styles.text}>{ghillie?.name}</Text>
         <Text style={styles.timestamp}>
           {ghillie?.totalMembers ? `${numberToReadableFormat(ghillie?.totalMembers)} Members` : ''}
         </Text>
-      </LinearGradient>
+      </View>
     </TouchableOpacity>
   );
 };

@@ -31,7 +31,7 @@
         "APP_ENV": "staging"
       },
       "android": {
-        "buildType": "apk"
+        "buildType": "app-bundle"
       }
     }
   },

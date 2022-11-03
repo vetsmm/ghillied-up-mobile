@@ -2,7 +2,7 @@ export default {
     name: "Ghillied Up",
     slug: "ghillied-up",
     owner: "ghilliedup",
-    version: "1.0.0",
+    version: "1.0.1",
     orientation: "portrait",
     icon: "./assets/logos/logo-square.png",
     scheme: "ghilliedup",
@@ -17,6 +17,12 @@ export default {
                 "icon": "./assets/logos/notification/Icon-96.png",
                 "color": "#1e4c69"
             }
+        ],
+        [
+            "expo-image-picker",
+            {
+                "photosPermission": "The app accesses your photos when creating ghillies."
+            }
         ]
     ],
     splash: {
@@ -26,9 +32,6 @@ export default {
     },
     updates: {
         fallbackToCacheTimeout: 0
-    },
-    runtimeVersion: {
-        policy: "sdkVersion"
     },
     assetBundlePatterns: ["**/*"],
     ios: {
