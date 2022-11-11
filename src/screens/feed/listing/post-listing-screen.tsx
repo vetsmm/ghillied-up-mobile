@@ -204,7 +204,7 @@ function PostListingScreen() {
                 data={posts}
                 onEndReachedThreshold={0.8}
                 onEndReached={loadNextPage}
-                estimatedItemSize={100}
+                estimatedItemSize={200}
                 renderItem={({item}: any) => (
                     <PostFeedCard
                         post={item}

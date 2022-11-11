@@ -4,7 +4,6 @@ import {
   HStack,
   VStack,
   Pressable,
-  Card,
   IconButton,
   Icon,
   Avatar,
@@ -13,7 +12,6 @@ import {
 import {PostListingDto} from "../../shared/models/posts/post-listing.dto";
 import {MaterialIcons} from "@expo/vector-icons";
 import {getMilitaryString} from "../../shared/utils/military-utils";
-import BigText from "../texts/big-text";
 import RegularText from "../texts/regular-texts";
 import SmallText from "../texts/small-text";
 import {getTimeAgo} from "../../shared/utils/date-utils";
@@ -26,6 +24,8 @@ import {numberToReadableFormat} from "../../shared/utils/number-utils";
 import {ReactionType} from "../../shared/models/reactions/reaction-type";
 import {PostDetailDto} from "../../shared/models/posts/post-detail.dto";
 import {FlagCategory} from "../../shared/models/flags/flag-category";
+import {colorsVerifyCode} from '../colors';
+import {LinkPreview} from '../link-preview';
 
 export interface IPostCardProps {
   post: PostListingDto | PostDetailDto;
@@ -131,9 +131,25 @@ export const PostHeader = ({
         }}>
           {post.title}
         </RegularText>
+        
         <RegularText style={{flex: 1, flexWrap: "wrap"}}>
           {post.content}
         </RegularText>
+        <LinkPreview
+          linkMeta={post.linkMeta}
+          metadataContainerStyle={{
+            backgroundColor: colorsVerifyCode.dialogPrimary,
+            borderRadius: 10,
+            padding: 10,
+            // Add a shadow effect
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 1,
+              height: 1
+            }
+          }}
+        />
+        
         <SmallText>
           {post.numberOfReactions > 0
             ? `${numberToReadableFormat(post.numberOfReactions)} reaction(s)`

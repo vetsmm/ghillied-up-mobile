@@ -74,7 +74,7 @@ export const PostCommentCreateScreen: React.FC<{ route: Route }> = ({route}) => 
   return (
     <MainContainer>
       <KeyboardAvoidingContainer
-        enableScroll={false}
+        enableScroll={true}
       >
         <PostSharedElementNoActions post={post} />
         <VStack style={{margin: 25, marginBottom: 100}}>
