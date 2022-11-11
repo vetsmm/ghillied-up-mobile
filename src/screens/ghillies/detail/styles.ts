@@ -7,6 +7,19 @@ export default StyleSheet.create({
     flexGrow: 1,
     paddingTop: isIphoneX() ? getStatusBarHeight() + 20 : 30,
   },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 20,
+    color: 'red',
+  },
+  list: {
+    flex: 1,
+    flexGrow: 1,
+  },
   contentContainer: {
     paddingBottom: 120,
   },

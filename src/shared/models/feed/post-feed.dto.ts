@@ -1,6 +1,7 @@
 import {PostStatus} from "../posts/post-status";
 import {ServiceBranch, ServiceStatus} from "../users";
 import {ReactionType} from "../reactions/reaction-type";
+import {LinkMeta} from '../open-graph/link-meta';
 
 export interface PostFeedDto {
     id: string;
@@ -24,4 +25,5 @@ export interface PostFeedDto {
     currentUserReactionType: ReactionType | null;
     ghillieName: string;
     ghillieImageUrl: string | null;
+    linkMeta?: LinkMeta | undefined;
 }

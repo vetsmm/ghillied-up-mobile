@@ -1,6 +1,7 @@
 import {ServiceBranch, ServiceStatus} from "../users";
 import {PostStatus} from "./post-status";
 import {ReactionType} from "../reactions/reaction-type";
+import {LinkMeta} from '../open-graph/link-meta';
 
 export interface PostGhillieMetaDto {
   id: string;
@@ -30,4 +31,5 @@ export interface PostDetailDto {
   numberOfReactions: number;
   currentUserReaction: ReactionType;
   edited: boolean;
+  linkMeta?: LinkMeta | undefined;
 }
