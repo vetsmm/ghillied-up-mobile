@@ -1,5 +1,5 @@
 import React, {ComponentProps, ReactNode, useState} from 'react';
-import {TextInputProps, View} from 'react-native';
+import {StyleProp, TextInputProps, View, ViewStyle} from 'react-native';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -15,6 +15,7 @@ interface ExtraInputProps {
   isPassword?: boolean;
   isError?: boolean;
   numberOfLines?: number;
+  containerStyle?: StyleProp<ViewStyle>
 }
 
 export type InputProps = TextInputProps & ExtraInputProps;
@@ -33,7 +34,7 @@ const InputField = styled.TextInput`
 
 `;
 
-const StyledTextFieldInput = ({ icon, label, isError, numberOfLines, ...props }: InputProps) => {
+const StyledTextFieldInput = ({ icon, label, isError, numberOfLines, containerStyle, ...props }: InputProps) => {
 
   const [inputBackgroundColor, setInputBackgroundColor] = useState(primary);
 
@@ -50,7 +51,7 @@ const StyledTextFieldInput = ({ icon, label, isError, numberOfLines, ...props }:
   };
 
   return (
-    <View>
+    <View style={containerStyle}>
       <SmallText>{label}</SmallText>
       <InputField
         {...props}
