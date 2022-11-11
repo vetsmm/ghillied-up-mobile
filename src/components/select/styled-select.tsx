@@ -2,6 +2,7 @@ import React from "react";
 import {Select, View} from "native-base";
 import {colorsVerifyCode} from "../colors";
 import SmallText from "../texts/small-text";
+import {Platform, StyleProp, ViewStyle} from 'react-native';
 
 const {primary, tertiary, secondary, fail} = colorsVerifyCode;
 
@@ -20,13 +21,14 @@ export type StyledSelectProps = {
   onSelect: (value: string) => void;
   isError?: boolean;
   initialValue?: string;
+  containerStyle?: StyleProp<ViewStyle>
 }
 
 
 export const StyledSelect: React.FunctionComponent<StyledSelectProps> = (props) => {
 
   return (
-    <View>
+    <View style={props.containerStyle}>
       <SmallText>{props.label}</SmallText>
       <Select
         isDisabled={props.disabled}
@@ -46,6 +48,9 @@ export const StyledSelect: React.FunctionComponent<StyledSelectProps> = (props) 
         placeholder={props.placeholder || "Select an option"}
         onValueChange={(value) => props.onSelect(value)}
         defaultValue={props.initialValue || props.options[0].value}
+        _actionSheet={{
+          useRNModal: Platform.OS === 'ios',
+        }}
       >
         {props.options && props.options.map((option) => (
           <Select.Item
