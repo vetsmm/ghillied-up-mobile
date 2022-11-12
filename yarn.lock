@@ -3940,6 +3940,13 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
+autolinker@^3.16.2:
+  version "3.16.2"
+  resolved "https://registry.yarnpkg.com/autolinker/-/autolinker-3.16.2.tgz#6bb4f32432fc111b65659336863e653973bfbcc9"
+  integrity sha512-JiYl7j2Z19F9NdTmirENSUUIIL/9MytEWtmzhfmsKPCp9E+G35Y0UNCMoM9tFigxT59qSc8Ml2dlZXOCVTYwuA==
+  dependencies:
+    tslib "^2.3.0"
+
 available-typed-arrays@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
@@ -11743,6 +11750,11 @@ tslib@^1.10.0, tslib@^1.9.0, tslib@^1.9.3:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+
+tslib@^2.3.0:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.1.tgz#0d0bfbaac2880b91e22df0768e55be9753a5b17e"
+  integrity sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==
 
 tunnel-agent@^0.6.0:
   version "0.6.0"

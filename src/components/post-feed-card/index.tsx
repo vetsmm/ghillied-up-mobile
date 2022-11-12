@@ -30,6 +30,7 @@ import stringUtils from "../../shared/utils/string.utils";
 import PostService from "../../shared/services/post.service";
 import AppConfig from '../../config/app.config';
 import {LinkPreview} from '../link-preview';
+import {PostContent} from '../post-content';
 
 export interface IPostCardProps {
   post: PostFeedDto;
@@ -219,7 +220,10 @@ export const PostFeedCard = ({
             {post.title}
           </RegularText>
           
-          {_renderPostContent()}
+          <PostContent
+            content={post.content}
+            linkMeta={post.linkMeta}
+          />
           
           <SmallText style={{marginTop: 5}}>
             {post.postReactionsCount > 0

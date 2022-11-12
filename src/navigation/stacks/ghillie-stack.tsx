@@ -29,7 +29,7 @@ export const ghilliesScreen: Array<GhillieScreenProps> = [
   },
   {
     name: "GhillieDetail",
-    route: "ghillie-detail",
+    route: "ghillie-detail/:id",
     component: GhillieDetailScreen,
     options: {
       headerShown: false,
@@ -45,7 +45,7 @@ export const ghilliesScreen: Array<GhillieScreenProps> = [
   },
   {
     name: "GhillieUpdate",
-    route: "ghillie-update",
+    route: "ghillie-update/:id",
     component: GhillieUpdateScreen,
     options: {
       headerShown: false,

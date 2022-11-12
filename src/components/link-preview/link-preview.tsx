@@ -50,41 +50,6 @@ export const LinkPreview = React.memo(
       }
     }, [linkMeta])
     
-    // React.useEffect(() => {
-    //   let isCancelled = false
-    //   if (previewData) {
-    //     setData(previewData)
-    //     return
-    //   }
-    //
-    //   const fetchData = async () => {
-    //     setData(undefined)
-    //     const newData = await getPreviewData(text,  linkMeta)
-    //     // Set data only if component is still mounted
-    //     /* istanbul ignore next */
-    //     if (!isCancelled) {
-    //       // No need to cover LayoutAnimation
-    //       /* istanbul ignore next */
-    //       if (enableAnimation) {
-    //         LayoutAnimation.easeInEaseOut()
-    //       }
-    //       setData(newData)
-    //       onPreviewDataFetched?.(newData)
-    //     }
-    //   }
-    //
-    //   fetchData()
-    //   return () => {
-    //     isCancelled = true
-    //   }
-    // }, [
-    //   enableAnimation,
-    //   onPreviewDataFetched,
-    //   previewData,
-    //   requestTimeout,
-    //   text
-    // ])
-    
     const handleContainerLayout = React.useCallback(
       (event: LayoutChangeEvent) => {
         setContainerWidth(event.nativeEvent.layout.width)
