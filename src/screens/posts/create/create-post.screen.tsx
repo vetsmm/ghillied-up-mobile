@@ -19,7 +19,6 @@ import MessageModal from "../../../components/modals/message-modal";
 import {CreatePostInputDto} from "../../../shared/models/posts/create-post-input.dto";
 import postValidators from "../../../shared/validators/posts";
 import {CreatePostFormValidationResponse} from "../../../shared/validators/posts/post-form.validator";
-import TagsListInput from "../../../components/inputs/tags-list.input";
 import SmallText from "../../../components/texts/small-text";
 import GhillieRow from "../../../components/ghillie-row";
 import {GhillieCircle} from "../../../components/ghillie-circle";
@@ -102,14 +101,12 @@ export const CreatePostScreen: React.FC<{ route: Route }> = ({route}) =>{
     title: string | null;
     content: string | null;
     status: string | null;
-    postTagNames: string | null;
     ghillieId: string | null;
   }
   const [formErrors, setFormErrors] = useState<FormErrors>({
     title: null,
     content: null,
     status: null,
-    postTagNames: null,
     ghillieId: null,
   });
 
@@ -133,7 +130,6 @@ export const CreatePostScreen: React.FC<{ route: Route }> = ({route}) =>{
       content: formData.content,
       ghillieId: formData.ghillie.id,
       status: formData.status,
-      postTagNames: formData.postTagNames,
     });
 
     PostService.createPost(createPostInputDto)
@@ -160,7 +156,6 @@ export const CreatePostScreen: React.FC<{ route: Route }> = ({route}) =>{
         content: formData.content,
         ghillieId: formData.ghillie.id,
         status: formData.status,
-        postTagNames: formData.postTagNames,
       })
     );
 
@@ -169,7 +164,6 @@ export const CreatePostScreen: React.FC<{ route: Route }> = ({route}) =>{
       content: errors.content,
       ghillieId: errors.ghillieId,
       status: errors.status,
-      postTagNames: errors.postTagNames,
     });
 
     return !Object.values(errors).some(error => error !== null);
@@ -234,7 +228,6 @@ export const CreatePostScreen: React.FC<{ route: Route }> = ({route}) =>{
               title: '',
               content: '',
               ghillie: preSelectedGhillie || {} as GhillieDetailDto,
-              postTagNames: [] as string[],
               status: PostStatus.ACTIVE,
             }}
             onSubmit={async (values, {setSubmitting}) => {
@@ -312,37 +305,6 @@ export const CreatePostScreen: React.FC<{ route: Route }> = ({route}) =>{
 
                 <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
                   {formErrors.content || ' '}
-                </MsgBox>
-
-                <TagsListInput
-                  addItem={(tagName) => {
-                    // ensure tag name is not already in the list
-                    if (values.postTagNames.indexOf(tagName) === -1) {
-                      if (tagName.length < 2 || tagName.length > 10) {
-                        setIsSuccessMessage(false);
-                        setFormErrors({
-                          ...formErrors,
-                          postTagNames: 'Tag name must be between 2 and 10 characters',
-                        });
-                      } else {
-                        setIsSuccessMessage(true);
-                        setFieldValue('postTagNames', [...values.postTagNames, tagName]);
-                        setFormErrors({
-                          ...formErrors,
-                          postTagNames: null,
-                        });
-                      }
-                    }
-                  }}
-                  removeItem={(tagName) => {
-                    setFieldValue('postTagNames', values.postTagNames.filter(name => name !== tagName));
-                  }
-                  }
-                  data={values.postTagNames}
-                />
-
-                <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                  {formErrors.postTagNames || ' '}
                 </MsgBox>
 
                 <MsgBox success={isSuccessMessage} style={{marginBottom: 10}}>

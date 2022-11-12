@@ -26,6 +26,7 @@ import {PostDetailDto} from "../../shared/models/posts/post-detail.dto";
 import {FlagCategory} from "../../shared/models/flags/flag-category";
 import {colorsVerifyCode} from '../colors';
 import {LinkPreview} from '../link-preview';
+import {PostContent} from '../post-content';
 
 export interface IPostCardProps {
   post: PostListingDto | PostDetailDto;
@@ -131,22 +132,12 @@ export const PostHeader = ({
         }}>
           {post.title}
         </RegularText>
-        
-        <RegularText style={{flex: 1, flexWrap: "wrap"}}>
-          {post.content}
-        </RegularText>
-        <LinkPreview
+  
+        <PostContent
+          content={post.content}
           linkMeta={post.linkMeta}
           metadataContainerStyle={{
-            backgroundColor: colorsVerifyCode.dialogPrimary,
-            borderRadius: 10,
-            padding: 10,
-            // Add a shadow effect
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 1,
-              height: 1
-            }
+            backgroundColor: colorsVerifyCode.dialogPrimary
           }}
         />
         
