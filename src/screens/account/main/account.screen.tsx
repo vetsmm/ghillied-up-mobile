@@ -321,7 +321,7 @@ function AccountScreen() {
             } else {
                 showModal('fail', 'Military Status Verification Failed', response.message, 'Ok');
             }
-        } catch (error) {
+        } catch (error: any) {
             showModal('fail', 'Military Status Verification Failed', error.data.error.message, 'Ok');
         }
     }

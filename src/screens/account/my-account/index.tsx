@@ -8,7 +8,6 @@ import {UserOutput} from "../../../shared/models/users/user-output.dto";
 import {useSelector} from "react-redux";
 import {IRootState} from "../../../store";
 import {TouchableOpacity} from "react-native";
-import RegularText from "../../../components/texts/regular-texts";
 import SmallText from "../../../components/texts/small-text";
 
 export const MyAccount = () => {

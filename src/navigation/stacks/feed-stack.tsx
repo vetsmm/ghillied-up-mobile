@@ -1,21 +1,20 @@
 import React from "react";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import {TouchableOpacity} from "react-native-gesture-handler";
-import {FontAwesome} from "@expo/vector-icons";
-import {Colors} from "../../shared/styles";
 import PostListingScreen from "../../screens/feed/listing/post-listing-screen";
+import HashTagPostListingScreen from '../../screens/feed/hashtag';
 
 interface FeedScreenProps {
   name: string;
-  route: string;
-  component: React.FC;
+  path: string;
+  screenOptions?: any;
+  component: any;
   options?: any;
 }
 
 export const feedScreen: Array<FeedScreenProps> = [
   {
     name: "PostFeed",
-    route: "post-feed",
+    path: "feed/post-feed",
     component: PostListingScreen,
     options: {
       headerShown: false
@@ -23,8 +22,13 @@ export const feedScreen: Array<FeedScreenProps> = [
   },
   {
     name: "HashTagFeed",
-    route: "hashtag/:hashtag",
-    component: PostListingScreen,
+    path: "hashtag/:hashtag",
+    screenOptions: {
+      parse: {
+        hashtag: hashtag => hashtag.replace(/^#/, ''),
+      },
+    },
+    component: HashTagPostListingScreen,
     options: {
       headerShown: false
     }
@@ -34,23 +38,19 @@ export const feedScreen: Array<FeedScreenProps> = [
 export const getFeedScreenRoutes = () => {
   const routes: any = {};
   feedScreen.forEach((screen: any) => {
-    routes[screen.name] = screen.route;
+    routes[screen.name] = {
+      path: screen.path,
+      ...screen.screenOptions
+    };
   });
   return routes;
 };
 
 const FeedStack = createNativeStackNavigator();
 
-export default function FeedStackScreen({navigation}: any) {
+export default function FeedStackScreen() {
   return (
     <FeedStack.Navigator>
-      {/*<FeedStack.Screen*/}
-      {/*  name="PostFeed"*/}
-      {/*  component={PostListingScreen}*/}
-      {/*  options={{*/}
-      {/*    headerShown: false*/}
-      {/*  }}*/}
-      {/*/>*/}
       {feedScreen.map((screen: any) => (
         <FeedStack.Screen
           key={screen.name}

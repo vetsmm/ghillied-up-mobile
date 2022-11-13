@@ -5,9 +5,8 @@ import LoginScreen from "../screens/auth/login.screen";
 import React from "react";
 import {getAccount} from "../shared/reducers/authentication.reducer";
 import {AppState} from "react-native";
-import * as Linking from 'expo-linking';
 import {NavigationContainer} from "@react-navigation/native";
-import {navigationRef} from "./nav-ref";
+import {isReadyRef, linkingConfig, navigationRef} from "./nav-ref";
 import ApplicationTabBar from "../components/tab-bar/application-tab-bar";
 import RegisterScreen from "../screens/auth/register.screen";
 import SplashScreen from "../screens/auth/splash.screen";
@@ -19,12 +18,7 @@ import * as Notifications from "expo-notifications";
 import settingsService from "../shared/services/settings.service";
 import {getUnreadNotifications} from "../shared/reducers/notifications.reducer";
 import {usePolling} from "../shared/hooks";
-import AppConfig from '../config/app.config';
-import {getFeedScreenRoutes} from './stacks/feed-stack';
-import {getGhillieScreenRoutes} from './stacks/ghillie-stack';
-import {getNotificationScreenRoutes} from './stacks/notification-stack';
-import {getPostScreenRoutes} from './stacks/post-stack';
-import {getAccountRoutes} from './stacks/account-stack';
+import NotFoundScreen from '../screens/not-found-screen';
 
 // https://reactnavigation.org/docs/tab-based-navigation/
 const Stack = createStackNavigator();
@@ -109,43 +103,6 @@ const _renderAuthNavigation = () => {
   );
 };
 
-const linking = {
-  prefixes: [AppConfig.appUrl, Linking.makeUrl('/')],
-  config: {
-    screens: {
-      MyFeed: {
-        path: 'my-feed',
-        screens: {
-          ...getFeedScreenRoutes()
-        }
-      },
-      Ghillies: {
-        path: 'ghillies',
-        screens: {
-          ...getGhillieScreenRoutes()
-        }
-      },
-      Posts: {
-        path: 'posts',
-        screens: {
-          ...getPostScreenRoutes()
-        }
-      },
-      Notifications: {
-        path: 'notifications',
-        screens: {
-          ...getNotificationScreenRoutes()
-        }
-      },
-      Account: {
-        path: 'account',
-        screens: {
-          ...getAccountRoutes()
-        }
-      }
-    }
-  }
-}
 
 function NavContainer() {
   const [expoPushToken, setExpoPushToken] = React.useState<any>('');
@@ -160,6 +117,12 @@ function NavContainer() {
   const dispatch = useAppDispatch();
   
   const lastAppState = "active";
+  
+  React.useEffect(() => {
+    return () => {
+      isReadyRef.current = false;
+    };
+  }, []);
   
   usePolling(
     () => {
@@ -215,11 +178,10 @@ function NavContainer() {
   
   return (
     <NavigationContainer
-      // @ts-ignore
-      linking={linking}
+      linking={linkingConfig}
       ref={navigationRef}
       onReady={() => {
-        // isReadyRef.current = true;
+        isReadyRef.current = true;
       }}
     >
       <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -236,6 +198,7 @@ function NavContainer() {
             }}
           />
         )}
+        <Stack.Screen name="NotFound" component={NotFoundScreen} />
       </Stack.Navigator>
       {/*{isAuthenticated ? _renderTabNavigation() : _renderAuthNavigation()}*/}
     </NavigationContainer>

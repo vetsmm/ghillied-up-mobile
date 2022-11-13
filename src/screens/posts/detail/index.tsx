@@ -183,7 +183,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
       status: PostStatus.REMOVED
     })
       .then(async res => {
-        moveTo("MyFeed", {screen: "PostFeed"});
+        moveTo("FeedStack", {screen: "PostFeed"});
       })
       .catch(err => {
         // todo: handle
@@ -220,7 +220,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
       status: PostStatus.ARCHIVED
     })
       .then(async res => {
-        moveTo("MyFeed", {screen: "PostFeed"});
+        moveTo("FeedStack", {screen: "PostFeed"});
       })
       .catch(err => {
         // todo: handle
