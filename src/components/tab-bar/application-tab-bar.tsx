@@ -44,7 +44,7 @@ export const ApplicationTabBar = ({ navigation }: any) => {
           let iconName;
           let library = "MaterialCommunityIcons";
 
-          if (route.name === "MyFeed") {
+          if (route.name === "FeedStack") {
             iconName = focused
               ? "newspaper-variant"
               : "newspaper-variant-outline";
@@ -102,7 +102,7 @@ export const ApplicationTabBar = ({ navigation }: any) => {
       })}
     >
       <Tab.Screen
-        name="MyFeed"
+        name="FeedStack"
         component={FeedStackScreen}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
@@ -110,7 +110,7 @@ export const ApplicationTabBar = ({ navigation }: any) => {
             e.preventDefault();
 
             // Do something with the `navigation` object
-            navigation.navigate("MyFeed", { screen: "PostFeed" });
+            navigation.navigate("FeedStack", { screen: "PostFeed" });
           },
         })}
       />
@@ -130,7 +130,7 @@ export const ApplicationTabBar = ({ navigation }: any) => {
       <Tab.Screen
         name={"Posts"}
         component={PostStackScreen}
-        // Navigate to MyFeed -> Create Post
+        // Navigate to FeedStack -> Create Post
 
         options={{
           tabBarLabel: "",

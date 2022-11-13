@@ -1,11 +1,15 @@
 import type {CustomMatcher} from '../custom-match';
-import * as Linking from 'expo-linking';
+import {navigate} from '../../../navigation/nav-ref';
 
 export const GhilliedUpHashTagMatcher: CustomMatcher = {
   pattern: /#([a-zA-Z0-9_]+)/g,
   type: 'ghilliedup-hashtag',
-  getLinkUrl: ([hashtag]) => {
-    const strippedHashtag = hashtag.replace('#', '');
-    return Linking.createURL(`hashtag/${strippedHashtag}`);
-  },
+  onPress: (match) => {
+    navigate('FeedStack', {
+      screen: "HashTagFeed",
+      params: {
+        hashtag: match.getReplacerArgs()[0].replace('#', '')
+      }
+    });
+  }
 }
