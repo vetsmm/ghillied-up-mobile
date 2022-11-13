@@ -2,7 +2,7 @@ import {Center, Text, View, VStack} from "native-base";
 import React from "react";
 import styles from "../../ghillies/listing/styles";
 import MainContainer from "../../../components/containers/MainContainer";
-import {RefreshControl} from "react-native";
+import {RefreshControl, TouchableOpacity} from "react-native";
 import {Colors} from "../../../shared/styles";
 import postFeedService from "../../../shared/services/post-feed.service";
 import {useSelector} from "react-redux";
@@ -20,9 +20,12 @@ import {SvgXml} from "react-native-svg";
 import {GU_LOGO} from "../../../shared/images/logos";
 import RegularText from "../../../components/texts/regular-texts";
 import {useStateWithCallback} from "../../../shared/hooks";
+import {Ionicons} from '@expo/vector-icons';
+import {colorsVerifyCode} from '../../../components/colors';
 
 
 function PostFeedHeader() {
+  const navigation = useNavigation();
   return (
     <View mt={5} mb={1} style={{
       flexDirection: 'row',
@@ -35,7 +38,16 @@ function PostFeedHeader() {
         justifyContent: 'flex-start',
         alignItems: 'center'
       }}>
-        {/* Lazy way to have columns */}
+        <TouchableOpacity
+          style={{
+            marginLeft: 10,
+          }}
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
+          <Ionicons name="arrow-back-circle-outline" size={40} color={colorsVerifyCode.secondary}/>
+        </TouchableOpacity>
       </View>
       <View style={{
         flex: 1,
@@ -71,7 +83,7 @@ interface Route {
   }
 }
 
-export const HashTagPostListingScreen = ({ route }: {route: Route}) =>{
+export const HashTagPostListingScreen = ({route}: { route: Route }) => {
   
   const [posts, setPosts] = React.useState<PostFeedDto[]>([]);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
