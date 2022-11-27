@@ -42,7 +42,7 @@ export const PostCommentCreateScreen: React.FC<{ route: Route }> = ({route}) => 
   const handleCreate = async (formData, setSubmitting) => {
     setMessage(null);
 
-    commentService.createComment(formData)
+    commentService.createParentComment(formData)
       .then((response) => {
         setIsSuccessMessage(true);
         setSubmitting(false);

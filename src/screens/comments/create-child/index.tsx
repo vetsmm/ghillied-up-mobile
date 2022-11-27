@@ -1,7 +1,5 @@
 import React, {useState} from "react";
 import MainContainer from "../../../components/containers/MainContainer";
-import {CommentDetailDto} from "../../../shared/models/comments/comment-detail.dto";
-import {PostDetailDto} from "../../../shared/models/posts/post-detail.dto";
 import {useNavigation} from "@react-navigation/native";
 import {VStack} from "native-base";
 import {Formik} from "formik";
@@ -11,21 +9,20 @@ import RegularButton from "../../../components/buttons/regular-button";
 import {ActivityIndicator} from "react-native";
 import KeyboardAvoidingContainer from "../../../components/containers/KeyboardAvoidingContainer";
 import {colorsVerifyCode} from "../../../components/colors";
-import PostSharedElementNoActions from "../../../components/post-shared-element-no-actions";
 import commentService from "../../../shared/services/comment.service";
+import {ParentCommentDto} from '../../../shared/models/comments/parent-comment.dto';
 const {primary} = colorsVerifyCode;
 
 
 interface Route {
   params: {
-    post: PostDetailDto;
-    comment: CommentDetailDto;
+    parentComment: ParentCommentDto;
   };
 }
 
-export const PostCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
+export const CreateChildCommentScreen: React.FC<{ route: Route }> = ({route}) => {
   const {params} = {...route};
-  const {post, comment} = {...params};
+  const {parentComment} = {...params};
 
   const [message, setMessage] = useState<string | null>('');
   const [isSuccessMessage, setIsSuccessMessage] = useState(false);
@@ -39,12 +36,10 @@ export const PostCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => 
     content: null,
   });
 
-  const handleUpdate = async (formData, setSubmitting) => {
+  const handleCreate = async (formData, setSubmitting) => {
     setMessage(null);
 
-    commentService.updateParentComment(comment.id, {
-      content: formData.content
-    })
+    commentService.createReplyComment(formData.parentCommentId, formData.content)
       .then((response) => {
         setIsSuccessMessage(true);
         setSubmitting(false);
@@ -76,18 +71,19 @@ export const PostCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => 
   return (
     <MainContainer>
       <KeyboardAvoidingContainer
-        enableScroll={false}
+        enableScroll={true}
       >
-        <PostSharedElementNoActions post={post} />
+        {/* TODO add parent comment detail*/}
         <VStack style={{margin: 25, marginBottom: 100}}>
           <Formik
             enableReinitialize={true}
             initialValues={{
-              content: comment.content,
+              content: '',
+              parentCommentId: parentComment.id,
             }}
             onSubmit={async (values, {setSubmitting}) => {
               if (await _isFormValid(values)) {
-                handleUpdate(values, setSubmitting);
+                handleCreate(values, setSubmitting);
               } else {
                 setSubmitting(false);
               }
@@ -103,7 +99,7 @@ export const PostCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => 
               }) => (
               <>
                 <StyledTextFieldInput
-                  label="Edit Comment"
+                  label="Reply to Comment"
                   icon="email-variant"
                   placeholder="How do I use my GI Bill?"
                   numberOfLines={10}
@@ -127,7 +123,7 @@ export const PostCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => 
                   <RegularButton
                     onPress={handleSubmit}
                   >
-                    Update
+                    Reply
                   </RegularButton>
                 )}
                 {isSubmitting && (
@@ -144,4 +140,4 @@ export const PostCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => 
   );
 }
 
-export default PostCommentUpdateScreen;
+export default CreateChildCommentScreen;

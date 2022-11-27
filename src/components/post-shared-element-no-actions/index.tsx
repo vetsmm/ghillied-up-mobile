@@ -11,7 +11,7 @@ export interface PostSharedElementNoActionsProps {
 export const PostSharedElementNoActions = ({post}: PostSharedElementNoActionsProps) => {
   return (
     <View mb={5}>
-      <SharedElement id={`post#${post.id}-Image`} style={{
+      <SharedElement id={`post#${post?.id}-Image`} style={{
         marginTop: 20,
       }}>
         {post && (
