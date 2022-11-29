@@ -142,7 +142,6 @@ const ChildComment = ({
               />
             }
             onPress={() => {
-              console.log("PRESS");
               setOpenActionSheet(true)
             }}
           />

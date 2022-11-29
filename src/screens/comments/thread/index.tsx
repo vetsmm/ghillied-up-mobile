@@ -11,7 +11,6 @@ import {IRootState} from '../../../store';
 import postCommentReactionService from '../../../shared/services/post-comment-reaction.service';
 import {ReactionType} from '../../../shared/models/reactions/reaction-type';
 import CommentActionSheet from '../../../components/bottom-sheets/comment-action-sheet';
-import {CommentStatus} from '../../../shared/models/comments/comment-status';
 import {ReportMenuDialog} from '../../../components/reporting/report-menu-dialog';
 import {FlagCategory} from '../../../shared/models/flags/flag-category';
 import flagService from '../../../shared/services/flag.service';
