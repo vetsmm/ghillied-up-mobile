@@ -22,7 +22,6 @@ import {Colors} from "../../../shared/styles";
 import MainContainer from "../../../components/containers/MainContainer";
 import PostSharedElement from "../../../components/post-shared-element";
 import FlatListEmptyComponent from "../../../components/flatlist-empty-component";
-import {CommentStatus} from "../../../shared/models/comments/comment-status";
 import postCommentReactionService from "../../../shared/services/post-comment-reaction.service";
 import {FlagCategory} from "../../../shared/models/flags/flag-category";
 import flagService from "../../../shared/services/flag.service";
