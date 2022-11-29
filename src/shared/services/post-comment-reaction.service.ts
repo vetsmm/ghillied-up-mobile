@@ -4,11 +4,21 @@ import {BaseApiResponse} from "../models/base-api-response";
 import {ReactionType} from "../models/reactions/reaction-type";
 import {CommentReactionSubsetDto} from "../models/comments/comment-reaction-subset.dto";
 
-const reactToComment = async (
+const reactToParentComment = async (
   reactionType: ReactionType | null,
   commentId: string
 ): Promise<BaseApiResponse<void, unknown>> => {
-  return axios.post(`${AppConfig.apiUrl}/comment-reactions/`, {reactionType, commentId})
+  return axios.post(`${AppConfig.apiUrl}/comment-reactions/parent`, {reactionType, commentId})
+    .then(response => {
+      return response.data
+    });
+}
+
+const reactToChildComment = async (
+  reactionType: ReactionType | null,
+  commentId: string
+): Promise<BaseApiResponse<void, unknown>> => {
+  return axios.post(`${AppConfig.apiUrl}/comment-reactions/child`, {reactionType, commentId})
     .then(response => {
       return response.data
     });
@@ -24,8 +34,9 @@ const getCommentReactionsCount = async (
 }
 
 const postCommentReactionService = {
-  reactToComment,
-  getCommentReactionsCount
+  reactToParentComment,
+  getCommentReactionsCount,
+  reactToChildComment
 }
 
 export default postCommentReactionService;

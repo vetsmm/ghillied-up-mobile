@@ -22,8 +22,8 @@ export const Container = styled(View)<{
 
 export const CommentContent = React.memo(styled(Text)`
   color: white;
-  font-size: 18px;
-  line-height: 18px;
+  font-size: 16px;
+  line-height: 20px;
 `);
 
 export const Avatar = (props: {source: string}) => {
@@ -85,9 +85,9 @@ export const TopRowWrapper = styled(View)<{
     : props.hasChildren && props.nested === 0
       ? 0
       : props.hasChildren && props.nested === 1
-        ? 38
+        ? 10
         : !props.hasChildren && props.nested === 1
-          ? 38
+          ? 10
           : !props.hasChildren && props.nested === 2
             ? 66
             : 0}px;
@@ -113,11 +113,11 @@ export const Content = styled(View)<{
   props.nested === 0 && !props.hasChildren
     ? 0
     : props.hasChildren && props.nested === 0
-      ? 28
+      ? 10
       : props.hasChildren && props.nested === 1
-        ? 66
+        ? 20
         : !props.hasChildren && props.nested === 1
-          ? 68
+          ? 20
           : !props.hasChildren && props.nested === 2
             ? 94
             : 0}px;

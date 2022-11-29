@@ -1,7 +1,5 @@
 import React, {useState} from "react";
 import MainContainer from "../../../components/containers/MainContainer";
-import {CommentDetailDto} from "../../../shared/models/comments/comment-detail.dto";
-import {PostDetailDto} from "../../../shared/models/posts/post-detail.dto";
 import {useNavigation} from "@react-navigation/native";
 import {VStack} from "native-base";
 import {Formik} from "formik";
@@ -11,38 +9,37 @@ import RegularButton from "../../../components/buttons/regular-button";
 import {ActivityIndicator} from "react-native";
 import KeyboardAvoidingContainer from "../../../components/containers/KeyboardAvoidingContainer";
 import {colorsVerifyCode} from "../../../components/colors";
-import PostSharedElementNoActions from "../../../components/post-shared-element-no-actions";
 import commentService from "../../../shared/services/comment.service";
+import {ChildCommentDto} from '../../../shared/models/comments/child-comment.dto';
+
 const {primary} = colorsVerifyCode;
 
 
 interface Route {
   params: {
-    post: PostDetailDto;
-    comment: CommentDetailDto;
+    comment: ChildCommentDto;
   };
 }
 
-export const PostCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
+export const ChildCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
   const {params} = {...route};
-  const {post, comment} = {...params};
-
+  const {comment} = {...params};
+  
   const [message, setMessage] = useState<string | null>('');
   const [isSuccessMessage, setIsSuccessMessage] = useState(false);
-
+  
   const navigation: any = useNavigation();
-
+  
   type FormErrors = {
     content: string | null;
   }
   const [formErrors, setFormErrors] = useState<FormErrors>({
-    content: null,
+    content: null
   });
-
+  
   const handleUpdate = async (formData, setSubmitting) => {
     setMessage(null);
-
-    commentService.updateParentComment(comment.id, {
+    commentService.updateReplyComment(comment.id, {
       content: formData.content
     })
       .then((response) => {
@@ -56,34 +53,33 @@ export const PostCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => 
         setSubmitting(false);
       })
   }
-
+  
   const _isFormValid = (values) => {
     if (values.content.length > 1000) {
       setFormErrors({
-        content: 'Reply must be less than 1000 characters',
+        content: 'Reply must be less than 1000 characters'
       });
       return false;
     }
     if (values.content.length < 3) {
       setFormErrors({
-        content: 'Reply must be more than 3 characters',
+        content: 'Reply must be more than 3 characters'
       });
       return false;
     }
     return true;
   }
-
+  
   return (
     <MainContainer>
       <KeyboardAvoidingContainer
         enableScroll={false}
       >
-        <PostSharedElementNoActions post={post} />
         <VStack style={{margin: 25, marginBottom: 100}}>
           <Formik
             enableReinitialize={true}
             initialValues={{
-              content: comment.content,
+              content: comment.content
             }}
             onSubmit={async (values, {setSubmitting}) => {
               if (await _isFormValid(values)) {
@@ -114,15 +110,15 @@ export const PostCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => 
                   style={{marginBottom: 15, height: 300}}
                   isError={formErrors.content !== null}
                 />
-
+                
                 <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
                   {formErrors.content || ' '}
                 </MsgBox>
-
+                
                 <MsgBox success={isSuccessMessage} style={{marginBottom: 10}}>
                   {message || ' '}
                 </MsgBox>
-
+                
                 {!isSubmitting && (
                   <RegularButton
                     onPress={handleSubmit}
@@ -144,4 +140,4 @@ export const PostCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => 
   );
 }
 
-export default PostCommentUpdateScreen;
+export default ChildCommentUpdateScreen;

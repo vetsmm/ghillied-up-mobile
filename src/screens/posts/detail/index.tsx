@@ -19,17 +19,16 @@ import {GhillieRole} from "../../../shared/models/ghillies/ghillie-role";
 import commentService from "../../../shared/services/comment.service";
 import CommentBlock from "../../../components/comment-block";
 import {Colors} from "../../../shared/styles";
-import {CommentDetailDto} from "../../../shared/models/comments/comment-detail.dto";
 import MainContainer from "../../../components/containers/MainContainer";
 import PostSharedElement from "../../../components/post-shared-element";
 import FlatListEmptyComponent from "../../../components/flatlist-empty-component";
-import Immutable from "immutable";
-import {CommentStatus} from "../../../shared/models/comments/comment-status";
 import postCommentReactionService from "../../../shared/services/post-comment-reaction.service";
 import {FlagCategory} from "../../../shared/models/flags/flag-category";
 import flagService from "../../../shared/services/flag.service";
 import {SuccessAlert} from "../../../components/alerts/success-alert";
 import AppConfig from '../../../config/app.config';
+import {ParentCommentDto} from '../../../shared/models/comments/parent-comment.dto';
+import {ChildCommentDto} from '../../../shared/models/comments/child-comment.dto';
 
 const {primary} = colorsVerifyCode;
 
@@ -41,28 +40,13 @@ interface Route {
 }
 
 export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
-  const [post, setPost] = React.useState<PostDetailDto | null>(null);
+  const [post, setPost] = React.useState<PostDetailDto>();
   const [isLoading, setLoading] = React.useState(true);
   const [isError, setError] = React.useState(false);
-  const [{
-    startCursor,
-    endCursor,
-    hasNextPage,
-    hasPreviousPage
-  }, setCursors] = React.useState<{
-    startCursor: string | null;
-    endCursor: string | null;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  }>({
-    startCursor: null,
-    endCursor: null,
-    hasNextPage: false,
-    hasPreviousPage: false
-  });
-  // const [commentTree, setCommentTree] = React.useState<CommentTree | null>(null);
-  const [levelOneComments, setLevelOneComments] = React.useState<Immutable.OrderedMap<string, CommentDetailDto>>(Immutable.OrderedMap()); // key is commentId
-  const [levelTwoComments, setLevelTwoComments] = React.useState<Immutable.OrderedMap<string, CommentDetailDto>>(Immutable.OrderedMap()); // Key is the parent comment id
+  const [parentCommentsPage, setParentCommentsPage] = React.useState(1);
+  const [parentComments, setParentComments] = React.useState<ParentCommentDto[]>([]);
+  // const [levelOneComments, setLevelOneComments] = React.useState<Immutable.OrderedMap<string, CommentDetailDto>>(Immutable.OrderedMap()); // key is commentId
+  // const [levelTwoComments, setLevelTwoComments] = React.useState<Immutable.OrderedMap<string, CommentDetailDto>>(Immutable.OrderedMap()); // Key is the parent comment id
   const [showReportAlert, setShowReportAlert] = React.useState(false);
   const [showBookmarkAlert, setShowBookmarkAlert] = React.useState(false);
   
@@ -108,32 +92,31 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     navigation.navigate(screen, {...payload});
   };
   
-  const getTopLevelComments = (cursor?: string) => {
-    commentService.getCommentsForPost(postId, cursor)
-      .then(res => {
-        setCursors(prevState => ({
-          ...prevState,
-          startCursor: res.meta.startCursor,
-          endCursor: res.meta.endCursor,
-          hasNextPage: res.meta.hasNextPage,
-          hasPreviousPage: res.meta.hasPreviousPage
-        }));
-        if (cursor) {
-          // set level 1 comments according to their comment.createdDate in ascending order
-          setLevelOneComments(prevState =>
-            prevState.merge(
-              Immutable.OrderedMap(
-                res.data.map(comment => [comment.id, comment])
-              )
-            )
-          );
+  const getTopLevelComments = (page: number) => {
+    commentService.getParentCommentsForPost(postId, parentCommentsPage)
+      .then(commentResponse => {
+        if (parentCommentsPage > 1) {
+          if (page === parentCommentsPage) {
+            return;
+          }
+    
+          if (commentResponse.length > 0) {
+            setParentComments([...parentComments, ...commentResponse]);
+            setParentCommentsPage(page);
+            return;
+          }
+          setParentCommentsPage(page - 1);
         } else {
-          setLevelOneComments(Immutable.OrderedMap(res.data.map(comment => [comment.id, comment])));
+          setParentComments(commentResponse);
+          setParentCommentsPage(page);
         }
       })
       .catch(err => {
         console.log(err);
-      });
+        if (page > 1) {
+          setParentCommentsPage(page - 1);
+        }
+      })
   }
   
   const getPost = () => {
@@ -152,9 +135,10 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     return navigation.addListener('focus', () => {
       setLoading(true);
       setError(false);
-      setLevelOneComments(Immutable.OrderedMap());
-      setLevelTwoComments(Immutable.OrderedMap());
-      setPost(null);
+      setParentComments([]);
+      // setLevelOneComments(Immutable.OrderedMap());
+      // setLevelTwoComments(Immutable.OrderedMap());
+      setPost(undefined);
   
       // The screen is focused
       postService.getPost(postId).then((res) => {
@@ -171,9 +155,9 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
   useEffect(() => {
     if (post) {
       if (post.numberOfComments > 0) {
-        getTopLevelComments();
+        getTopLevelComments(parentCommentsPage);
       } else {
-        setLevelOneComments(Immutable.OrderedMap());
+        setParentComments([]);
       }
     }
   }, [post]);
@@ -239,84 +223,78 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
   }
   
   const onHandleCommentReaction = (commentId: string, shouldDelete: boolean) => {
-    postCommentReactionService.reactToComment(shouldDelete ? null : ReactionType.THUMBS_UP, commentId)
+    postCommentReactionService.reactToParentComment(shouldDelete ? null : ReactionType.THUMBS_UP, commentId)
       .then(async () => {
-        await getPost();
+        await getTopLevelComments(parentCommentsPage - 1);
       })
       .catch(err => {
         console.log(err);
       });
   }
   
-  const onHandleCommentReply = (comment: CommentDetailDto) => {
-    // TODO: IMPLEMENT reply to comments
-    //  by navigating to new screen within current stack
-    // Can be implemented if we decide to go threaded comments route
-    console.log("Comment Reply");
+  const onHandleChildCommentReaction = (commentId: string, shouldDelete: boolean) => {
+    postCommentReactionService.reactToChildComment(shouldDelete ? null : ReactionType.THUMBS_UP, commentId)
+      .then(async () => {
+        await getTopLevelComments(parentCommentsPage - 1);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  
+  const onHandleCommentReply = (comment: ParentCommentDto) => {
+    moveTo("CreateChildComment", {parentComment: comment});
   }
   
   const moderatorRemoveComment = (commentId: string) => {
-    commentService.deleteComment(commentId)
-      .then(async res =>
+    commentService.deleteParentComment(commentId)
+      .then(() =>
         getPost()
       );
   };
   
   const ownerDeleteComment = (commentId: string) => {
-    commentService.updateComment(commentId, {
-      status: CommentStatus.ARCHIVED
-    })
-      .then(async res => {
-        await getPost();
+    commentService.deleteParentComment(commentId)
+      .then(() => {
+        getPost();
       });
   }
   
-  const onHandleCommentEdit = (comment: CommentDetailDto) => {
+  const onHandleCommentEdit = (comment: ParentCommentDto) => {
     moveTo("UpdatePostComment", {post, comment});
   }
   
-  const loadNextPage = async () => {
-    if (hasNextPage) {
-      console.log("Loading more comments", endCursor);
-      getTopLevelComments(endCursor!);
-    }
+  const onHandleChildCommentEdit = (comment: ChildCommentDto) => {
+    moveTo("UpdateChildComment", {comment});
   }
   
-  const loadReplies = (commentId: string) => {
-    const comment = levelOneComments.get(commentId);
-    if (comment) {
-      commentService.getChildComments({
-        commentIds: comment.childCommentIds,
-        height: comment.commentHeight + 1
-      })
-        .then(res => {
-          if (res.data.length > 0) {
-            setLevelTwoComments(prevState => prevState.merge(Immutable.OrderedMap(res.data.map(comment => [comment.id, comment]))));
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+  const loadNextPage = async () => {
+    getTopLevelComments(parentCommentsPage);
+  }
+  
+  const onHandleViewReplies = (commentId: string) => {
+    moveTo("CommentThread", {parentCommentId: commentId});
   }
   
   const renderItem = useCallback(
-    ({item, index}: { item: CommentDetailDto; index: number }) => {
+    ({item, index}: { item: ParentCommentDto; index: number }) => {
       return (
         <CommentBlock
           key={item.id}
           item={item}
           index={index}
           onCommentReact={onHandleCommentReaction}
+          onReactToChildComment={onHandleChildCommentReaction}
           onCommentReply={onHandleCommentReply}
           onDeleteComment={ownerDeleteComment}
           onEditComment={onHandleCommentEdit}
+          onEditChildComment={onHandleChildCommentEdit}
           onModeratorRemoval={moderatorRemoveComment}
           isAdmin={isAdmin}
           isModerator={isModerator}
           isOwner={isPostOwner}
-          onLoadReplies={loadReplies}
           post={post!}
+          onViewReplies={onHandleViewReplies}
         />
       );
     }, [isAdmin, isModerator, isPostOwner]);
@@ -366,7 +344,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             style={[styles.list, {backgroundColor: primary}]}
             contentContainerStyle={styles.contentContainer}
             renderItem={renderItem}
-            data={levelOneComments.isEmpty() ? [] : levelOneComments.valueSeq().toArray()}
+            data={parentComments}
             keyExtractor={keyExtractor}
             pagingEnabled={true}
             maxToRenderPerBatch={20}

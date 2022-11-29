@@ -3,45 +3,36 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {
   BottomRowWrapper,
   CommentContent,
-  Container,
-  Content,
   DateText,
   EditedText,
   Name,
-  TopRowWrapper
 } from '../style-components';
 import {getTimeAgo} from "../../shared/utils/date-utils";
 import {ServiceBranch} from "../../shared/models/users";
 import {Icon, IconButton, Image, Text, VStack} from "native-base";
 import {getMilitaryString} from "../../shared/utils/military-utils";
-import {Ionicons, MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
-import {CommentDetailDto} from "../../shared/models/comments/comment-detail.dto";
+import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import {SvgXml} from "react-native-svg";
 import Reactions from "../../shared/images/reactions";
 import {numberToReadableFormat} from "../../shared/utils/number-utils";
+import {ChildCommentDto} from '../../shared/models/comments/child-comment.dto';
 
-export interface CommentProps {
-  comment: CommentDetailDto;
-  hasChildren: boolean;
+export interface ChildCommentProps {
+  comment: ChildCommentDto;
   index: number;
-  nested: number;
   isOp: boolean;
   onCommentReact: (commentId: string, shouldDelete: boolean) => void;
-  onCommentReply: (comment: CommentDetailDto) => void;
   setOpenActionSheet: (isOpen: boolean) => void;
 }
 
-const Comment = ({
-                   comment,
-                   index,
-                   nested,
-                   hasChildren,
-                   isOp = false,
-                   onCommentReact,
-                   onCommentReply,
-                   setOpenActionSheet
-                 }: CommentProps) => {
-
+const ChildComment = ({
+                        comment,
+                        index,
+                        isOp = false,
+                        onCommentReact,
+                        setOpenActionSheet
+                      }: ChildCommentProps) => {
+  
   const getServiceBranchSealPng = (serviceBranch: ServiceBranch) => {
     switch (serviceBranch) {
       case ServiceBranch.AIR_FORCE:
@@ -60,7 +51,7 @@ const Comment = ({
         return require("../../../assets/seals/png/us-flag.png");
     }
   }
-
+  
   const _renderEmptyReaction = () => (
     <TouchableOpacity onPress={() => onCommentReact(comment.id, false)}>
       <View style={{
@@ -68,17 +59,17 @@ const Comment = ({
         width: 100,
         flex: 1,
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'center'
       }}>
         <Ionicons name="heart-outline" color="white" size={20}/>
-        <Text color="white">{`  ${comment.numberOfReactions > 0
+        <Text color="white">{`  ${comment?.numberOfReactions > 0
           ? `${numberToReadableFormat(comment.numberOfReactions)} Likes`
           : "Like"}`}
         </Text>
       </View>
     </TouchableOpacity>
   );
-
+  
   const _renderFilledReaction = () => (
     <TouchableOpacity onPress={() => onCommentReact(comment.id, true)}>
       <View style={{
@@ -86,7 +77,7 @@ const Comment = ({
         width: 100,
         flex: 1,
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'center'
       }}>
         <SvgXml
           xml={Reactions.HEART_SVG}
@@ -99,45 +90,49 @@ const Comment = ({
       </View>
     </TouchableOpacity>
   );
-
+  
   return (
-    <Container commentId={comment.id} nested={nested}>
+    <View>
       <View style={styles.rowDirection}>
-        <TopRowWrapper nested={nested} hasChildren={hasChildren}>
-          <View style={styles.renderTitleButton}>
-            <Image
-              pt={0}
-              bgColor={"#266186"}
-              height={30}
-              mr={3}
-              ml={2}
-              overflow={"hidden"}
-              width={30}
-              source={getServiceBranchSealPng(comment.createdBy.branch)}
-              alt={comment.createdBy.branch}
-            />
-            <VStack>
-              <Text fontSize="sm" fontWeight="semibold" color={"white"}>
-                {comment.createdBy.username} {isOp && (
-                <Text
-                  color={"#FFD700"}
-                  fontSize="xs"
-                >
-                  (OP)
-                </Text
-                >)}
-
-              </Text>
-              <Name
-                accessibilityHint="tap to visit user's profile screen"
-                accessibilityLabel={`username ${comment.createdBy.username}`}
-                name={comment.createdBy.username as string}>
-                {getMilitaryString(comment.createdBy.branch, comment.createdBy.serviceStatus)}
-              </Name>
-            </VStack>
-          </View>
+        <View style={styles.renderTitleButton}>
+          <Image
+            pt={0}
+            bgColor={"#266186"}
+            height={30}
+            mr={3}
+            ml={2}
+            overflow={"hidden"}
+            width={30}
+            source={getServiceBranchSealPng(comment.createdBy.branch)}
+            alt={comment.createdBy.branch}
+          />
+          <VStack>
+            <Text fontSize="sm" fontWeight="semibold" color={"white"}>
+              {comment.createdBy.username} {isOp && (
+              <Text
+                color={"#FFD700"}
+                fontSize="xs"
+              >
+                (OP)
+              </Text
+              >)}
+            
+            </Text>
+            <Name
+              accessibilityHint="tap to visit user's profile screen"
+              accessibilityLabel={`username ${comment.createdBy.username}`}
+              name={comment.createdBy.username as string}>
+              {getMilitaryString(comment.createdBy.branch, comment.createdBy.serviceStatus)}
+            </Name>
+          </VStack>
+        </View>
+        <View>
           <IconButton
             variant="unstyled"
+            style={{
+              // align to the right
+              alignItems: 'flex-end',
+            }}
             icon={
               <Icon
                 size="6"
@@ -146,14 +141,15 @@ const Comment = ({
                 color={"white"}
               />
             }
-            onPress={() => setOpenActionSheet(true)}
+            onPress={() => {
+              setOpenActionSheet(true)
+            }}
           />
-        </TopRowWrapper>
+        </View>
       </View>
-
+      
       <View style={[styles.contentWrapper]}>
-
-        <Content hasChildren={hasChildren} nested={nested}>
+        <View style={styles.commentContentContainer}>
           <CommentContent
             accessibilityHint={`comment content ${comment.content}`}
             accessibilityLabel={`comment #${index + 1}`}
@@ -173,32 +169,19 @@ const Comment = ({
               (edited)
             </EditedText>
           ) : null}
-        </Content>
-
+        </View>
+        
         <BottomRowWrapper>
-          {comment.likedByCurrentUser ? (
+          {comment.currentUserReaction ? (
             _renderFilledReaction()
           ) : (
             _renderEmptyReaction()
           )}
-
-          {/* TODO: IMplement threaded comments */}
-          {/*<TouchableOpacity onPress={() => onCommentReply(comment)}>*/}
-          {/*  <View style={{*/}
-          {/*    paddingLeft: 8,*/}
-          {/*    flex: 1,*/}
-          {/*    flexDirection: 'row',*/}
-          {/*    alignItems: 'center',*/}
-          {/*  }}>*/}
-          {/*    <MaterialCommunityIcons name="reply" color="white" size={20}/>*/}
-          {/*    <Text color="white">{` Reply`}</Text>*/}
-          {/*  </View>*/}
-          {/*</TouchableOpacity>*/}
-
+        
         </BottomRowWrapper>
-
+      
       </View>
-    </Container>
+    </View>
   );
 };
 
@@ -215,8 +198,21 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   rowDirection: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: "5%",
+    marginLeft: 0
+  },
+  commentContentContainer: {
+    backgroundColor: '#266186',
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 10,
+    marginLeft: 30,
+    padding: "5%"
   }
 });
 
-export default Comment;
+export default ChildComment;

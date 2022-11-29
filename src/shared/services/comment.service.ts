@@ -1,62 +1,81 @@
-import {BaseApiResponse} from "../models/base-api-response";
 import { axiosInstance as axios } from './api'
 import AppConfig from "../../config/app.config";
 import {CreateCommentDto} from "../models/comments/create-comment.dto";
-import {CommentDetailDto} from "../models/comments/comment-detail.dto";
 import {UpdateCommentDto} from "../models/comments/update-comment.dto";
-import {CommentIdsInputDto} from "../models/comments/comment-ids-input.dto";
-import {PageInfo} from "../models/pagination/types";
+import {ParentCommentDto} from '../models/comments/parent-comment.dto';
+import {ChildCommentDto} from '../models/comments/child-comment.dto';
 
-const createComment = async (commentDto: CreateCommentDto): Promise<BaseApiResponse<CommentDetailDto, never>> => {
-  return await axios.post(`${AppConfig.apiUrl}/post-comments`, commentDto)
+const getParentById = async (id: string): Promise<ParentCommentDto> => {
+  return await axios.get(`${AppConfig.apiUrl}/parent-comments/${id}`)
+    .then(response => {
+      return response.data;
+    });
+}
+const createParentComment = async (commentDto: CreateCommentDto): Promise<ParentCommentDto> => {
+  return await axios.post(`${AppConfig.apiUrl}/parent-comments`, commentDto)
     .then(response => {
       return response.data;
     });
 }
 
-const updateComment = async (id: string, commentDto: UpdateCommentDto): Promise<BaseApiResponse<CommentDetailDto, never>> => {
-  return await axios.patch(`${AppConfig.apiUrl}/post-comments/${id}`, commentDto)
+const updateParentComment = async (id: string, commentDto: UpdateCommentDto): Promise<ParentCommentDto> => {
+  return await axios.patch(`${AppConfig.apiUrl}/parent-comments/${id}`, commentDto)
     .then(response => {
       return response.data;
     });
 }
 
-const deleteComment = async (id: string): Promise<BaseApiResponse<never, never>> => {
-  return await axios.delete(`${AppConfig.apiUrl}/post-comments/${id}`)
-    .then(response => {
-      return response.data;
-    });
+const deleteParentComment = async (id: string): Promise<void> => {
+  await axios.delete(`${AppConfig.apiUrl}/parent-comments/${id}`);
 }
 
-const getCommentsForPost = async (postId: string, cursor?: string, take = 25): Promise<BaseApiResponse<CommentDetailDto[], PageInfo>> => {
-  const url = `${AppConfig.apiUrl}/post-comments/for-post/${postId}?take=${take}${cursor ? `&cursor=${cursor}` : ''}`;
+const getParentCommentsForPost = async (postId: string, page = 1, take = 25): Promise<ParentCommentDto[]> => {
+  const url = `${AppConfig.apiUrl}/parent-comments/feed/${postId}?take=${take}${take ? `&page=${page}` : ''}`;
   return await axios.get(url)
     .then(response => {
       return response.data;
     });
 }
 
-const getChildComments = async (commentIds: CommentIdsInputDto): Promise<BaseApiResponse<CommentDetailDto[], never>> => {
-  return await axios.post(`${AppConfig.apiUrl}/post-comments/children`, commentIds)
+const createReplyComment = async (parentId: string, content: string): Promise<ChildCommentDto> => {
+  return await axios.post(`${AppConfig.apiUrl}/comment-replies/${parentId}`, {
+    content
+  })
     .then(response => {
       return response.data;
     });
 }
 
-const getChildCommentsForPostByLevel = async (postId: string, level: number): Promise<BaseApiResponse<CommentDetailDto[], never>> => {
-  return await axios.get(`${AppConfig.apiUrl}/post-comments/${postId}/children/by-level?level=${level}`)
+const updateReplyComment = async (id: string, commentDto: UpdateCommentDto): Promise<ChildCommentDto> => {
+  return await axios.patch(`${AppConfig.apiUrl}/comment-replies/${id}`, commentDto)
     .then(response => {
       return response.data;
     });
 }
+
+const deleteReplyComment = async (id: string): Promise<void> => {
+  await axios.delete(`${AppConfig.apiUrl}/comment-replies/${id}`);
+}
+
+const getReplyComments = async (parentCommentId: string, page = 1, take = 25): Promise<ChildCommentDto[]> => {
+  const url = `${AppConfig.apiUrl}/comment-replies/feed/${parentCommentId}?take=${take}${page ? `&page=${page}` : ''}`;
+  return await axios.get(url)
+    .then(response => {
+      return response.data;
+    });
+}
+
 
 const commentService = {
-  createComment,
-  updateComment,
-  deleteComment,
-  getCommentsForPost,
-  getChildComments,
-  getChildCommentsForPostByLevel
+  getParentById,
+  createParentComment,
+  updateParentComment,
+  deleteParentComment,
+  getParentCommentsForPost,
+  createReplyComment,
+  updateReplyComment,
+  deleteReplyComment,
+  getReplyComments,
 }
 
 export default commentService;

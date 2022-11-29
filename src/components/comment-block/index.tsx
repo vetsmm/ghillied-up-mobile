@@ -1,10 +1,9 @@
 import React, {useEffect} from "react";
-import {Dimensions, StyleSheet} from "react-native";
+import {Dimensions, StyleSheet, TouchableOpacity} from "react-native";
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 
-import Comment from "../comment";
-import {View} from "native-base";
-import {CommentDetailDto} from "../../shared/models/comments/comment-detail.dto";
+import ParentComment from "../parent-comment";
+import {View, Text} from "native-base";
 import CommentActionSheet from "../bottom-sheets/comment-action-sheet";
 import {ReportMenuDialog} from "../reporting/report-menu-dialog";
 import {PostDetailDto} from "../../shared/models/posts/post-detail.dto";
@@ -12,20 +11,26 @@ import {FlagCategory} from "../../shared/models/flags/flag-category";
 import flagService from "../../shared/services/flag.service";
 import {SuccessAlert} from "../alerts/success-alert";
 import AppConfig from '../../config/app.config';
+import {ParentCommentDto} from '../../shared/models/comments/parent-comment.dto';
+import {colorsVerifyCode} from '../colors';
+import ChildComment from '../child-comment';
+import {ChildCommentDto} from '../../shared/models/comments/child-comment.dto';
 
 export interface CommentBlockProps {
   post: PostDetailDto;
-  item: CommentDetailDto;
+  item: ParentCommentDto;
   index: number;
   onCommentReact: (commentId: string, shouldDelete: boolean) => void;
-  onCommentReply: (comment: CommentDetailDto) => void;
+  onCommentReply: (comment: ParentCommentDto) => void;
+  onReactToChildComment: (commentId: string, shouldDelete: boolean) => void;
   onDeleteComment: (commentId: string) => void;
   onModeratorRemoval: (commentId: string) => void;
-  onEditComment: (comment: CommentDetailDto) => void;
-  onLoadReplies: (commentId: string) => void;
+  onEditComment: (comment: ParentCommentDto) => void;
+  onEditChildComment: (comment: ChildCommentDto) => void;
   isAdmin: boolean;
   isModerator: boolean;
   isOwner: boolean;
+  onViewReplies: (commentId: string) => void;
 }
 
 const dimensions = Dimensions.get('window');
@@ -39,30 +44,34 @@ export const CommentBlock: ({
                               onDeleteComment,
                               onModeratorRemoval,
                               onEditComment,
-                              onLoadReplies,
+                              onEditChildComment,
                               isAdmin,
                               isModerator,
-                              isOwner
+                              isOwner,
+                              onViewReplies
                             }: CommentBlockProps) => JSX.Element = ({
-                               item,
-                               post,
-                               index,
-                               onCommentReply,
-                               onCommentReact,
-                               onDeleteComment,
-                               onModeratorRemoval,
-                               onEditComment,
-                               onLoadReplies,
-                               isAdmin,
-                               isModerator,
-                               isOwner
-                             }: CommentBlockProps) => {
-
-  const [isOpen, setIsOpen] = React.useState(false);
+                                                                      item,
+                                                                      post,
+                                                                      index,
+                                                                      onCommentReply,
+                                                                      onCommentReact,
+                                                                      onDeleteComment,
+                                                                      onModeratorRemoval,
+                                                                      onEditComment,
+                                                                      onEditChildComment,
+                                                                      onReactToChildComment,
+                                                                      isAdmin,
+                                                                      isModerator,
+                                                                      isOwner,
+                                                                      onViewReplies,
+                                                                    }: CommentBlockProps) => {
+  
+  const [isParentOpen, setIsParentOpen] = React.useState(false);
+  const [isChildOpen, setIsChildOpen] = React.useState(false);
   const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
   const [showReportAlert, setShowReportAlert] = React.useState(false);
   const cancelRef = React.useRef(null);
-
+  
   useEffect(() => {
     if (showReportAlert) {
       setTimeout(() => {
@@ -70,7 +79,7 @@ export const CommentBlock: ({
       }, AppConfig.timeouts.reportDialogs);
     }
   }, [showReportAlert]);
-
+  
   const onReportComment = (category: FlagCategory, details: string) => {
     setIsReportDialogOpen(false);
     flagService.flagComment({
@@ -85,67 +94,117 @@ export const CommentBlock: ({
         console.log("Comment report failed");
       });
   }
-
+  
   // @ts-ignore
   return (
-    <View
-      mt={3}
-      borderRadius={10}
-      backgroundColor={"#266186"}
-      marginLeft={5}
-      marginRight={5}
-    >
-      <Comment
-        comment={item}
-        hasChildren={item?.numberOfChildComments > 0}
-        index={index}
-        nested={0}
-        // @ts-ignore
-        isLast={item.numberOfChildComments === 0}
-        parentCommentLength={item.numberOfChildComments}
-        totalChildren={item?.numberOfChildComments || 0}
-        onCommentReact={onCommentReact}
-        onCommentReply={onCommentReply}
-        setOpenActionSheet={setIsOpen}
-        isOp={post?.postedBy?.username === item.createdBy.username}
-      />
-      <CommentActionSheet
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        onDelete={() => {
-          setIsOpen(false);
-          onDeleteComment(item.id);
-        }}
-        onRemove={() => {
-          setIsOpen(false);
-          onModeratorRemoval(item.id);
-        }}
-        onEdit={() => {
-          setIsOpen(false);
-          onEditComment(item);
-        }}
-        onReport={() => {
-          setIsOpen(false);
-          setIsReportDialogOpen(true);
-        }}
-        isAdmin={isAdmin}
-        isModerator={isModerator}
-        isOwner={isOwner}
-      />
-
-      <ReportMenuDialog
-        isOpen={isReportDialogOpen}
-        onClose={() => setIsReportDialogOpen(false)}
-        cancelRef={cancelRef}
-        onReport={onReportComment}
-        title={"Report Comment"}
-      />
-      {showReportAlert && (
-        <SuccessAlert
-          title="Report Sent"
-          body="Thank you for reporting this comment. We appreciate your help in keeping our community safe. If appropriate, we will take the necessary actions."
+    <View>
+      <View
+        mt={3}
+        borderRadius={10}
+        backgroundColor={"#266186"}
+        marginLeft={2}
+        marginRight={2}
+      >
+        <ParentComment
+          comment={item}
+          hasChildren={item.commentReplyCount > 0}
+          index={index}
+          // @ts-ignore
+          parentCommentLength={item.commentReplyCount}
+          totalChildren={item.commentReplyCount || 0}
+          onCommentReact={onCommentReact}
+          onCommentReply={onCommentReply}
+          setOpenActionSheet={setIsParentOpen}
+          isOp={post?.postedBy?.username === item.createdBy.username}
         />
+        <CommentActionSheet
+          isOpen={isParentOpen}
+          onClose={() => setIsParentOpen(false)}
+          onDelete={() => {
+            setIsParentOpen(false);
+            onDeleteComment(item.id);
+          }}
+          onRemove={() => {
+            setIsParentOpen(false);
+            onModeratorRemoval(item.id);
+          }}
+          onEdit={() => {
+            setIsParentOpen(false);
+            onEditComment(item);
+          }}
+          onReport={() => {
+            setIsParentOpen(false);
+            setIsReportDialogOpen(true);
+          }}
+          isAdmin={isAdmin}
+          isModerator={isModerator}
+          isOwner={isOwner}
+        />
+        
+        <ReportMenuDialog
+          isOpen={isReportDialogOpen}
+          onClose={() => setIsReportDialogOpen(false)}
+          cancelRef={cancelRef}
+          onReport={onReportComment}
+          title={"Report Comment"}
+        />
+        {showReportAlert && (
+          <SuccessAlert
+            title="Report Sent"
+            body="Thank you for reporting this comment. We appreciate your help in keeping our community safe. If appropriate, we will take the necessary actions."
+          />
+        )}
+      </View>
+      
+      {item.commentReplyCount > 1 && (
+        <View marginLeft={5} marginRight={2}>
+          <TouchableOpacity onPress={() => onViewReplies(item.id)}>
+            <Text
+              style={styles.loadReplies}
+            >
+              View {item.commentReplyCount} Replies...
+            </Text>
+          </TouchableOpacity>
+        </View>
       )}
+      
+      {item.latestChildComments && item.latestChildComments.length > 0 && (
+        <View
+          style={styles.childCommentView}
+        >
+          <ChildComment
+            comment={item.latestChildComments[0]}
+            index={1}
+            isOp={post?.postedBy?.username === item.latestChildComments[0].createdBy.username}
+            onCommentReact={onReactToChildComment}
+            setOpenActionSheet={setIsChildOpen}
+          />
+          <CommentActionSheet
+            isOpen={isChildOpen}
+            onClose={() => setIsChildOpen(false)}
+            onDelete={() => {
+              setIsChildOpen(false);
+              onDeleteComment(item.id);
+            }}
+            onRemove={() => {
+              setIsChildOpen(false);
+              onModeratorRemoval(item.id);
+            }}
+            onEdit={() => {
+              setIsChildOpen(false);
+              onEditChildComment(item.latestChildComments[0]);
+            }}
+            onReport={() => {
+              setIsChildOpen(false);
+              setIsReportDialogOpen(true);
+            }}
+            isAdmin={isAdmin}
+            isModerator={isModerator}
+            isOwner={isOwner}
+          />
+        </View>
+      )}
+    
     </View>
   );
 }
@@ -192,5 +251,22 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     marginTop: 8,
     color: 'white'
+  },
+  loadReplies: {
+    color: colorsVerifyCode.secondary,
+    fontWeight: 'bold',
+    fontStyle: 'italic',
+    fontSize: 15
+  },
+  childCommentView: {
+    flexDirection: "column",
+    flex: 1,
+    marginLeft: "7%",
+    marginRight: "7%",
+    marginTop: 5,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    backgroundColor: "#266186"
   }
 });
