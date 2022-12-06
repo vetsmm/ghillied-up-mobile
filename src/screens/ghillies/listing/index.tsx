@@ -47,36 +47,8 @@ function GhillieListingHeader({isVerifiedMilitary, isAdmin}) {
         )}
       </Column>
       <Column width="76%">
-        {/*<StyledSearchInput*/}
-        {/*  placeholder="Search for a Ghillie"*/}
-        {/*  value={searchText}*/}
-        {/*  onChangeText={setSearchText}*/}
-        {/*  style={{*/}
-        {/*    padding: 0,*/}
-        {/*    flex: 1,*/}
-        {/*    marginRight: 5,*/}
-        {/*    marginLeft: 5,*/}
-        {/*    color: Colors.white*/}
-        {/*  }}*/}
-        {/*  returnKeyType={"search"}*/}
-        {/*  onSubmitEditing={onEnterPress}*/}
-        {/*/>*/}
       </Column>
       <Column width="12%">
-        {/*{searchText.length > 0 && (*/}
-        {/*  <TouchableOpacity*/}
-        {/*    style={{*/}
-        {/*      justifyContent: "center",*/}
-        {/*      alignItems: "center",*/}
-        {/*      height: 40,*/}
-        {/*      marginBottom: 8,*/}
-        {/*      paddingRight: 20*/}
-        {/*    }}*/}
-        {/*    onPress={() => clearSearch()}*/}
-        {/*  >*/}
-        {/*    <MaterialIcons name="clear" size={30} color={colorsVerifyCode.secondary}/>*/}
-        {/*  </TouchableOpacity>*/}
-        {/*)}*/}
         <TouchableOpacity
           style={{
             justifyContent: "center",
