@@ -17,11 +17,9 @@ import {IRootState} from '../../../store';
 import {useNavigation} from '@react-navigation/native';
 
 
-function GhillieListingHeader({searchText, setSearchText, clearSearch, onSearchPress}) {
-  const navigation: any = useNavigation();
+function GhillieListingHeader({searchText, setSearchText, clearSearch, onSearchPress, navigation}) {
   
   const goBack = useCallback(() => {
-    console.log("GO BACK")
     navigation.goBack();
   }, [navigation]);
   
@@ -85,6 +83,12 @@ function GhillieSearchScreen() {
   const [ghillieList, setGhillieList] = useStateWithCallback<GhillieDetailDto[]>([]);
   const [isLoadingGhillies, setIsLoadingGhillies] = useStateWithCallback(false);
   
+  const navigation: any = useNavigation();
+  
+  const handleCreateNavigate = useCallback(() => {
+    navigation.navigate("GhillieCreate");
+  }, [navigation]);
+  
   const [isVerifiedMilitary] = useSelector(
     (state: IRootState) => [
       state.authentication.isVerifiedMilitary,
@@ -132,6 +136,7 @@ function GhillieSearchScreen() {
         onSearchPress={onSearchPress}
         searchText={searchText}
         setSearchText={setSearchText}
+        navigation={navigation}
       />
       
       <View style={styles.listContainer}>
@@ -185,6 +190,7 @@ function GhillieSearchScreen() {
                   justifyContent:'center',
                   backgroundColor: colorsVerifyCode.secondary
                 }}
+                onPress={() => handleCreateNavigate()}
               >
                 <Icon
                   as={Entypo}
