@@ -16,6 +16,34 @@ const getGhillies = async (criteria: GhillieSearchCriteria): Promise<BaseApiResp
     });
 }
 
+const getPopularGhilliesByMembers = async (limit = 10): Promise<Array<GhillieDetailDto>> => {
+  return await axios.get(`${AppConfig.apiUrl}/ghillies/metrics/members?limit=${limit}`)
+    .then(response => {
+      return response.data;
+    });
+}
+
+const getPopularGhilliesByTrendingPosts = async (limit = 10): Promise<Array<GhillieDetailDto>> => {
+  return await axios.get(`${AppConfig.apiUrl}/ghillies/metrics/trending-posts?limit=${limit}`)
+    .then(response => {
+      return response.data;
+    });
+}
+
+const getNewestGhillies = async (limit = 10): Promise<Array<GhillieDetailDto>> => {
+  return await axios.get(`${AppConfig.apiUrl}/ghillies/metrics/newest?limit=${limit}`)
+    .then(response => {
+      return response.data;
+    });
+}
+
+const searchGhillies = async (criteria: GhillieSearchCriteria): Promise<BaseApiResponse<Array<GhillieDetailDto>, PageInfo>> => {
+return await axios.post(`${AppConfig.apiUrl}/ghillies/filter`, criteria)
+    .then(response => {
+      return response.data;
+    });
+}
+
 const getCurrentUserGhillies = async (take: number, cursor?: string): Promise<BaseApiResponse<Array<GhillieDetailDto>, never>> => {
   return await axios.get(`${AppConfig.apiUrl}/ghillies/my/all?take=${take}${cursor ? `&cursor=${cursor}` : ''}`)
     .then(response => {
@@ -87,7 +115,11 @@ const ghillieService = {
   updateGhillie,
   getMyGhillies,
   getCurrentUserGhillies,
-  updateGhillieImage
+  updateGhillieImage,
+  searchGhillies,
+  getPopularGhilliesByMembers,
+  getPopularGhilliesByTrendingPosts,
+  getNewestGhillies
 }
 
 export default ghillieService;
