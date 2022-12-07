@@ -177,20 +177,24 @@ export const GhillieUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
       setSubmitting(false);
     }
     
-    
     const _isFormInvalid = (formData): boolean => {
       setMessage(null);
       
       const errors: CreateGhillieFormValidationResponse = ghillieValidators.createGhillieFormValidator(formData);
       
+      if (ghillie.imageUrl && !formData.ghillieLogo) {
+        errors.ghillieLogo = null;
+      }
+      
       setFormErrors({
         name: errors.name,
         about: errors.about,
         topicNames: errors.topicNames,
-        ghillieLogo: null,
+        ghillieLogo: errors.ghillieLogo,
         readOnly: null
       });
       
+      console.log('errors', errors);
       return Object.values(errors).some(error => error !== null);
     }
     

@@ -8,6 +8,7 @@ import MainContainer from "../../components/containers/MainContainer";
 import {GhillieDetailScreen} from "../../screens/ghillies/detail";
 import GhillieCreateScreen from "../../screens/ghillies/create";
 import GhillieUpdateScreen from "../../screens/ghillies/update";
+import GhillieSearchScreen from '../../screens/ghillies/search';
 
 const {primary} = colorsVerifyCode;
 
@@ -47,6 +48,14 @@ export const ghilliesScreen: Array<GhillieScreenProps> = [
     name: "GhillieUpdate",
     route: "ghillie-update/:id",
     component: GhillieUpdateScreen,
+    options: {
+      headerShown: false,
+    }
+  },
+  {
+    name: "GhillieSearch",
+    route: "ghillie-search",
+    component: GhillieSearchScreen,
     options: {
       headerShown: false,
     }

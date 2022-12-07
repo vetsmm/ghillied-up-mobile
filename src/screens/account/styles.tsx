@@ -9,6 +9,12 @@ export default StyleSheet.create({
         paddingTop: isIphoneX() ? getStatusBarHeight() + 20 : 30,
         backgroundColor: colorsVerifyCode.primary
     },
+    myGhilliesContainer: {
+        flex: 1,
+        // flexGrow: 1,
+        paddingVertical: 8,
+        marginBottom: 40,
+    },
     pastPostContainer: {
         flex: 1,
         flexGrow: 1,
