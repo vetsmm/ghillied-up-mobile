@@ -115,6 +115,14 @@ function GhillieSearchScreen() {
         setSearchText("");
     }
 
+    const onJoinGhilliePress = (ghillie: GhillieDetailDto) => {
+        GhillieService.joinGhillie(ghillie.id).then(() => {
+            navigation.navigate("GhillieDetail", {ghillieId: ghillie.id});
+        }).catch((e) => {
+            console.log(e);
+        });
+    }
+
     const getGhillies = () => {
         if (!isLoadingGhillies) {
             setIsLoadingGhillies(true);
@@ -159,7 +167,8 @@ function GhillieSearchScreen() {
                             <GhillieCardV2
                                 ghillie={item}
                                 isVerifiedMilitary={isVerifiedMilitary}
-                                onJoinPress={() => console.log("Join Pressed")}
+                                onJoinPress={() => onJoinGhilliePress(item)}
+                                isMember={item.memberMeta !== null}
                             />
                         </View>
                     )}
