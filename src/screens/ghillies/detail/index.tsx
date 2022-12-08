@@ -33,6 +33,7 @@ import {FlagCategory} from '../../../shared/models/flags/flag-category';
 import flagService from '../../../shared/services/flag.service';
 import {SuccessAlert} from '../../../components/alerts/success-alert';
 import AppConfig from '../../../config/app.config';
+import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 
 const {primary, secondary, fail} = colorsVerifyCode;
 
@@ -51,8 +52,8 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const [postList, setPostList] = React.useState<PostFeedDto[]>([]);
     const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
     const [showReportAlert, setShowReportAlert] = React.useState(false);
-    
-    
+
+
     const cancelRef = React.useRef(null);
 
     const currentUser = useSelector(
@@ -92,12 +93,15 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             )
     );
 
+    const isVerifiedMilitary = useSelector(
+        (state: IRootState) => state.authentication.isVerifiedMilitary || state.authentication.isAdmin);
+
 
     // eslint-disable-next-line no-unsafe-optional-chaining
     const {ghillieId} = route?.params;
 
     const dispatch = useAppDispatch();
-    
+
     const navigation: any = useNavigation();
 
     useEffect(() => {
@@ -108,7 +112,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
 
         return initialLoad;
     }, [dispatch, ghillieId]);
-    
+
     useEffect(() => {
         if (showReportAlert) {
             setTimeout(() => {
@@ -116,7 +120,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             }, AppConfig.timeouts.reportDialogs);
         }
     }, [showReportAlert]);
-    
+
 
     const goBack = useCallback(() => {
         navigation.goBack();
@@ -159,19 +163,19 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             console.log(e);
         }
     };
-    
+
     const reportGhillie = (category: FlagCategory, details: string) => {
         flagService.flagGhillie({
             ghillieId: ghillieId,
             flagCategory: category,
             details
         })
-          .then(() => {
-              setShowReportAlert(true);
-          })
-          .catch((err) => {
-              console.log("Report report failed");
-          });
+            .then(() => {
+                setShowReportAlert(true);
+            })
+            .catch((err) => {
+                console.log("Report report failed");
+            });
     }
 
     const onHandleReaction = (postId: string, reaction: ReactionType | null) => {
@@ -263,11 +267,14 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                     <Ionicons name="cog" size={40} color={secondary}/>
                 </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={styles.updateButton} onPress={() => setIsReportDialogOpen(true)}>
-                  <Ionicons name="alert-circle" size={40} color={secondary}/>
-              </TouchableOpacity>
+                <VerifiedMilitaryProtected>
+                    <TouchableOpacity style={styles.updateButton} onPress={() => setIsReportDialogOpen(true)}>
+                        <Ionicons name="alert-circle" size={40} color={secondary}/>
+                    </TouchableOpacity>
+                </VerifiedMilitaryProtected>
             )}
             <VirtualizedView
+                isVerified={isVerifiedMilitary}
                 showsVerticalScrollIndicator={false}
                 style={[styles.container, {backgroundColor: primary}]}
                 contentContainerStyle={styles.contentContainer}
@@ -293,10 +300,10 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 </SharedElement>
                 <View marginBottom={50}>
                     {showReportAlert && (
-                      <SuccessAlert
-                        title="Report Sent"
-                        body="Thank you for reporting this Ghillie. We appreciate your help in keeping our community safe. If appropriate, we will take the necessary actions."
-                      />
+                        <SuccessAlert
+                            title="Report Sent"
+                            body="Thank you for reporting this Ghillie. We appreciate your help in keeping our community safe. If appropriate, we will take the necessary actions."
+                        />
                     )}
                     <Center>
                         <Text style={[styles.title, {color: colorsVerifyCode.white}]}>{ghillie?.name}</Text>
@@ -318,32 +325,35 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                 )
                             }
                         </Badge>
-                        <TouchableOpacity
-                            style={{
-                                marginTop: 10
-                            }}
-                            disabled={isBanned}
-                            onPress={() => onGhillieJoinOrLeave()}
-                        >
-                            <Badge
-                                variant="solid"
+                        <VerifiedMilitaryProtected>
+                            <TouchableOpacity
                                 style={{
-                                    backgroundColor: !ghillie.memberMeta ? secondary : fail,
-                                    borderRadius: 10
+                                    marginTop: 10
                                 }}
+                                disabled={isBanned}
+                                onPress={() => onGhillieJoinOrLeave()}
                             >
-                                <Text style={{
-                                    color: "white",
-                                    fontSize: 20
-                                }}
+                                <Badge
+                                    variant="solid"
+                                    style={{
+                                        backgroundColor: !ghillie.memberMeta ? secondary : fail,
+                                        borderRadius: 10
+                                    }}
                                 >
-                                    {!ghillie.memberMeta
-                                        ? "Join Ghillie"
-                                        : isBanned ? "Banned" : "Leave Ghillie"
-                                    }
-                                </Text>
-                            </Badge>
-                        </TouchableOpacity>
+                                    <Text style={{
+                                        color: "white",
+                                        fontSize: 20
+                                    }}
+                                    >
+                                        {!ghillie.memberMeta
+                                            ? "Join Ghillie"
+                                            : isBanned ? "Banned" : "Leave Ghillie"
+                                        }
+                                    </Text>
+                                </Badge>
+                            </TouchableOpacity>
+                        </VerifiedMilitaryProtected>
+
                     </Center>
                     <Row>
                         <Column width="50%" alignItems="center">
@@ -446,10 +456,10 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
 
             </VirtualizedView>
             <ReportMenuDialog
-              isOpen={isReportDialogOpen}
-              onClose={() => setIsReportDialogOpen(false)}
-              cancelRef={cancelRef}
-              onReport={reportGhillie}
+                isOpen={isReportDialogOpen}
+                onClose={() => setIsReportDialogOpen(false)}
+                cancelRef={cancelRef}
+                onReport={reportGhillie}
             />
         </View>
     );

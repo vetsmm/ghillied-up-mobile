@@ -4,7 +4,7 @@ import {Formik} from 'formik';
 import {ActivityIndicator} from 'react-native';
 
 // custom components
-import {Center, Hidden, HStack, Image, Text, VStack} from "native-base";
+import {Button, Center, Hidden, HStack, Image, Text, View, VStack} from "native-base";
 import {colorsVerifyCode} from "../../../components/colors";
 import MainContainer from "../../../components/containers/MainContainer";
 import KeyboardAvoidingContainer from "../../../components/containers/KeyboardAvoidingContainer";
@@ -27,6 +27,7 @@ import {useNavigation} from "@react-navigation/native";
 import PostService from "../../../shared/services/post.service";
 import postErrorHandler from "../../../shared/handlers/errors/post-error.handler";
 import {PostStatus} from "../../../shared/models/posts/post-status";
+import RegularText from "../../../components/texts/regular-texts";
 
 
 const {primary} = colorsVerifyCode;
@@ -78,7 +79,7 @@ export const CreatePostScreen: React.FC<{ route: Route }> = ({route}) =>{
   const navigation: any = useNavigation();
 
   const isVerifiedMilitary = useSelector(
-    (state: IRootState) => state.authentication.isVerifiedMilitary,
+    (state: IRootState) => state.authentication.isVerifiedMilitary || state.authentication.isAdmin,
   );
 
   const moveTo = (screen, payload?) => {
@@ -167,6 +168,47 @@ export const CreatePostScreen: React.FC<{ route: Route }> = ({route}) =>{
     });
 
     return !Object.values(errors).some(error => error !== null);
+  }
+
+  if (!isVerifiedMilitary) {
+    return (
+        <MainContainer style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <View
+              flex={1}
+              justifyContent="center"
+              alignItems="center"
+          >
+            <RegularText style={{
+              textAlign: "center",
+              fontSize: 18,
+            }}>
+              Thanks for joining! To begin posting to the community, you must verify your military status.
+              This helps us keep the community safe and secure.
+            </RegularText>
+            <Button
+                style={{
+                  marginTop: 10,
+                  marginBottom: 10,
+                  borderRadius: 20,
+                }}
+                color={colorsVerifyCode.accent}
+                onPress={() => navigation.navigate("Account", {screen: "MyAccount"})}
+            >
+              <Text style={{
+                color: "white",
+                fontSize: 20
+              }}
+              >
+                Verify Military Status
+              </Text>
+            </Button>
+          </View>
+        </MainContainer>
+    )
   }
 
   if (ghillieList.length === 0) {
