@@ -16,6 +16,7 @@ import {useStateWithCallback} from "../../../shared/hooks";
 import {colorsVerifyCode} from '../../../components/colors';
 import GhillieCardV2 from '../../../components/ghillie-card-v2';
 import RegularText from '../../../components/texts/regular-texts';
+import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 
 function GhillieListingHeader({isVerifiedMilitary, isAdmin}) {
     const navigation: any = useNavigation();
@@ -49,18 +50,20 @@ function GhillieListingHeader({isVerifiedMilitary, isAdmin}) {
             <Column width="76%">
             </Column>
             <Column width="12%">
-                <TouchableOpacity
-                    style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: 40,
-                        marginBottom: 8,
-                        paddingRight: 20
-                    }}
-                    onPress={() => handleSearchNavigate()}
-                >
-                    <Feather name="search" size={30} color={colorsVerifyCode.secondary}/>
-                </TouchableOpacity>
+                <VerifiedMilitaryProtected>
+                    <TouchableOpacity
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: 40,
+                            marginBottom: 8,
+                            paddingRight: 20
+                        }}
+                        onPress={() => handleSearchNavigate()}
+                    >
+                        <Feather name="search" size={30} color={colorsVerifyCode.secondary}/>
+                    </TouchableOpacity>
+                </VerifiedMilitaryProtected>
             </Column>
         </HStack>
     );

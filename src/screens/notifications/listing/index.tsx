@@ -16,6 +16,7 @@ import {getUnreadNotifications} from "../../../shared/reducers/notifications.red
 import {useSelector} from "react-redux";
 import {FlashList} from "@shopify/flash-list";
 import {useStateWithCallback} from "../../../shared/hooks";
+import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 
 function NotificationListingScreen() {
     const [clearAllOpen, setClearAllOpen] = useStateWithCallback(false);
@@ -107,7 +108,7 @@ function NotificationListingScreen() {
                     justifyContent: 'flex-start',
                     alignItems: 'center',
                 }}>
-                {/* Lazy way to have columns */}
+                    {/* Lazy way to have columns */}
                 </View>
                 <View style={{
                     flex: 1,
@@ -126,21 +127,23 @@ function NotificationListingScreen() {
                     justifyContent: 'flex-end',
                     marginRight: 10,
                 }}>
-                    <TouchableOpacity
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: 40,
-                            marginBottom: 8,
-                            paddingLeft: 20
-                        }}
-                        onPress={() => setClearAllOpen(true)}
-                    >
-                        <FontAwesome5 name="check" size={30} color="white" />
-                    </TouchableOpacity>
+                    <VerifiedMilitaryProtected>
+                        <TouchableOpacity
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: 40,
+                                marginBottom: 8,
+                                paddingLeft: 20
+                            }}
+                            onPress={() => setClearAllOpen(true)}
+                        >
+                            <FontAwesome5 name="check" size={30} color="white"/>
+                        </TouchableOpacity>
+                    </VerifiedMilitaryProtected>
                 </View>
             </View>
-            <View style={styles.listContainer} >
+            <View style={styles.listContainer}>
                 <FlashList
                     keyExtractor={(item) => item.notificationId!}
                     showsVerticalScrollIndicator={false}

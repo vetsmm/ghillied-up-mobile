@@ -12,4 +12,5 @@ export const colorsVerifyCode = {
   success: '#93D879',
   fail: '#b62c38',
   failLighter: '#df7a83',
+  warning: '#FBBF24',
 };
