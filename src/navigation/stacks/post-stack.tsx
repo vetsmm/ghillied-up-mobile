@@ -15,6 +15,7 @@ interface PostScreenProps {
   route: string;
   component: React.ComponentType<any>;
   options?: any;
+  screenOptions?: any;
 }
 
 export const postScreens: Array<PostScreenProps> = [
@@ -30,6 +31,11 @@ export const postScreens: Array<PostScreenProps> = [
   {
     name: "PostDetail",
     route: "post-detail/:postId",
+    screenOptions: {
+        parse: {
+            postId: postId => postId,
+        }
+    },
     component: PostDetailScreen,
     options: {
       title: "",
@@ -110,7 +116,10 @@ export const postScreens: Array<PostScreenProps> = [
 export const getPostScreenRoutes = () => {
   const routes: any = {};
   postScreens.forEach((screen: any) => {
-    routes[screen.name] = screen.route;
+    routes[screen.name] = {
+      path: screen.path,
+      ...screen.screenOptions
+    };
   });
   return routes;
 };
@@ -128,54 +137,6 @@ export default function PostStackScreen() {
           options={screen.options}
         />
       ))}
-      {/*<PostStack.Screen*/}
-      {/*  name="CreatePost"*/}
-      {/*  // @ts-ignore*/}
-      {/*  component={CreatePostScreen}*/}
-      {/*  options={{*/}
-      {/*    title: "",*/}
-      {/*    headerShown: false*/}
-      {/*  }}*/}
-      {/*/>*/}
-      {/*<PostStack.Screen*/}
-      {/*  name="UpdatePost"*/}
-      {/*  // @ts-ignore*/}
-      {/*  component={UpdatePostScreen}*/}
-      {/*  options={{*/}
-      {/*    title: "",*/}
-      {/*    headerShown: false*/}
-      {/*  }}*/}
-      {/*/>*/}
-      {/*<PostStack.Screen*/}
-      {/*  name="PostDetail"*/}
-      {/*  // @ts-ignore*/}
-      {/*  component={PostDetailScreen}*/}
-      {/*  options={{*/}
-      {/*    title: "",*/}
-      {/*    headerShown: false,*/}
-      {/*    gestureEnabled: true*/}
-      {/*  }}*/}
-      {/*/>*/}
-      {/*<PostStack.Screen*/}
-      {/*  name="CreatePostComment"*/}
-      {/*  // @ts-ignore*/}
-      {/*  component={PostCommentCreateScreen}*/}
-      {/*  options={{*/}
-      {/*    title: "",*/}
-      {/*    headerShown: false,*/}
-      {/*    gestureEnabled: true*/}
-      {/*  }}*/}
-      {/*/>*/}
-      {/*<PostStack.Screen*/}
-      {/*  name="UpdatePostComment"*/}
-      {/*  // @ts-ignore*/}
-      {/*  component={PostCommentUpdateScreen}*/}
-      {/*  options={{*/}
-      {/*    title: "",*/}
-      {/*    headerShown: false,*/}
-      {/*    gestureEnabled: true*/}
-      {/*  }}*/}
-      {/*/>*/}
     </PostStack.Navigator>
   );
 }
