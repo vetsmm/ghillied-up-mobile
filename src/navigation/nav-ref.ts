@@ -21,7 +21,7 @@ import {getAccountRoutes} from './stacks/account-stack';
 export interface RootTabParamList {
   FeedStack: undefined;
   GhillieStack: undefined;
-  PostStack: undefined;
+  Posts: undefined;
   NotificationsStack: undefined;
   AccountStack: undefined;
   NotFound: undefined;
@@ -43,7 +43,7 @@ export const linkingConfig: LinkingOptions<RootTabParamList> | undefined = {
           ...getGhillieScreenRoutes()
         }
       },
-      "PostStack": {
+      "Posts": {
         path: 'posts',
         screens: {
           ...getPostScreenRoutes()
@@ -80,6 +80,14 @@ export function navigate(name: keyof RootTabParamList, params: any) {
     console.log('navigationRef.current', navigationRef.current);
     // You can decide what to do if the app hasn't mounted
     // You can ignore this, or add these actions to a queue you can call later
+
+    // Queue the call for later
+    navigationRef.current?.dispatch(
+      CommonActions.navigate({
+        name,
+        params,
+      })
+    );
   }
 }
 
