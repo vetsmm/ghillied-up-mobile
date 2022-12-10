@@ -1,5 +1,4 @@
 import {NotificationType} from "../models/notifications/notification-type";
-import stringUtils from "./string.utils";
 
 const getTitleMessage = (notificationType: NotificationType, username: string): string => {
     switch (notificationType) {

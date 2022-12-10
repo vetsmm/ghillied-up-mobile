@@ -57,7 +57,7 @@ const ChildCommentBlock = ({
       }, AppConfig.timeouts.reportDialogs);
     }
   }, [showReportAlert]);
-  
+
   return (
     <View style={{
       flexDirection: "column",
@@ -188,11 +188,7 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
   const isAdmin = useSelector(
     (state: IRootState) => state.authentication.isAdmin
   );
-  
-  const account = useSelector(
-    (state: IRootState) => state.authentication.account
-  );
-  
+
   const isModerator = useSelector(
     (state: IRootState) =>
       state.ghillie.ghillie.memberMeta !== null &&
@@ -202,7 +198,7 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
       )
   );
   
-  const isPostOwner = post ? post?.postedBy?.username === account.username : false;
+  const isPostOwner = post ? (post?.postedBy?.username === parentComment?.createdBy.username) : false;
   
   const onHandleCommentReaction = (commentId: string, shouldDelete: boolean) => {
     postCommentReactionService.reactToParentComment(shouldDelete ? null : ReactionType.THUMBS_UP, commentId)

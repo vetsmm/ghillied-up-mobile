@@ -8,7 +8,7 @@ import {
   Avatar,
   View, Box
 } from "native-base";
-import {MaterialIcons} from "@expo/vector-icons";
+import {AntDesign, MaterialIcons} from "@expo/vector-icons";
 import {getMilitaryString} from "../../shared/utils/military-utils";
 import RegularText from "../texts/regular-texts";
 import SmallText from "../texts/small-text";
@@ -162,8 +162,7 @@ export const PostFeedCard = ({
           <HStack space={2} alignItems="center" px="4">
             <Avatar
               borderWidth="1"
-              _light={{borderColor: "primary.900"}}
-              _dark={{borderColor: "primary.700"}}
+              borderColor={colorsVerifyCode.secondary}
               source={
                 post.ghillieImageUrl
                   ? {uri: post.ghillieImageUrl}
@@ -173,8 +172,9 @@ export const PostFeedCard = ({
               height="10"
             />
             <VStack>
-              <Text fontSize="sm" fontWeight="semibold" color={"white"}>
-                {post.ownerUsername}
+              <Text fontSize="sm" fontWeight="semibold" color={colorsVerifyCode.secondary}>
+                <AntDesign name="caretright" size={10} color={colorsVerifyCode.secondary} />
+                {` ${post.ghillieName}`}
               </Text>
               
               <Text

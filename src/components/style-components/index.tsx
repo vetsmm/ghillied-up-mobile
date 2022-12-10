@@ -122,7 +122,7 @@ export const Content = styled(View)<{
             ? 94
             : 0}px;
   padding-bottom: 12px;
-  padding: 16px;
+  paddingLeft: 16px;
 `;
 
 export const HorizontalTierSVG = ({nested}: {nested: number}) => {
