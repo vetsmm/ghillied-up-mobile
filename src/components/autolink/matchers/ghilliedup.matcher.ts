@@ -5,7 +5,7 @@ export const GhilliedUpHashTagMatcher: CustomMatcher = {
   pattern: /#([a-zA-Z0-9_]+)/g,
   type: 'ghilliedup-hashtag',
   onPress: (match) => {
-    navigate('FeedStack', {
+    navigate('Feed', {
       screen: "HashTagFeed",
       params: {
         hashtag: match.getReplacerArgs()[0].replace('#', '')
