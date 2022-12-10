@@ -45,8 +45,6 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
   const [isError, setError] = React.useState(false);
   const [parentCommentsPage, setParentCommentsPage] = React.useState(1);
   const [parentComments, setParentComments] = React.useState<ParentCommentDto[]>([]);
-  // const [levelOneComments, setLevelOneComments] = React.useState<Immutable.OrderedMap<string, CommentDetailDto>>(Immutable.OrderedMap()); // key is commentId
-  // const [levelTwoComments, setLevelTwoComments] = React.useState<Immutable.OrderedMap<string, CommentDetailDto>>(Immutable.OrderedMap()); // Key is the parent comment id
   const [showReportAlert, setShowReportAlert] = React.useState(false);
   const [showBookmarkAlert, setShowBookmarkAlert] = React.useState(false);
   

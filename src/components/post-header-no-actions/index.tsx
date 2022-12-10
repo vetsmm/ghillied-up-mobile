@@ -13,6 +13,8 @@ import RegularText from "../texts/regular-texts";
 import SmallText from "../texts/small-text";
 import {getTimeAgo} from "../../shared/utils/date-utils";
 import {PostDetailDto} from "../../shared/models/posts/post-detail.dto";
+import {colorsVerifyCode} from "../colors";
+import {AntDesign} from "@expo/vector-icons";
 
 export interface IPostCardNoActionsProps {
   post: PostListingDto | PostDetailDto;
@@ -27,8 +29,7 @@ export const PostHeaderNoActions = ({post}: IPostCardNoActionsProps) => {
         <HStack space={2} alignItems="center" px="8">
           <Avatar
             borderWidth="1"
-            _light={{borderColor: "primary.900"}}
-            _dark={{borderColor: "primary.700"}}
+            borderColor={colorsVerifyCode.secondary}
             source={
               post.ghillie?.imageUrl
                   ? {uri: post.ghillie?.imageUrl}
@@ -38,8 +39,9 @@ export const PostHeaderNoActions = ({post}: IPostCardNoActionsProps) => {
             height="10"
           />
           <VStack>
-            <Text fontSize="sm" fontWeight="semibold" color={"white"}>
-              {post.postedBy.username}
+            <Text fontSize="sm" fontWeight="semibold" color={colorsVerifyCode.secondary}>
+              <AntDesign name="caretright" size={10} color={colorsVerifyCode.secondary} />
+              {` ${post.ghillie?.name}`}
             </Text>
 
             <Text
@@ -52,12 +54,12 @@ export const PostHeaderNoActions = ({post}: IPostCardNoActionsProps) => {
           </VStack>
         </HStack>
         <View style={{
-          paddingLeft: 8,
+          paddingRight: "5%",
           width: 100,
           flex: 1,
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "flex-start"
+          justifyContent: "flex-end"
         }}
         >
           <SmallText>

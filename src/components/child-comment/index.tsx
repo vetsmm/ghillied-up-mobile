@@ -107,22 +107,20 @@ const ChildComment = ({
             alt={comment.createdBy.branch}
           />
           <VStack>
-            <Text fontSize="sm" fontWeight="semibold" color={"white"}>
-              {comment.createdBy.username} {isOp && (
-              <Text
-                color={"#FFD700"}
-                fontSize="xs"
-              >
-                (OP)
-              </Text
-              >)}
-            
-            </Text>
             <Name
               accessibilityHint="tap to visit user's profile screen"
               accessibilityLabel={`username ${comment.createdBy.username}`}
               name={comment.createdBy.username as string}>
               {getMilitaryString(comment.createdBy.branch, comment.createdBy.serviceStatus)}
+              {" "}
+              {isOp && (
+                  <Text
+                      color={"#FFD700"}
+                      fontSize="xs"
+                  >
+                    (OP)
+                  </Text
+                  >)}
             </Name>
           </VStack>
         </View>
@@ -211,7 +209,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
     borderTopRightRadius: 10,
     marginLeft: 30,
-    padding: "5%"
+    paddingLeft: "5%"
   }
 });
 

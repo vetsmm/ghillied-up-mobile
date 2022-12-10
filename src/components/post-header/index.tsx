@@ -10,7 +10,7 @@ import {
   View
 } from "native-base";
 import {PostListingDto} from "../../shared/models/posts/post-listing.dto";
-import {MaterialIcons} from "@expo/vector-icons";
+import {AntDesign, MaterialIcons} from "@expo/vector-icons";
 import {getMilitaryString} from "../../shared/utils/military-utils";
 import RegularText from "../texts/regular-texts";
 import SmallText from "../texts/small-text";
@@ -69,8 +69,7 @@ export const PostHeader = ({
         <HStack space={2} alignItems="center" px="8">
           <Avatar
             borderWidth="1"
-            _light={{borderColor: "primary.900"}}
-            _dark={{borderColor: "primary.700"}}
+            borderColor={colorsVerifyCode.secondary}
             source={
               post.ghillie?.imageUrl
                   ? {uri: post.ghillie?.imageUrl}
@@ -85,8 +84,9 @@ export const PostHeader = ({
                 console.log(`${post.postedBy.username} clicked`);
               }}
             >
-              <Text fontSize="sm" fontWeight="semibold" color={"white"}>
-                {post.postedBy.username}
+              <Text fontSize="sm" fontWeight="semibold" color={colorsVerifyCode.secondary}>
+                <AntDesign name="caretright" size={10} color={colorsVerifyCode.secondary} />
+                {` ${post.ghillie.name}`}
               </Text>
             </Pressable>
 

@@ -112,22 +112,20 @@ const ParentComment = ({
             alt={comment.createdBy.branch}
           />
           <VStack>
-            <Text fontSize="sm" fontWeight="semibold" color={"white"}>
-              {comment.createdBy.username} {isOp && (
-              <Text
-                color={"#FFD700"}
-                fontSize="xs"
-              >
-                (OP)
-              </Text
-              >)}
-            
-            </Text>
             <Name
               accessibilityHint="tap to visit user's profile screen"
               accessibilityLabel={`username ${comment.createdBy.username}`}
               name={comment.createdBy.username as string}>
               {getMilitaryString(comment.createdBy.branch, comment.createdBy.serviceStatus)}
+              {" "}
+              {isOp && (
+                  <Text
+                      color={"#FFD700"}
+                      fontSize="xs"
+                  >
+                    (OP)
+                  </Text
+                  >)}
             </Name>
           </VStack>
         </View>
@@ -146,7 +144,6 @@ const ParentComment = ({
       </View>
       
       <View style={[styles.contentWrapper]}>
-        
         <Content hasChildren={hasChildren} nested={1}>
           <CommentContent
             accessibilityHint={`comment content ${comment.content}`}
@@ -176,7 +173,6 @@ const ParentComment = ({
             _renderEmptyReaction()
           )}
           
-          {/* TODO: IMplement threaded comments */}
           <TouchableOpacity onPress={() => onCommentReply(comment)}>
             <View style={{
               paddingLeft: 8,
