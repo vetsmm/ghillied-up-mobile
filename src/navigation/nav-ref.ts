@@ -19,7 +19,7 @@ import {getAccountRoutes} from './stacks/account-stack';
 
 
 export interface RootTabParamList {
-  FeedStack: undefined;
+  Feed: undefined;
   GhillieStack: undefined;
   Posts: undefined;
   NotificationsStack: undefined;
@@ -31,7 +31,7 @@ export const linkingConfig: LinkingOptions<RootTabParamList> | undefined = {
   prefixes: [AppConfig.appUrl],
   config: {
     screens: {
-      "FeedStack": {
+      "Feed": {
         path: "feed",
         screens: {
           ...getFeedScreenRoutes()
