@@ -12,7 +12,8 @@ import {
     MARINE_CORPS_SEAL_PNG,
     NAVY_SEAL_PNG,
     SPACE_FORCE_SEAL_PNG,
-    US_FLAG_PNG
+    US_FLAG_PNG,
+    COAST_GUARD_SEAL_PNG
 } from "../../assets";
 import RegularText from "../texts/regular-texts";
 import {SvgXml} from "react-native-svg";
@@ -47,6 +48,8 @@ export const AccountOverviewCard = ({account, onVerifyClick,}: AccountOverviewCa
                 return ARMY_NATIONAL_GUARD_SEAL_PNG;
             case ServiceBranch.SPACE_FORCE:
                 return SPACE_FORCE_SEAL_PNG;
+            case ServiceBranch.COAST_GUARD:
+                return COAST_GUARD_SEAL_PNG;
             default:
                 return US_FLAG_PNG;
         }

@@ -10,7 +10,6 @@ import {TouchableOpacity} from "react-native-gesture-handler";
 import {colorsVerifyCode} from "../colors";
 import {useAppDispatch} from "../../store";
 import {markNotificationsAsRead} from "../../shared/reducers/notifications.reducer";
-import {getNotificationMessage} from "../../shared/messages";
 
 export const ActivityNotification: React.FC<{ notification: any }> = ({notification}) => {
     const dispatch = useAppDispatch();
@@ -79,7 +78,7 @@ export const ActivityNotification: React.FC<{ notification: any }> = ({notificat
                                 flexWrap: "wrap",
                             }}
                         >
-                            {getNotificationMessage(notification)}
+                            {notification?.notificationMessage}
                         </RegularText>
 
                         {notification.type === NotificationType.POST_COMMENT && (

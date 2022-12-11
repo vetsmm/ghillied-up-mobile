@@ -53,7 +53,13 @@ const applyAxiosErrorInterceptor = (axiosInstance: any) => {
             if (!error.response) {
                 Sentry.Native.captureException(error);
             }
-            console.log(error);
+
+            // If the error is a 401, then we need to refresh the token
+            // if (error.response && error.response.status === 401) {
+            //     console.log('401 error', error.response);
+            //     return axiosInstance.request(error.config);
+            // }
+
             return Promise.reject(error.response);
         }
     );
