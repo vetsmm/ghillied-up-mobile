@@ -53,6 +53,8 @@ const ParentComment = ({
         return require("../../../assets/seals/png/air-national-guard.png");
       case ServiceBranch.ARMY_NATIONAL_GUARD:
         return require("../../../assets/seals/png/army-national-guard.png");
+        case ServiceBranch.COAST_GUARD:
+        return require("../../../assets/seals/png/coast-guard.png");
       default:
         return require("../../../assets/seals/png/us-flag.png");
     }

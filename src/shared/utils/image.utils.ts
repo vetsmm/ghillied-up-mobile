@@ -6,8 +6,8 @@ export const getServiceBranchSealPng = (serviceBranch: ServiceBranch): string =>
       return "air-force.png";
     case ServiceBranch.ARMY:
       return "army.png";
-    // case ServiceBranch.:
-    //   return require('../assets/images/seals/coast-guard.png');
+    case ServiceBranch.COAST_GUARD:
+      return "coast-guard.png";
     case ServiceBranch.MARINES:
       return "marines.png";
     case ServiceBranch.NAVY:
