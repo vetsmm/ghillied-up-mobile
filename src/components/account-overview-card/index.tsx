@@ -39,9 +39,7 @@ export const AccountOverviewCard = ({account, onVerifyClick,}: AccountOverviewCa
             case ServiceBranch.AIR_FORCE:
                 return AIR_FORCE_SEAL_PNG;
             case ServiceBranch.MARINES:
-                return MARINE_CORPS_SEAL_PNG;
-            // case ServiceBranch.COAST_GUARD:
-            //     return COAST_GUARD_SEAL_PNG;
+                return MARINE_CORPS_SEAL_PNG
             case ServiceBranch.AIR_NATIONAL_GUARD:
                 return AIR_NATIONAL_GUARD_SEAL_PNG;
             case ServiceBranch.ARMY_NATIONAL_GUARD:
