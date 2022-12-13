@@ -241,6 +241,49 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         />
     );
 
+    const _renderPostButton = () => {
+        if (ghillie?.readOnly) {
+            if (isModerator) {
+                return (
+                    <CreatePostButton
+                        style={{
+                            height: 50,
+                            opacity: 0.8,
+                            margin: 15
+                        }}
+                        onPress={() => {
+                            navigation.navigate("Posts", {
+                                screen: "CreatePost",
+                                params: {preSelectedGhillie: ghillie}
+                            });
+                        }}
+                    />
+                )
+            }
+            return null;
+        }
+
+        if (!isBanned && isMember) {
+            return (
+                <CreatePostButton
+                    style={{
+                        height: 50,
+                        opacity: 0.8,
+                        margin: 15
+                    }}
+                    onPress={() => {
+                        navigation.navigate("Posts", {
+                            screen: "CreatePost",
+                            params: {preSelectedGhillie: ghillie}
+                        });
+                    }}
+                />
+            )
+        }
+
+        return null;
+    }
+
     if (isLoading) {
         return (
             <View style={{
@@ -410,21 +453,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                     }}>
                                         Recent Posts
                                     </BigText>
-                                    {(!isBanned && isMember) && (
-                                        <CreatePostButton
-                                            style={{
-                                                height: 50,
-                                                opacity: 0.8,
-                                                margin: 15
-                                            }}
-                                            onPress={() => {
-                                                navigation.navigate("Posts", {
-                                                    screen: "CreatePost",
-                                                    params: {preSelectedGhillie: ghillie}
-                                                });
-                                            }}
-                                        />
-                                    )}
+                                    {_renderPostButton()}
                                     {/* TODO: Add pinned posts, ** REQUIRES DATA CHANGE ** */}
                                 </View>
                             )}

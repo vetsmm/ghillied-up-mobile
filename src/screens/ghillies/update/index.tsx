@@ -134,8 +134,8 @@ export const GhillieUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
       } as UpdateGhillieDto;
       
       let hasError = false;
-      
-      GhillieService.updateGhillie(ghillie.id, nonFormData)
+
+      await GhillieService.updateGhillie(ghillie.id, nonFormData)
         .then((res) => {
           dispatch(updateGhillie(res.data));
         })
@@ -194,7 +194,6 @@ export const GhillieUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
         readOnly: null
       });
       
-      console.log('errors', errors);
       return Object.values(errors).some(error => error !== null);
     }
     
