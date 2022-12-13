@@ -8,7 +8,6 @@ import UpdatePostScreen from "../../screens/posts/update";
 import ChildCommentUpdateScreen from '../../screens/comments/update-child';
 import CreateChildCommentScreen from '../../screens/comments/create-child';
 import CommentThreadScreen from '../../screens/comments/thread';
-import {colorsVerifyCode} from '../../components/colors';
 
 interface PostScreenProps {
   name: string;
@@ -97,18 +96,9 @@ export const postScreens: Array<PostScreenProps> = [
     route: "comment-thread/:parentCommentId",
     component: CommentThreadScreen,
     options: {
-      title: "Replies to Comment",
-      headerShown: true,
+      title: "",
+      headerShown: false,
       gestureEnabled: true,
-      headerStyle: {
-        backgroundColor: colorsVerifyCode.primary,
-      },
-      headerTitleAlign: 'center',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-        color: colorsVerifyCode.white,
-      },
-      headerTintColor: colorsVerifyCode.white,
     }
   }
 ];

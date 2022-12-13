@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Center} from 'native-base';
+import React, {useCallback, useEffect, useState} from 'react';
+import {View, Text, Center, Hidden, VStack, HStack} from 'native-base';
 import MainContainer from '../../../components/containers/MainContainer';
 import ParentComment from '../../../components/parent-comment';
 import {ParentCommentDto} from '../../../shared/models/comments/parent-comment.dto';
@@ -18,18 +18,53 @@ import {GhillieRole} from '../../../shared/models/ghillies/ghillie-role';
 import postService from '../../../shared/services/post.service';
 import {colorsVerifyCode} from '../../../components/colors';
 import {FlashList} from '@shopify/flash-list';
-import {RefreshControl} from 'react-native';
+import {RefreshControl, TouchableOpacity} from 'react-native';
 import {Colors} from '../../../shared/styles';
 import ChildComment from '../../../components/child-comment';
 import {PostDetailDto} from '../../../shared/models/posts/post-detail.dto';
 import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
 import {SuccessAlert} from '../../../components/alerts/success-alert';
 import AppConfig from '../../../config/app.config';
+import {Ionicons} from "@expo/vector-icons";
 
 interface Route {
   params: {
     parentCommentId: string;
   };
+}
+
+function MobileHeader() {
+  const navigation: any = useNavigation();
+
+  const goBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
+  return (
+      <Hidden from="md">
+        <VStack px="4" mt="4" mb="5" space="9">
+          <HStack space="2" alignItems="center">
+            <TouchableOpacity style={{
+              // position: 'absolute',
+              // left: 30,
+              zIndex: 9,
+            }} onPress={goBack}>
+              <Ionicons name="arrow-back-circle-outline" size={40} color={colorsVerifyCode.secondary}/>
+            </TouchableOpacity>
+            <Center>
+              <Text
+                  fontSize="2xl"
+                  fontWeight="bold"
+                  _light={{color: 'white'}}
+                  _dark={{color: 'white'}}
+              >
+                Comment Replies
+              </Text>
+            </Center>
+          </HStack>
+        </VStack>
+      </Hidden>
+  );
 }
 
 const ChildCommentBlock = ({
@@ -363,6 +398,7 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
       flexGrow: 1,
       paddingTop: isIphoneX() ? getStatusBarHeight() + 20 : 30
     }}>
+      <MobileHeader />
       <View style={{
         flex: 1,
         flexGrow: 1,
