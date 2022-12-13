@@ -2,10 +2,10 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect} from 'react';
 import {
   FlatList,
-  RefreshControl
+  RefreshControl, TouchableOpacity
 } from 'react-native';
 import {colorsVerifyCode} from "../../../components/colors";
-import {Text, Spinner, View} from "native-base";
+import {Text, Spinner, View, Hidden, VStack, HStack, Center} from "native-base";
 import {useSelector} from "react-redux";
 import {IRootState} from "../../../store";
 import PostService from "../../../shared/services/post.service";
@@ -29,6 +29,7 @@ import {SuccessAlert} from "../../../components/alerts/success-alert";
 import AppConfig from '../../../config/app.config';
 import {ParentCommentDto} from '../../../shared/models/comments/parent-comment.dto';
 import {ChildCommentDto} from '../../../shared/models/comments/child-comment.dto';
+import {Ionicons} from "@expo/vector-icons";
 
 const {primary} = colorsVerifyCode;
 
@@ -37,6 +38,30 @@ interface Route {
   params: {
     postId: string;
   };
+}
+
+function MobileHeader() {
+  const navigation: any = useNavigation();
+
+  const goBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
+  return (
+      <Hidden from="md">
+        <VStack px="4" mt="4" mb="5" space="9">
+          <HStack space="2" alignItems="center">
+            <TouchableOpacity style={{
+              // position: 'absolute',
+              // left: 30,
+              zIndex: 9,
+            }} onPress={goBack}>
+              <Ionicons name="arrow-back-circle-outline" size={40} color={colorsVerifyCode.secondary}/>
+            </TouchableOpacity>
+          </HStack>
+        </VStack>
+      </Hidden>
+  );
 }
 
 export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
@@ -305,6 +330,8 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
   
   return (
     <MainContainer style={[styles.container]}>
+      <MobileHeader />
+
       {isError && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>Post is unavailable</Text>
