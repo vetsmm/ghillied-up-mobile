@@ -143,8 +143,8 @@ export const UpdatePostScreen: React.FC<{ route: Route }> = ({route}) =>{
             setFormErrors({content: "Content is required"})
             return false;
         }
-        if (formData.content.length > 450) {
-            setFormErrors({content: "Content is too long, max 450 characters"})
+        if (formData.content.length > 1000) {
+            setFormErrors({content: "Content is too long, max 1000 characters"})
             return false;
         }
 
