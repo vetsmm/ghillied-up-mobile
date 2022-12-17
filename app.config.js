@@ -2,7 +2,7 @@ export default {
     name: "Ghillied Up",
     slug: "ghillied-up",
     owner: "ghilliedup",
-    version: "1.0.8",
+    version: "1.0.9",
     orientation: "portrait",
     icon: "./assets/logos/logo-square.png",
     scheme: "ghilliedup",
