@@ -117,7 +117,7 @@ const THUMBS_UP_SVG = `<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2
 </g>
 </svg>`
 
-const HEART_SVG = `<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="24" width="24"
+const HEART_SVG = `<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" width="31" height="24" viewBox="0 0 24 24"
      version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <g transform="translate(0 -1028.4)">
     <path
