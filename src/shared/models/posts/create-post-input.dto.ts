@@ -14,7 +14,7 @@ export class CreatePostInputDto {
   @MaxLength(50)
   title: string
 
-  @MaxLength(400)
+  @MaxLength(1000)
   content: string
 
   status?: PostStatus
