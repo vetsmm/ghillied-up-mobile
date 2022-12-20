@@ -9,10 +9,33 @@ import RegularText from "../texts/regular-texts";
 interface VirtualizedViewProps extends IFlatListProps<any> {
     hideData?: boolean;
     isVerified?: boolean;
+    isActive?: boolean;
 }
 
-export default function VirtualizedView({hideData, isVerified = true, ...props}: VirtualizedViewProps) {
+export default function VirtualizedView({hideData, isVerified = true, isActive = true,  ...props}: VirtualizedViewProps) {
     const navigation: any = useNavigation();
+
+    if (!isActive) {
+        return (
+            <FlatList
+                {...props}
+                data={[]}
+                ListHeaderComponent={() => (
+                    <React.Fragment>{props.children}</React.Fragment>
+                )}
+                ListEmptyComponent={() => (
+                    <View alignSelf={"center"}>
+                        <RegularText style={{
+                            color: colorsVerifyCode.failLighter,
+                        }}>
+                            This Ghillie has been archived.
+                        </RegularText>
+                    </View>
+                )}
+            />
+
+        )
+    }
 
     if (!isVerified) {
         return (

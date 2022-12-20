@@ -34,6 +34,8 @@ import flagService from '../../../shared/services/flag.service';
 import {SuccessAlert} from '../../../components/alerts/success-alert';
 import AppConfig from '../../../config/app.config';
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
+import {GhillieStatus} from "../../../shared/models/ghillies/ghillie-status";
+import GhillieService from "../../../shared/services/ghillie.service";
 
 const {primary, secondary, fail} = colorsVerifyCode;
 
@@ -134,9 +136,18 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
 
     const onGhillieJoinOrLeave = () => {
         if (ghillie.memberMeta) {
-            dispatch(leaveGhillie(ghillieId));
+            GhillieService.leaveGhillie(ghillieId).then(() => {
+                navigation.goBack();
+            }).catch((err) => {
+                console.log("Error", err.data);
+                // TODO: Universal Error Alerts
+            });
         } else {
-            dispatch(joinGhillie(ghillieId));
+            GhillieService.joinGhillie(ghillieId).then(() => {
+            }).catch((err) => {
+                console.log("Error", err);
+                // TODO: Universal Error Alerts
+            });
         }
     };
 
@@ -242,6 +253,9 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     );
 
     const _renderPostButton = () => {
+        if (ghillie?.status !== GhillieStatus.ACTIVE) {
+            return null;
+        }
         if (ghillie?.readOnly) {
             if (isModerator) {
                 return (
@@ -318,6 +332,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             )}
             <VirtualizedView
                 isVerified={isVerifiedMilitary}
+                isActive={ghillie?.status === GhillieStatus.ACTIVE}
                 showsVerticalScrollIndicator={false}
                 style={[styles.container, {backgroundColor: primary}]}
                 contentContainerStyle={styles.contentContainer}
@@ -369,32 +384,59 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                             }
                         </Badge>
                         <VerifiedMilitaryProtected>
-                            <TouchableOpacity
-                                style={{
-                                    marginTop: 10
-                                }}
-                                disabled={isBanned}
-                                onPress={() => onGhillieJoinOrLeave()}
-                            >
-                                <Badge
-                                    variant="solid"
+                            {ghillie?.status === GhillieStatus.ACTIVE && (
+                                <TouchableOpacity
                                     style={{
-                                        backgroundColor: !ghillie.memberMeta ? secondary : fail,
-                                        borderRadius: 10
+                                        marginTop: 10
                                     }}
+                                    disabled={isBanned}
+                                    onPress={() => onGhillieJoinOrLeave()}
                                 >
-                                    <Text style={{
-                                        color: "white",
-                                        fontSize: 20
-                                    }}
+                                    <Badge
+                                        variant="solid"
+                                        style={{
+                                            backgroundColor: !ghillie.memberMeta ? secondary : fail,
+                                            borderRadius: 10
+                                        }}
                                     >
-                                        {!ghillie.memberMeta
-                                            ? "Join Ghillie"
-                                            : isBanned ? "Banned" : "Leave Ghillie"
-                                        }
-                                    </Text>
-                                </Badge>
-                            </TouchableOpacity>
+                                        <Text style={{
+                                            color: "white",
+                                            fontSize: 20
+                                        }}
+                                        >
+                                            {!ghillie.memberMeta
+                                                ? "Join Ghillie"
+                                                : isBanned ? "Banned" : "Leave Ghillie"
+                                            }
+                                        </Text>
+                                    </Badge>
+                                </TouchableOpacity>
+                            )}
+                            {(ghillie?.status !== GhillieStatus.ACTIVE && ghillie.memberMeta) && (
+                                <TouchableOpacity
+                                    style={{
+                                        marginTop: 10
+                                    }}
+                                    disabled={isBanned}
+                                    onPress={() => onGhillieJoinOrLeave()}
+                                >
+                                    <Badge
+                                        variant="solid"
+                                        style={{
+                                            backgroundColor: fail,
+                                            borderRadius: 10
+                                        }}
+                                    >
+                                        <Text style={{
+                                            color: "white",
+                                            fontSize: 20
+                                        }}
+                                        >
+                                            Leave Ghillie
+                                        </Text>
+                                    </Badge>
+                                </TouchableOpacity>
+                            )}
                         </VerifiedMilitaryProtected>
 
                     </Center>

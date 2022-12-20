@@ -41,7 +41,6 @@ const ActionButtons: React.FunctionComponent<ActionButtonsProps> = ({navigation}
                         username: credentials.username,
                     });
                 } else {
-                    console.log("Error logging in: ", error);
                     await clearAuthenticationCredentials();
                     setIsAttemptingLogin(false);
                 }

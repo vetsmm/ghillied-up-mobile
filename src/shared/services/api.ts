@@ -32,6 +32,7 @@ const requestRefresh: TokenRefreshRequest = async (refreshToken: string): Promis
     // Use the global axios client or a different instance
     const response = await axios.post(`${BASE_URL}/auth/refresh-token`, {refreshToken})
 
+    console.log('response', response);
     return response.data.data.accessToken
 }
 
