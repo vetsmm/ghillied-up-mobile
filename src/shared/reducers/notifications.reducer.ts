@@ -43,8 +43,9 @@ export const NotificationState = createSlice({
     },
     extraReducers(builder) {
         builder.addCase(getUnreadNotifications.rejected, (state, action) => {
+            console.log("notification error", action)
             // @ts-ignore
-            state.errorMessage = action.payload.data.error.message;
+            state.errorMessage = action.payload.error.message;
             state.loading = false;
         });
         builder.addCase(markNotificationsAsRead.rejected, (state, action) => {
