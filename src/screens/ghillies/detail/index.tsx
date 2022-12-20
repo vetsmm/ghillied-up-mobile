@@ -15,7 +15,7 @@ import TopicsContainer from "../../../components/topics-container";
 import {numberToReadableFormat} from "../../../shared/utils/number-utils";
 import {useSelector} from "react-redux";
 import {IRootState, useAppDispatch} from "../../../store";
-import {getGhillie, joinGhillie, leaveGhillie} from "../../../shared/reducers/ghillie.reducer";
+import {getGhillie} from "../../../shared/reducers/ghillie.reducer";
 import VirtualizedView from "../../../components/virtualized-view";
 import PostService from "../../../shared/services/post.service";
 import {PostFeedDto} from "../../../shared/models/feed/post-feed.dto";
