@@ -5,7 +5,6 @@ import {BaseApiResponse} from "../models/base-api-response";
 import {GhillieSearchCriteria} from "../models/ghillies/ghillie-search.criteria";
 import {PageInfo} from "../models/pagination/types";
 import {UpdateGhillieDto} from '../models/ghillies/update-ghillie.dto';
-import {ImageInfo} from 'expo-image-picker';
 import {Platform} from 'react-native';
 import {CreateGhillieInputDto} from '../models/ghillies/create-ghillie-input.dto';
 
@@ -80,13 +79,13 @@ const updateGhillie = async (id: string, ghillie: UpdateGhillieDto): Promise<Bas
     });
 }
 
-const updateGhillieImage = async (id: string, image: ImageInfo): Promise<GhillieDetailDto> => {
+const updateGhillieImage = async (id: string, imageUri: string): Promise<GhillieDetailDto> => {
   const data = new FormData();
   
   data.append('image', {
     name: new Date() + "_logo",
     type: `image/jpg`,
-    uri: Platform.OS === 'ios' ? image.uri.replace('file://', '') : image.uri
+    uri: Platform.OS === 'ios' ? imageUri.replace('file://', '') : imageUri
   });
   
   return await axios.put(`${AppConfig.apiUrl}/ghillies/${id}/logo`, data, {

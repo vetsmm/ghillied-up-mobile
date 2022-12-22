@@ -181,7 +181,7 @@ function NotificationListingScreen() {
                 modalVisible={clearAllOpen}
                 setModalVisible={setClearAllOpen}
                 headerText={"Mark All As Read"}
-                message={"Are you sure you want to mark all notifications as read?"}
+                message={<RegularText style={{marginBottom: 20}}>Are you sure you want to mark all notifications as read?</RegularText>}
                 leftButtonHandler={() => clearNotifications()}
                 rightButtonHandler={() => setClearAllOpen(false)}
                 leftButtonText={"Yes"}

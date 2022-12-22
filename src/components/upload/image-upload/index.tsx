@@ -22,7 +22,7 @@ export const ImageUploader: React.FC<ImageUploadProps> = ({setImage, imageUri}) 
       quality: 1
     });
     
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setImage(result);
     }
   };
