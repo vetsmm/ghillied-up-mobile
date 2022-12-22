@@ -11,6 +11,7 @@ import {logout} from "../../../shared/reducers/authentication.reducer";
 import SmallText from "../../../components/texts/small-text";
 import Constants from "expo-constants";
 import * as WebBrowser from 'expo-web-browser';
+import AppConfig from "../../../config/app.config";
 
 
 interface SectionButton {
@@ -72,19 +73,23 @@ export const AccountSettings = () => {
             buttons: [
                 {
                     title: "Like Ghillied Up on Facebook",
-                    onPress: () => openLink("https://www.facebook.com/ghilliedupapp")
+                    onPress: () => openLink(AppConfig.links.facebook)
                 },
                 {
                     title: "Follow Ghillied Up on Instagram",
-                    onPress: () => openLink("https://www.instagram.com/ghillied_up/")
+                    onPress: () => openLink(AppConfig.links.instagram)
                 },
                 {
                     title: "Follow Ghillied Up on Twitter",
-                    onPress: () => openLink("https://twitter.com/ghilliedupapp")
+                    onPress: () => openLink(AppConfig.links.twitter)
                 },
                 {
                     title: "Follow Ghillied Up on LinkedIn",
-                    onPress: () => openLink("https://www.linkedin.com/company/ghilliedup")
+                    onPress: () => openLink(AppConfig.links.linkedin)
+                },
+                {
+                    title: "Join our Discord!",
+                    onPress: () => openLink(AppConfig.links.discord)
                 }
             ]
         },
@@ -93,15 +98,15 @@ export const AccountSettings = () => {
             buttons: [
                 {
                     title: "Terms of Service",
-                    onPress: () => openLink("https://ghilliedup.com/terms")
+                    onPress: () => openLink(AppConfig.links.termsOfService)
                 },
                 {
                     title: "Privacy Policy",
-                    onPress: () => openLink("https://ghilliedup.com/privacy")
+                    onPress: () => openLink(AppConfig.links.privacyPolicy)
                 },
                 {
                     title: "FAQ",
-                    onPress: () => openLink("https://ghilliedup.com/faq")
+                    onPress: () => openLink(AppConfig.links.faq)
                 }
             ]
         },
@@ -110,11 +115,11 @@ export const AccountSettings = () => {
             buttons: [
                 {
                     title: "Contact Us",
-                    onPress: () => openLink("https://ghilliedup.com/contact")
+                    onPress: () => openLink(AppConfig.links.contactUs)
                 },
                 {
                     title: "Report a Bug",
-                    onPress: () => openLink("https://ghilliedup.com/contact")
+                    onPress: () => openLink(AppConfig.links.contactUs)
                 },
             ],
         },

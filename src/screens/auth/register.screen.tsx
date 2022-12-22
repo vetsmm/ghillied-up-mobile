@@ -21,6 +21,7 @@ import AuthService from "../../shared/services/auth.service";
 import {FormValidationResponse} from "../../shared/validators/auth/register-form.validator";
 import authErrorHandler from "../../shared/handlers/errors/auth-error.handler";
 import * as WebBrowser from "expo-web-browser";
+import AppConfig from "../../config/app.config";
 
 const {primary} = colorsVerifyCode;
 
@@ -270,13 +271,13 @@ const RegisterScreen = ({navigation}) => {
                                 }}>
                                     <Text color={colorsVerifyCode.white}>By creating an account, you agree to Ghillied Up's </Text>
                                     <PressableText onPress={() => {
-                                        WebBrowser.openBrowserAsync("https://ghilliedup.com/terms");
+                                        WebBrowser.openBrowserAsync(AppConfig.links.termsOfService);
                                     }}>
                                         Terms of Service
                                     </PressableText>
                                     <Text color={colorsVerifyCode.white}> and </Text>
                                     <PressableText onPress={() => {
-                                        WebBrowser.openBrowserAsync("https://ghilliedup.com/privacy");
+                                        WebBrowser.openBrowserAsync(AppConfig.links.privacyPolicy);
                                     }}>
                                         Privacy Policy
                                     </PressableText>

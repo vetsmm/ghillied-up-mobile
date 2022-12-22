@@ -49,7 +49,7 @@ const OkCancelModel = ({
                            headerText,
                            message,
                            leftButtonText,
-                           rightButtonText
+                           rightButtonText,
                        }: {
     isLoading?: boolean;
     modalVisible: boolean,
@@ -57,7 +57,7 @@ const OkCancelModel = ({
     leftButtonHandler: () => void,
     rightButtonHandler: () => void,
     headerText: string,
-    message: string,
+    message: string | JSX.Element,
     leftButtonText?: string,
     rightButtonText?: string
 }) => {
@@ -66,7 +66,7 @@ const OkCancelModel = ({
             <ModalPressableContainer onPress={() => setModalVisible(false)}>
                 <ModalView>
                     <BigText style={{fontSize: 25, color: tertiary, marginVertical: 10}}>{headerText}</BigText>
-                    <RegularText style={{marginBottom: 20}}>{message}</RegularText>
+                    {message instanceof String ? <RegularText style={{marginBottom: 20}}>{message}</RegularText> : message}
                     {isLoading ? (
                         <Spinner color={tertiary}/>
                     ): (

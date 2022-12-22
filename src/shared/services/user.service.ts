@@ -9,8 +9,13 @@ const updateUser = async (updateUserDto: UpdateUserInput)
     return axios.patch(`${AppConfig.apiUrl}/users/self`, updateUserDto);
 }
 
+const deactivateUser = async (): Promise<void> => {
+    return axios.post(`${AppConfig.apiUrl}/users/deactivate`);
+}
+
 const userService = {
     updateUser,
+    deactivateUser,
 }
 
 export default userService;

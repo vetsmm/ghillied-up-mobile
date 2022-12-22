@@ -1,6 +1,9 @@
 import axios from 'axios'
 import AppConfig from "../../config/app.config";
-import {applyAuthTokenInterceptor, TokenRefreshRequest} from "../jwt";
+import {
+    applyAuthTokenInterceptor,
+    TokenRefreshRequest
+} from "../jwt";
 import * as Sentry from "sentry-expo";
 
 const BASE_URL = AppConfig.apiUrl;
@@ -45,12 +48,16 @@ applyAuthTokenInterceptor(axiosInstance, {
     }
 })
 
-const applyAxiosErrorInterceptor = (axiosInstance: any) => {
+export const applyAxiosErrorInterceptor = (axiosInstance: any, onUnauthenticated) => {
     axiosInstance.interceptors.response.use(
         (response: any) => {
             return response;
         },
-        (error: any) => {
+        async (error: any) => {
+            if (error.response.status === 401 && error.response.data.error.message === "User is not active") {
+                onUnauthenticated();
+            }
+
             if (!error.response) {
                 Sentry.Native.captureException(error);
             }
@@ -65,5 +72,3 @@ const applyAxiosErrorInterceptor = (axiosInstance: any) => {
         }
     );
 }
-
-applyAxiosErrorInterceptor(axiosInstance);

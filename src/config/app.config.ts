@@ -82,5 +82,18 @@ export default {
     },
     timeouts: {
         reportDialogs: 5000
+    },
+    links: {
+        privacyPolicy: "https://ghilliedup.com/privacy",
+        termsOfService: "https://ghilliedup.com/terms",
+        contactUs: "https://ghilliedup.com/contact-us",
+        faq: "https://ghilliedup.com/faq",
+        aboutUs: "https://ghilliedup.com/about",
+        facebook: "https://facebook.com/ghilliedupapp",
+        instagram: "https://instagram.com/ghilliedupapp",
+        twitter: "https://twitter.com/ghilliedupapp",
+        linkedin: "https://linkedin.com/company/ghilliedup",
+        discord: "https://discord.gg/4yYFgZVeaH",
+        supportEmail: "mailto:support@ghilliedup.com"
     }
 };
