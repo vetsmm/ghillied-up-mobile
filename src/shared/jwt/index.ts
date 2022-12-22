@@ -268,11 +268,15 @@ export const authTokenInterceptor =
             requestConfig.transitional = {silentJSONParsing: true}
 
             // We need refresh token to do any authenticated requests
+            console.log('getting refresh token')
             const refreshToken = await getRefreshToken()
             if (!refreshToken) return requestConfig
+            console.log('got refresh token')
 
             const authenticateRequest = (token: string | undefined) => {
+                console.log('authenticating request')
                 if (token) {
+                    console.log('setting auth header')
                     requestConfig.headers = requestConfig.headers ?? {}
                     requestConfig.headers[header] = `${headerPrefix}${token}`
                 }
@@ -281,6 +285,7 @@ export const authTokenInterceptor =
 
             // Queue the request if another refresh request is currently happening
             if (isRefreshing) {
+                console.log('is refreshing')
                 return new Promise((resolve: (token?: string) => void, reject) => {
                     queue.push({resolve, reject})
                 }).then(authenticateRequest)
@@ -289,9 +294,12 @@ export const authTokenInterceptor =
             // Do refresh if needed
             let accessToken
             try {
+                console.log('Refreshing token')
                 setIsRefreshing(true)
                 accessToken = await refreshTokenIfNeeded(requestRefresh)
+                console.log('Token refreshed', accessToken)
             } catch (error) {
+                console.log('Token refresh failed', error)
                 declineQueue(error as Error)
 
                 if (error instanceof Error) {
@@ -301,6 +309,7 @@ export const authTokenInterceptor =
                 throw error
             } finally {
                 setIsRefreshing(false)
+                console.log('Token refresh finished')
             }
             resolveQueue(accessToken)
 

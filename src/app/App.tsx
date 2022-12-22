@@ -11,6 +11,9 @@ import * as Notifications from 'expo-notifications';
 
 import * as Sentry from 'sentry-expo';
 import AppConfig from "../config/app.config";
+import {logout} from "../shared/reducers/authentication.reducer";
+import {applyAxiosErrorInterceptor, axiosInstance} from "../shared/services/api";
+import {bindActionCreators} from "redux";
 
 Sentry.init({
     dsn: AppConfig.sentryDsn,
@@ -36,6 +39,12 @@ const _renderApp = () => {
 };
 
 const AppContainer = _renderApp;
+
+const actions = bindActionCreators({ logout }, store.dispatch);
+applyAxiosErrorInterceptor(axiosInstance, () => {
+    // TODO: Add universal alert on why the user has been kicked out
+    actions.logout()
+});
 
 const App = () => {
 
