@@ -76,7 +76,7 @@ const EmailVerification = ({route}: any) => {
         })
         .catch(err => {
           FlashMessageRef.current?.showMessage({
-            message: 'Error resending email',
+            message: 'Error resending email, please try again later.',
             type: 'danger',
             style: {
               justifyContent: 'center',
@@ -116,7 +116,7 @@ const EmailVerification = ({route}: any) => {
       })
       .catch((err) => {
         setVerifying(false);
-        showModal('error', 'Error', 'Invalid activation code or activation code has expired', 'OK');
+        showModal('error', 'Error', "Invalid activation code or activation code has expired. Please click 'resend' to receive a new code.", 'OK');
       })
       .finally(() => {
         setVerifying(false);
