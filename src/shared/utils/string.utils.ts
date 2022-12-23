@@ -34,7 +34,7 @@ const trimPostString  = (str: string | null, length: number): {text: string; isT
     }
     if (str.length > length) {
         return {
-            text: `${str.substr(0, length)}...`,
+            text: `${str.substr(0, length)}`,
             isTruncated: true,
         }
     }

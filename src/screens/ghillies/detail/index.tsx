@@ -37,6 +37,7 @@ import VerifiedMilitaryProtected from "../../../shared/protection/verified-milit
 import {GhillieStatus} from "../../../shared/models/ghillies/ghillie-status";
 import GhillieService from "../../../shared/services/ghillie.service";
 import {FlashMessageRef} from "../../../app/App";
+import {Autolink, GhilliedUpHashTagMatcher} from "../../../components/autolink";
 
 const {primary, secondary, fail} = colorsVerifyCode;
 
@@ -55,7 +56,8 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const [postList, setPostList] = React.useState<PostFeedDto[]>([]);
     const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
     const [showReportAlert, setShowReportAlert] = React.useState(false);
-
+    const [submittingReaction, setSubmittingReaction] = React.useState(false);
+    const [isLoadingOrLeaving, setIsLoadingOrLeaving] = React.useState(false);
 
     const cancelRef = React.useRef(null);
 
@@ -114,7 +116,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         });
 
         return initialLoad;
-    }, [dispatch, ghillieId]);
+    }, [ghillieId]);
 
     useEffect(() => {
         if (showReportAlert) {
@@ -136,10 +138,13 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const color = useColorScheme() === "dark" ? "#fff" : "#000";
 
     const onGhillieJoinOrLeave = () => {
+        setIsLoadingOrLeaving(true);
         if (ghillie.memberMeta) {
             GhillieService.leaveGhillie(ghillieId).then(() => {
+                setIsLoadingOrLeaving(false);
                 navigation.goBack();
             }).catch((err) => {
+                setIsLoadingOrLeaving(false);
                 FlashMessageRef.current?.showMessage({
                     message: err.message,
                     type: 'danger',
@@ -151,7 +156,10 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             });
         } else {
             GhillieService.joinGhillie(ghillieId).then(() => {
+                setIsLoadingOrLeaving(false);
+                dispatch(getGhillie(ghillieId));
             }).catch((err) => {
+                setIsLoadingOrLeaving(false);
                 FlashMessageRef.current?.showMessage({
                     message: err.message,
                     type: 'danger',
@@ -223,6 +231,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     }
 
     const onHandleReaction = (postId: string, reaction: ReactionType | null) => {
+        setSubmittingReaction(true);
         postReactionService.reactToPost(reaction, postId)
             .then(async () => {
                 // find the post and update the reaction, set the state with the existing list of posts with updated value
@@ -233,8 +242,10 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                     return foundPost;
                 });
                 setPostList(updatedPosts);
+                setSubmittingReaction(false);
             })
             .catch(err => {
+                setSubmittingReaction(false);
                 FlashMessageRef.current?.showMessage({
                     message: 'An error occurred while reacting to the post.',
                     type: 'danger',
@@ -290,6 +301,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
 
     const _renderPost = ({item}) => (
         <PostFeedCard
+            isGhillieMember={ghillie.memberMeta !== null}
             post={item}
             isModerator={isModerator}
             isAdmin={isAdmin}
@@ -297,6 +309,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             onModeratorRemoval={moderatorRemovePost}
             onOwnerDelete={ownerDeletePost}
             onHandleReaction={onHandleReaction}
+            isLoadingReactionUpdate={submittingReaction}
         />
     );
 
@@ -437,27 +450,31 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                     style={{
                                         marginTop: 10
                                     }}
-                                    disabled={isBanned}
+                                    disabled={isBanned || isLoadingOrLeaving}
                                     onPress={() => onGhillieJoinOrLeave()}
                                 >
-                                    <Badge
-                                        variant="solid"
-                                        style={{
-                                            backgroundColor: !ghillie.memberMeta ? secondary : fail,
-                                            borderRadius: 10
-                                        }}
-                                    >
-                                        <Text style={{
-                                            color: "white",
-                                            fontSize: 20
-                                        }}
+                                    {isLoadingOrLeaving ? (
+                                        <Spinner color={secondary}/>
+                                    ) : (
+                                        <Badge
+                                            variant="solid"
+                                            style={{
+                                                backgroundColor: !ghillie.memberMeta ? secondary : fail,
+                                                borderRadius: 10
+                                            }}
                                         >
-                                            {!ghillie.memberMeta
-                                                ? "Join Ghillie"
-                                                : isBanned ? "Banned" : "Leave Ghillie"
-                                            }
-                                        </Text>
-                                    </Badge>
+                                            <Text style={{
+                                                color: "white",
+                                                fontSize: 20
+                                            }}
+                                            >
+                                                {!ghillie.memberMeta
+                                                    ? "Join Ghillie"
+                                                    : isBanned ? "Banned" : "Leave Ghillie"
+                                                }
+                                            </Text>
+                                        </Badge>
+                                    )}
                                 </TouchableOpacity>
                             )}
                             {(ghillie?.status !== GhillieStatus.ACTIVE && ghillie.memberMeta) && (
@@ -465,24 +482,28 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                     style={{
                                         marginTop: 10
                                     }}
-                                    disabled={isBanned}
+                                    disabled={isBanned || isLoadingOrLeaving}
                                     onPress={() => onGhillieJoinOrLeave()}
                                 >
-                                    <Badge
-                                        variant="solid"
-                                        style={{
-                                            backgroundColor: fail,
-                                            borderRadius: 10
-                                        }}
-                                    >
-                                        <Text style={{
-                                            color: "white",
-                                            fontSize: 20
-                                        }}
+                                    {isLoadingOrLeaving ? (
+                                        <Spinner color={secondary}/>
+                                    ) : (
+                                        <Badge
+                                            variant="solid"
+                                            style={{
+                                                backgroundColor: fail,
+                                                borderRadius: 10
+                                            }}
                                         >
-                                            Leave Ghillie
-                                        </Text>
-                                    </Badge>
+                                            <Text style={{
+                                                color: "white",
+                                                fontSize: 20
+                                            }}
+                                            >
+                                                Leave Ghillie
+                                            </Text>
+                                        </Badge>
+                                    )}
                                 </TouchableOpacity>
                             )}
                         </VerifiedMilitaryProtected>
@@ -553,7 +574,12 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                     <>
                         <View>
                             <Text style={[styles.content, {color: colorsVerifyCode.white}]}>
-                                {ghillie?.about}
+                                <Autolink
+                                    text={ghillie?.about || ""}
+                                    truncate={240}
+                                    truncateChars="more"
+                                    url
+                                />
                             </Text>
                         </View>
                         <View style={{
