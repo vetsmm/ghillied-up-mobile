@@ -48,7 +48,6 @@ const ActionButtons: React.FunctionComponent<ActionButtonsProps> = ({navigation}
     }
 
     const attemptLogin = () => {
-        console.log("Attempting login");
         setIsAttemptingLogin(true);
         getUserCredentials()
             .then((credentials) => {

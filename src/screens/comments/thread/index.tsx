@@ -26,6 +26,7 @@ import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
 import {SuccessAlert} from '../../../components/alerts/success-alert';
 import AppConfig from '../../../config/app.config';
 import {Ionicons} from "@expo/vector-icons";
+import {FlashMessageRef} from "../../../app/App";
 
 interface Route {
   params: {
@@ -214,7 +215,14 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
       setCommentReplies(replies);
       setCommentRepliesError(false);
     }).catch((error) => {
-      console.log(error);
+      FlashMessageRef.current?.showMessage({
+        message: "An error occurred while loading replies",
+        type: 'danger',
+        style: {
+          justifyContent: 'center',
+          alignItems: 'center',
+        }
+      });
       setCommentRepliesError(true);
     });
     setCommentRepliesLoading(false);
@@ -241,7 +249,14 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
         await getComment();
       })
       .catch(err => {
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while reacting to this comment.',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   }
   
@@ -258,11 +273,25 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
     } else {
       commentService.deleteReplyComment(commentId)
         .then(async () => {
-          console.log("deleted");
+          FlashMessageRef.current?.showMessage({
+            message: 'An error occurred while deleting this comment',
+            type: 'danger',
+            style: {
+              justifyContent: 'center',
+              alignItems: 'center',
+            }
+          });
           getCommentReplies(1);
         })
         .catch(err => {
-          console.log(err);
+          FlashMessageRef.current?.showMessage({
+            message: 'An error occurred while deleting this comment.',
+            type: 'danger',
+            style: {
+              justifyContent: 'center',
+              alignItems: 'center',
+            }
+          });
         })
     }
   }
@@ -291,7 +320,6 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
   }
   
   const onReportComment = (commentId: string, category: FlagCategory, details: string) => {
-    console.log("reporting comment", commentId);
     setIsReportDialogOpen(false);
     flagService.flagComment({
       commentId: commentId,
@@ -302,7 +330,14 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
         setShowReportAlert(true);
       })
       .catch((err) => {
-        console.log("Comment report failed");
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while reporting this comment.',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   }
   
@@ -312,7 +347,14 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
         await getCommentReplies(commentRepliesPage - 1);
       })
       .catch(err => {
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while reacting to this comment.',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   }
   

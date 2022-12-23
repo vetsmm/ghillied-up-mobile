@@ -17,6 +17,7 @@ import {useSelector} from "react-redux";
 import {FlashList} from "@shopify/flash-list";
 import {useStateWithCallback} from "../../../shared/hooks";
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
+import {FlashMessageRef} from "../../../app/App";
 
 function NotificationListingScreen() {
     const [clearAllOpen, setClearAllOpen] = useStateWithCallback(false);
@@ -62,7 +63,14 @@ function NotificationListingScreen() {
                 }
             })
             .catch(err => {
-                console.log(err);
+                FlashMessageRef.current?.showMessage({
+                    message: page > 1 ? "Unable to load more notifications" : "Unable to load notifications feed",
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
                 if (page > 1) {
                     setCurrentPage(page - 1);
                 }
@@ -87,7 +95,14 @@ function NotificationListingScreen() {
                 setClearAllOpen(false);
             })
             .catch((error) => {
-                console.log(error);
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while clearing notifications',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             });
     }
 

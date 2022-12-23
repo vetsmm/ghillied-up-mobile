@@ -26,6 +26,7 @@ import {PostDetailDto} from "../../shared/models/posts/post-detail.dto";
 import {FlagCategory} from "../../shared/models/flags/flag-category";
 import flagService from "../../shared/services/flag.service";
 import {SuccessAlert} from "../alerts/success-alert";
+import {FlashMessageRef} from "../../app/App";
 
 export interface IPostCardProps {
     post: PostListingDto | PostDetailDto;
@@ -68,7 +69,14 @@ export const PostCard = ({
                 setShowReportAlert(true);
             })
             .catch((err) => {
-                console.log("Report report failed");
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while reporting the post',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             });
     };
 
@@ -105,15 +113,9 @@ export const PostCard = ({
                         height="10"
                     />
                     <VStack>
-                        <Pressable
-                            onPress={() => {
-                                console.log(`${post.postedBy.username} clicked`);
-                            }}
-                        >
-                            <Text fontSize="sm" fontWeight="semibold" color={"white"}>
-                                {post.postedBy.username}
-                            </Text>
-                        </Pressable>
+                        <Text fontSize="sm" fontWeight="semibold" color={"white"}>
+                            {post.postedBy.username}
+                        </Text>
 
                         <Text
                             _light={{color: "coolGray.300"}}
@@ -232,7 +234,10 @@ export const PostCard = ({
                 }}
                 onEdit={() => {
                     setIsOpen(false);
-                    moveTo("Posts", {params: {post: post, ghillieImageUrl: post.ghillie.imageUrl}, screen: "UpdatePost"});
+                    moveTo("Posts", {
+                        params: {post: post, ghillieImageUrl: post.ghillie.imageUrl},
+                        screen: "UpdatePost"
+                    });
                 }}
                 isAdmin={isAdmin}
                 isModerator={isModerator}

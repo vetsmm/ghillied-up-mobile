@@ -14,6 +14,10 @@ import AppConfig from "../config/app.config";
 import {logout} from "../shared/reducers/authentication.reducer";
 import {applyAxiosErrorInterceptor, axiosInstance} from "../shared/services/api";
 import {bindActionCreators} from "redux";
+import FlashMessage from "../components/flash-message/index";
+import {useNetInfo} from "@react-native-community/netinfo";
+
+export const FlashMessageRef = React.createRef<FlashMessage>();
 
 Sentry.init({
     dsn: AppConfig.sentryDsn,
@@ -43,10 +47,31 @@ const AppContainer = _renderApp;
 const actions = bindActionCreators({ logout }, store.dispatch);
 applyAxiosErrorInterceptor(axiosInstance, () => {
     // TODO: Add universal alert on why the user has been kicked out
-    actions.logout()
+    FlashMessageRef.current?.showMessage({
+        message: 'You have been logged out',
+        type: 'danger',
+    });
+    actions.logout();
 });
 
+
 const App = () => {
+    const netInfo = useNetInfo();
+    React.useEffect(() => {
+        if (!netInfo.isConnected) {
+            FlashMessageRef.current?.showMessage({
+                message: 'No network connection',
+                type: 'danger',
+                autoHide: false,
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
+            });
+        } else {
+            FlashMessageRef.current?.hideMessage();
+        }
+    }, [netInfo.isConnected]);
 
     return (
         <Provider store={store}>
@@ -59,6 +84,7 @@ const App = () => {
              */}
             <PersistGate loading={null} persistor={persistor}>
                 <AppContainer/>
+                <FlashMessage position="top" ref={FlashMessageRef}/>
             </PersistGate>
         </Provider>
     );

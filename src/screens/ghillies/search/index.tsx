@@ -15,6 +15,7 @@ import GhillieCardV2 from '../../../components/ghillie-card-v2';
 import {useSelector} from 'react-redux';
 import {IRootState} from '../../../store';
 import {useNavigation} from '@react-navigation/native';
+import {FlashMessageRef} from "../../../app/App";
 
 
 function GhillieListingHeader({searchText, setSearchText, clearSearch, onSearchPress, navigation}) {
@@ -119,7 +120,14 @@ function GhillieSearchScreen() {
         GhillieService.joinGhillie(ghillie.id).then(() => {
             navigation.navigate("GhillieDetail", {ghillieId: ghillie.id});
         }).catch((e) => {
-            console.log(e);
+            FlashMessageRef.current?.showMessage({
+                message: 'An error occurred while joining ghillie',
+                type: 'danger',
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
+            });
         });
     }
 
@@ -134,7 +142,14 @@ function GhillieSearchScreen() {
                     setGhillieList(response.data);
                 })
                 .catch(err => {
-                    console.log(err);
+                    FlashMessageRef.current?.showMessage({
+                        message: 'An error occurred while loading ghillies',
+                        type: 'danger',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
                 })
                 .finally(() => setIsLoadingGhillies(false));
         }

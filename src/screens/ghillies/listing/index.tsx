@@ -17,6 +17,7 @@ import {colorsVerifyCode} from '../../../components/colors';
 import GhillieCardV2 from '../../../components/ghillie-card-v2';
 import RegularText from '../../../components/texts/regular-texts';
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
+import {FlashMessageRef} from "../../../app/App";
 
 function GhillieListingHeader({isVerifiedMilitary, isAdmin}) {
     const navigation: any = useNavigation();
@@ -107,7 +108,14 @@ function GhillieListingScreen() {
                 setUserGhillies(response.data);
             })
             .catch((error) => {
-                console.log(error);
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while loading your ghillies',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             })
             .finally(() => {
                 setIsLoadingUserGhillies(false);
@@ -122,7 +130,14 @@ function GhillieListingScreen() {
                 setPopularGhilliesByMembers(response);
             })
             .catch((error) => {
-                console.log(error);
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while loading popular ghillies',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             })
             .finally(() => {
                 setIsLoadingPopularGhillies(false);
@@ -136,7 +151,14 @@ function GhillieListingScreen() {
                 setTrendingGhillies(response);
             })
             .catch((error) => {
-                console.log(error);
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while loading trending ghillies',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             })
             .finally(() => {
                 setIsLoadingTrendingGhillies(false);
@@ -150,7 +172,14 @@ function GhillieListingScreen() {
                 setNewGhillies(response);
             })
             .catch((error) => {
-                console.log(error);
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while loading newest ghillies',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             })
             .finally(() => {
                 setIsLoadingNewGhillies(false);
@@ -171,7 +200,14 @@ function GhillieListingScreen() {
                     break;
             }
         }).catch((e) => {
-            console.log(e);
+            FlashMessageRef.current?.showMessage({
+                message: 'An error occurred while joining ghillie',
+                type: 'danger',
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
+            });
         });
     }
 

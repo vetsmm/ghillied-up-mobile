@@ -7,6 +7,7 @@ import {AuthPasswordResetFinishDto} from "../models/auth/auth-password-reset-fin
 import {UserOutput} from "../models/users/user-output.dto";
 import {AuthTokenOutput} from "../models/auth/auth-token-output.dto";
 import {clearAuthenticationCredentials, clearAuthTokens, setAuthenticationCredentials, setAuthTokens} from "../jwt";
+import {FlashMessageRef} from "../../app/App";
 
 export const initialState = {
     loading: false,
@@ -63,7 +64,6 @@ export const register = createAsyncThunk(
     async (registerInput: AuthRegisterInputDto, thunkAPI) => {
         AuthService.register(registerInput)
             .then(async (response) => {
-                console.log(`Successfully Registered: ${JSON.stringify(response)}`);
                 return response;
             });
     }
@@ -113,6 +113,14 @@ export const getAccount = createAsyncThunk(
 export const logout = (): any => async (dispatch: any) => {
     await clearAuthenticationCredentials(); // clear the user's credentials
     await clearAuthTokens(); // clear the user's tokens
+    FlashMessageRef.current?.showMessage({
+        message: 'You have been logged out',
+        type: 'danger',
+        style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+        }
+    });
     dispatch(logoutSession());
 };
 
