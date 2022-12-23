@@ -199,14 +199,12 @@ const getExpiresIn = (token: Token): number => {
  */
 const refreshToken = async (requestRefresh: TokenRefreshRequest): Promise<Token> => {
     const refreshToken = await getRefreshToken();
-    const accessToken = await getAccessToken();
 
-    if (!accessToken) throw new Error('Unable to refresh access token since there is no access token currently stored')
     if (!refreshToken) throw new Error('No refresh token available')
 
     try {
         // Refresh and store access token using the supplied refresh function
-        const newTokens = await requestRefresh(accessToken, refreshToken)
+        const newTokens = await requestRefresh(refreshToken)
         if (typeof newTokens === 'object' && newTokens?.accessToken) {
             await setAuthTokens(newTokens)
             return newTokens.accessToken
@@ -231,7 +229,7 @@ const refreshToken = async (requestRefresh: TokenRefreshRequest): Promise<Token>
     throw new Error('requestRefresh must either return a string or an object with an accessToken')
 }
 
-export type TokenRefreshRequest = (accessToken: string, refreshToken: string) => Promise<Token | AuthTokenOutput>
+export type TokenRefreshRequest = (refreshToken: string) => Promise<Token | AuthTokenOutput>
 
 export type AutoUserLoginRequest = (username: string, password: string) => Promise<Token | AuthTokenOutput>
 
