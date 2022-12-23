@@ -1,10 +1,11 @@
 import axios from 'axios'
 import AppConfig from "../../config/app.config";
 import {
-    applyAuthTokenInterceptor,
+    applyAuthTokenInterceptor, getAccessToken,
     TokenRefreshRequest
 } from "../jwt";
 import * as Sentry from "sentry-expo";
+import {AuthTokenOutput} from "../models/auth/auth-token-output.dto";
 
 const BASE_URL = AppConfig.apiUrl;
 const TIMEOUT = 50 * 1000;
@@ -28,15 +29,19 @@ export const axiosInstance = axios.create({
 })
 
 // 2. Define token refresh function.
-const requestRefresh: TokenRefreshRequest = async (refreshToken: string): Promise<string> => {
+const requestRefresh: TokenRefreshRequest = async (accessToken: string, refreshToken: string): Promise<AuthTokenOutput> => {
 
     // Important! Do NOT use the axios instance that you supplied to applyAuthTokenInterceptor
     // because this will result in an infinite loop when trying to refresh the token.
     // Use the global axios client or a different instance
-    const response = await axios.post(`${BASE_URL}/auth/refresh-token`, {refreshToken})
+    const response = await axios.post(`${BASE_URL}/auth/refresh-token`, {refreshToken}, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
 
-    console.log('response', response);
-    return response.data.data.accessToken
+    console.log('refresh response', response);
+    return response.data.data;
 }
 
 // 3. Add interceptor to your axios instance
