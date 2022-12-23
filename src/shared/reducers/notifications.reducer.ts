@@ -49,7 +49,6 @@ export const NotificationState = createSlice({
             state.loading = false;
         });
         builder.addCase(markNotificationsAsRead.rejected, (state, action) => {
-            console.log("markNotificationsAsRead rejected", action)
             // @ts-ignore
             state.errorMessage = action.payload.error.message
             state.loading = true;

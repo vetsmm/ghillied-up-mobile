@@ -63,7 +63,6 @@ export const MyAccount = () => {
             })
             .catch((error: any) => {
                 setIsDeactivating(false);
-                console.log(error);
                 setDeleteOpen(false, () => {
                     showModal(
                         'fail',

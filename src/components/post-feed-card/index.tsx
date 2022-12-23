@@ -31,6 +31,7 @@ import PostService from "../../shared/services/post.service";
 import AppConfig from '../../config/app.config';
 import {LinkPreview} from '../link-preview';
 import {PostContent} from '../post-content';
+import {FlashMessageRef} from "../../app/App";
 
 export interface IPostCardProps {
   post: PostFeedDto;
@@ -84,7 +85,14 @@ export const PostFeedCard = ({
         setShowBookmarkAlert(true);
       })
       .catch(err => {
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while bookmarking the post',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   }
   

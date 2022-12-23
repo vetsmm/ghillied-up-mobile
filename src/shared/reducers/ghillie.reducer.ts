@@ -79,32 +79,27 @@ export const GhillieSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(getGhillies.rejected, (state, action) => {
-      console.log("getGhillies rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(getGhillie.rejected, (state, action) => {
-      console.log("getGhillie rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
       state.ghillie = {} as GhillieDetailDto;
     });
     builder.addCase(joinGhillie.rejected, (state, action) => {
-      console.log("joinghillie rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(leaveGhillie.rejected, (state, action) => {
-      console.log("leavehillied rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(getMyGhillies.rejected, (state, action) => {
-      console.log("getMyGhillies rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;

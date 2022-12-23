@@ -54,7 +54,10 @@ export const applyAxiosErrorInterceptor = (axiosInstance: any, onUnauthenticated
             return response;
         },
         async (error: any) => {
-            if (error.response.status === 401 && error.response.data.error.message === "User is not active") {
+            if (error.response.status === 401 && (
+                error.response.data.error.message === "User is not active" ||
+                error.response.data.error.message === "Error: No auth token")
+            ) {
                 onUnauthenticated();
             }
 

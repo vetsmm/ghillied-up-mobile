@@ -30,6 +30,7 @@ import AppConfig from '../../../config/app.config';
 import {ParentCommentDto} from '../../../shared/models/comments/parent-comment.dto';
 import {ChildCommentDto} from '../../../shared/models/comments/child-comment.dto';
 import {Ionicons} from "@expo/vector-icons";
+import {FlashMessageRef} from "../../../app/App";
 
 const {primary} = colorsVerifyCode;
 
@@ -135,7 +136,14 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         }
       })
       .catch(err => {
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: page === 1 ? 'Failed to load comments' : 'Failed to load more comments',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
         if (page > 1) {
           setParentCommentsPage(page - 1);
         }
@@ -148,6 +156,14 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
       setPost(res.data);
       setError(false);
     }).catch((err) => {
+      FlashMessageRef.current?.showMessage({
+        message: 'An error occurred while loading post',
+        type: 'danger',
+        style: {
+          justifyContent: 'center',
+          alignItems: 'center',
+        }
+      });
       setError(true);
     });
     setLoading(false);
@@ -168,6 +184,14 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         setPost(res.data);
         setError(false);
       }).catch((err) => {
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while loading post',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
         setError(true);
       }).finally(() => {
         setLoading(false);
@@ -193,8 +217,14 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         moveTo("Feed", {screen: "PostFeed"});
       })
       .catch(err => {
-        // todo: handle
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while removing post',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   };
   
@@ -204,7 +234,14 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         setShowBookmarkAlert(true);
       })
       .catch(err => {
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while bookmarking post',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   }
   
@@ -218,7 +255,14 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         setShowReportAlert(true);
       })
       .catch((err) => {
-        console.log("Report report failed");
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while reporting post',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   };
   
@@ -230,8 +274,14 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         moveTo("Feed", {screen: "PostFeed"});
       })
       .catch(err => {
-        // todo: handle
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while deleting post',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   };
   
@@ -241,7 +291,14 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         await getPost();
       })
       .catch(err => {
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while reacting to post',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   }
   
@@ -251,7 +308,14 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         await getTopLevelComments(parentCommentsPage - 1);
       })
       .catch(err => {
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while reacting to comment',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   }
   
@@ -261,7 +325,14 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         await getTopLevelComments(parentCommentsPage - 1);
       })
       .catch(err => {
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while reacting to comment',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   }
   

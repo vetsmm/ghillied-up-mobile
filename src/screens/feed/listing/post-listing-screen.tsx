@@ -25,6 +25,7 @@ import GhillieService from '../../../shared/services/ghillie.service';
 import {GhillieCircle} from '../../../components/ghillie-circle';
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 import {colorsVerifyCode} from "../../../components/colors";
+import {FlashMessageRef} from "../../../app/App";
 
 
 function PostFeedHeader() {
@@ -132,7 +133,14 @@ function PostListingScreen() {
                 setUserGhillies(response.data);
             })
             .catch((error) => {
-                console.log(error);
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while loading your ghillies',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             })
             .finally(() => {
                 setIsLoadingUserGhillies(false);
@@ -161,6 +169,14 @@ function PostListingScreen() {
                 }
             })
             .catch(err => {
+                FlashMessageRef.current?.showMessage({
+                    message: page > 1 ? 'An error occurred while loading more posts' : 'An error occurred while loading the feed',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
                 if (page > 1) {
                     setCurrentPage(page - 1);
                 }
@@ -189,6 +205,14 @@ function PostListingScreen() {
                 }
             })
             .catch(err => {
+                FlashMessageRef.current?.showMessage({
+                    message: page > 1 ? 'An error occurred while loading more posts' : 'An error occurred while loading the feed',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
                 if (page > 1) {
                     setCurrentPage(page - 1);
                 }
@@ -216,8 +240,14 @@ function PostListingScreen() {
                 }
             })
             .catch(err => {
-                // todo: handle
-                console.log(err);
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while removing the post',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             });
     };
 
@@ -233,8 +263,14 @@ function PostListingScreen() {
                 }
             })
             .catch(err => {
-                // todo: handle
-                console.log(err);
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while deleting the post',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             });
     };
 
@@ -267,7 +303,14 @@ function PostListingScreen() {
                     })
                 })
                 .catch(err => {
-                    console.log(err);
+                    FlashMessageRef.current?.showMessage({
+                        message: 'An error occurred while reacting to the post',
+                        type: 'danger',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
                     setIsLoadingReactionUpdate(false)
                 });
         });
@@ -282,7 +325,6 @@ function PostListingScreen() {
                     <GhillieCircle
                         image={selectedGhillie.imageUrl}
                         onPress={() => {
-                            console.log("ON PRESS");
                             setSelectedGhillie(undefined);
                         }}
                         text={selectedGhillie.name}

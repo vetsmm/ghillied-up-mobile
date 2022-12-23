@@ -69,25 +69,21 @@ export const PostSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(createPost.rejected, (state, action) => {
-      console.log("createpost rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(getPost.rejected, (state, action) => {
-      console.log("getPost rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(updatePost.rejected, (state, action) => {
-      console.log("updatePost Rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;
     });
     builder.addCase(deletePost.rejected, (state, action) => {
-      console.log("deletepost rejected", action)
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
       state.loading = false;

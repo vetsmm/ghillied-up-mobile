@@ -1,7 +1,6 @@
 import { axiosInstance as axios } from './api'
 import AppConfig from "../../config/app.config";
 import {BaseApiResponse} from "../models/base-api-response";
-import {PageInfo} from "../models/pagination/types";
 import {BaseNotificationDto} from "../models/notifications/notification.dto";
 import {UnreadNotificationsDto} from "../models/notifications/unread-notifications.dto";
 import {ReadNotificationsInputDto} from "../models/notifications/read-notifications-input.dto";

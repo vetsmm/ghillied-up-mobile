@@ -36,6 +36,7 @@ import AppConfig from '../../../config/app.config';
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 import {GhillieStatus} from "../../../shared/models/ghillies/ghillie-status";
 import GhillieService from "../../../shared/services/ghillie.service";
+import {FlashMessageRef} from "../../../app/App";
 
 const {primary, secondary, fail} = colorsVerifyCode;
 
@@ -139,14 +140,26 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             GhillieService.leaveGhillie(ghillieId).then(() => {
                 navigation.goBack();
             }).catch((err) => {
-                console.log("Error", err.data);
-                // TODO: Universal Error Alerts
+                FlashMessageRef.current?.showMessage({
+                    message: err.message,
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             });
         } else {
             GhillieService.joinGhillie(ghillieId).then(() => {
             }).catch((err) => {
-                console.log("Error", err);
-                // TODO: Universal Error Alerts
+                FlashMessageRef.current?.showMessage({
+                    message: err.message,
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             });
         }
     };
@@ -159,8 +172,14 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 getFeed(1);
             })
             .catch(err => {
-                // todo: handle
-                console.log(err);
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while removing the post.',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             });
     };
 
@@ -171,7 +190,14 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             })
             getFeed(1);
         } catch (e) {
-            console.log(e);
+            FlashMessageRef.current?.showMessage({
+                message: 'An error occurred while deleting the post',
+                type: 'danger',
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
+            });
         }
     };
 
@@ -185,7 +211,14 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 setShowReportAlert(true);
             })
             .catch((err) => {
-                console.log("Report report failed");
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while reporting the ghillie.',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             });
     }
 
@@ -202,7 +235,14 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 setPostList(updatedPosts);
             })
             .catch(err => {
-                console.log(`Error while reacting to post: ${err}`);
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while reacting to the post.',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             });
     }
 
@@ -229,6 +269,14 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 }
             })
             .catch(err => {
+                FlashMessageRef.current?.showMessage({
+                    message: page > 1 ? 'An error occurred while loading more posts.' : 'An error occurred while loading the feed.',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
                 if (page > 1) {
                     setPostCurrentPage(page - 1);
                 }

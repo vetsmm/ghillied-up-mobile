@@ -22,6 +22,7 @@ import RegularText from "../../../components/texts/regular-texts";
 import {useStateWithCallback} from "../../../shared/hooks";
 import {Ionicons} from '@expo/vector-icons';
 import {colorsVerifyCode} from '../../../components/colors';
+import {FlashMessageRef} from "../../../app/App";
 
 
 function PostFeedHeader() {
@@ -169,8 +170,14 @@ export const HashTagPostListingScreen = ({route}: { route: Route }) => {
         getFeed(1);
       })
       .catch(err => {
-        // todo: handle
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while removing the post',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   };
   
@@ -182,8 +189,14 @@ export const HashTagPostListingScreen = ({route}: { route: Route }) => {
         getFeed(1);
       })
       .catch(err => {
-        // todo: handle
-        console.log(err);
+        FlashMessageRef.current?.showMessage({
+          message: 'An error occurred while deleting the post',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
       });
   };
   
@@ -216,7 +229,14 @@ export const HashTagPostListingScreen = ({route}: { route: Route }) => {
           })
         })
         .catch(err => {
-          console.log(err);
+          FlashMessageRef.current?.showMessage({
+            message: 'An error occurred while reacting to the post',
+            type: 'danger',
+            style: {
+              justifyContent: 'center',
+              alignItems: 'center',
+            }
+          });
           setIsLoadingReactionUpdate(false)
         });
     });

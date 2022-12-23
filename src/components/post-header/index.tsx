@@ -27,6 +27,7 @@ import {FlagCategory} from "../../shared/models/flags/flag-category";
 import {colorsVerifyCode} from '../colors';
 import {LinkPreview} from '../link-preview';
 import {PostContent} from '../post-content';
+import {FlashMessageRef} from "../../app/App";
 
 export interface IPostCardProps {
   post: PostListingDto | PostDetailDto;
@@ -81,7 +82,7 @@ export const PostHeader = ({
           <VStack>
             <Pressable
               onPress={() => {
-                console.log(`${post.postedBy.username} clicked`);
+                moveTo("Ghillies", {screen: "GhillieDetail", params: {ghillieId: post.ghillie.id}});
               }}
             >
               <Text fontSize="sm" fontWeight="semibold" color={colorsVerifyCode.secondary}>

@@ -29,6 +29,7 @@ import postService from "../../../shared/services/post.service";
 import idmeService from "../../../shared/services/idme.service";
 import {getAccount} from "../../../shared/reducers/authentication.reducer";
 import MessageModal from "../../../components/modals/message-modal";
+import {FlashMessageRef} from "../../../app/App";
 
 
 const RenderGhillies: React.FC<{
@@ -293,7 +294,14 @@ function AccountScreen() {
           }
         })
         .catch(err => {
-          console.log(err);
+            FlashMessageRef.current?.showMessage({
+                message: 'An error occurred while loading your ghillies',
+                type: 'danger',
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
+            });
         })
         .finally(() => setIsLoadingUserGhillies(false));
     }

@@ -17,6 +17,7 @@ import {verifyEmail} from "../../shared/reducers/authentication.reducer";
 import AuthService from "../../shared/services/auth.service";
 import {useAppDispatch} from "../../store";
 import * as Sentry from "sentry-expo";
+import {FlashMessageRef} from "../../app/App";
 
 const {primary, secondary, lightGray} = colorsVerifyCode;
 
@@ -56,8 +57,6 @@ const EmailVerification = ({route}: any) => {
   };
 
   const resendEmail = async (triggerTimer: any) => {
-    console.log("email", email);
-    console.log("username", username);
     try {
       setResendingEmail(true);
 
@@ -66,11 +65,25 @@ const EmailVerification = ({route}: any) => {
       AuthService.resendActivationEmail(obj)
         .then(() => {
           setResendStatus('Sent');
-          console.log('Email sent');
+          FlashMessageRef.current?.showMessage({
+            message: 'Email sent!',
+            type: 'success',
+            style: {
+              justifyContent: 'center',
+              alignItems: 'center',
+            }
+          });
         })
         .catch(err => {
+          FlashMessageRef.current?.showMessage({
+            message: 'Error resending email',
+            type: 'danger',
+            style: {
+              justifyContent: 'center',
+              alignItems: 'center',
+            }
+          });
           Sentry.Native.captureException(err);
-          console.log(err);
           setResendStatus('Failed');
         });
 
