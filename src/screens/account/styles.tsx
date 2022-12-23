@@ -13,7 +13,7 @@ export default StyleSheet.create({
         flex: 1,
         // flexGrow: 1,
         paddingVertical: 8,
-        marginBottom: 40,
+        marginBottom: "15%",
     },
     pastPostContainer: {
         flex: 1,

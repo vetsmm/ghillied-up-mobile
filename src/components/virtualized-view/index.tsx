@@ -79,6 +79,10 @@ export default function VirtualizedView({hideData, isVerified = true, isActive =
     return (
         <FlatList
             {...props}
+            style={{
+                flex: 1,
+                marginBottom: 40,
+            }}
             data={hideData ? [] : props.data}
             ListHeaderComponent={() => (
                 <React.Fragment>{props.children}</React.Fragment>

@@ -4,7 +4,7 @@ import { truncateSmart as smart } from 'autolinker/dist/es2015/truncate/truncate
 
 export { end, middle, smart };
 
-export const truncate = (text: string, length = 32, chars = '..', location = 'smart'): string => {
+export const truncate = (text: string, length = 32, chars = '...', location = 'smart'): string => {
   let fn;
   
   switch (location) {
