@@ -302,6 +302,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const _renderPost = ({item}) => (
         <PostFeedCard
             isGhillieMember={ghillie.memberMeta !== null}
+            isVerified={isVerifiedMilitary}
             post={item}
             isModerator={isModerator}
             isAdmin={isAdmin}

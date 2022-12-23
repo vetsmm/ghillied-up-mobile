@@ -42,6 +42,7 @@ export interface IPostCardProps {
     onHandleReaction: (postId: string, reaction: ReactionType | null) => void;
     isGhillieMember?: boolean;
     shouldTruncate?: boolean;
+    isVerified?: boolean;
 }
 
 export const PostFeedCard = ({
@@ -54,7 +55,8 @@ export const PostFeedCard = ({
                                  isOwner,
                                  isModerator,
                                  isGhillieMember = true,
-                                 shouldTruncate = true
+                                 shouldTruncate = true,
+                                 isVerified = true,
                              }: IPostCardProps) => {
     const [isOpen, setIsOpen] = React.useState(false);
     const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
@@ -188,18 +190,20 @@ export const PostFeedCard = ({
                         <SmallText>
                             {getTimeAgoShort(post.createdDate)}
                         </SmallText>
-                        <IconButton
-                            variant="unstyled"
-                            icon={
-                                <Icon
-                                    size="6"
-                                    as={MaterialIcons}
-                                    name={"more-vert"}
-                                    color={"white"}
-                                />
-                            }
-                            onPress={() => setIsOpen(true)}
-                        />
+                        {isVerified && (
+                            <IconButton
+                                variant="unstyled"
+                                icon={
+                                    <Icon
+                                        size="6"
+                                        as={MaterialIcons}
+                                        name={"more-vert"}
+                                        color={"white"}
+                                    />
+                                }
+                                onPress={() => setIsOpen(true)}
+                            />
+                        )}
                     </View>
                 </HStack>
 
@@ -213,7 +217,7 @@ export const PostFeedCard = ({
                     </RegularText>
 
                     <PostContent
-                        shouldTruncate={true}
+                        shouldTruncate={shouldTruncate}
                         content={post.content}
                         linkMeta={post.linkMeta}
                     />

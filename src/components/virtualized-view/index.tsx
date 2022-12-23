@@ -1,10 +1,9 @@
 import React from 'react';
-import {Button, FlatList, View} from 'native-base';
+import {Text, FlatList, View, Button} from 'native-base';
 import {IFlatListProps} from "native-base/src/components/basic/FlatList/types";
 import {colorsVerifyCode} from "../colors";
-import {Text} from "react-native";
-import {useNavigation} from "@react-navigation/native";
 import RegularText from "../texts/regular-texts";
+import {useNavigation} from "@react-navigation/native";
 
 interface VirtualizedViewProps extends IFlatListProps<any> {
     hideData?: boolean;
@@ -38,41 +37,53 @@ export default function VirtualizedView({hideData, isVerified = true, isActive =
     }
 
     if (!isVerified) {
+        // Remove onEndReach from props, no paging here, only to preview content
+        const {onEndReached, ...rest} = props;
         return (
-            <FlatList
-                {...props}
-                data={[]}
-                ListHeaderComponent={() => (
-                    <React.Fragment>{props.children}</React.Fragment>
-                )}
-                ListEmptyComponent={() => (
-                    <View alignSelf={"center"}>
-                        <RegularText style={{
-                            color: colorsVerifyCode.failLighter,
-                        }}>
-                            You must be verify your military status to view this content.
-                        </RegularText>
-                        <Button
-                            style={{
-                                marginTop: 10,
-                                marginBottom: 10,
-                                borderRadius: 20,
-                            }}
-                            color={colorsVerifyCode.accent}
-                            onPress={() => navigation.navigate("Account", {screen: "MyAccount"})}
+            <>
+                <FlatList
+                    {...rest}
+                    style={{
+                        flex: 1,
+                        marginBottom: 40,
+                    }}
+                    data={hideData ? [] : props.data}
+                    ListHeaderComponent={() => (
+                        <React.Fragment>{props.children}</React.Fragment>
+                    )}
+                    ListFooterComponent={() => (
+                        <View
+                            flex={1}
+                            justifyContent="center"
+                            alignItems="center"
                         >
-                            <Text style={{
-                                color: "white",
-                                fontSize: 20
-                            }}
+                            <RegularText style={{
+                                textAlign: "center",
+                                fontSize: 18,
+                            }}>
+                                Interested in what you see? Verify your military status to see more...
+                            </RegularText>
+                            <Button
+                                style={{
+                                    marginTop: 10,
+                                    marginBottom: 10,
+                                    borderRadius: 20,
+                                }}
+                                color={colorsVerifyCode.accent}
+                                onPress={() => navigation.navigate("Account", {screen: "MyAccount"})}
                             >
-                                Verify Military Status
-                            </Text>
-                        </Button>
-                    </View>
-                )}
-            />
-
+                                <Text style={{
+                                    color: "white",
+                                    fontSize: 20
+                                }}
+                                >
+                                    Verify Military Status
+                                </Text>
+                            </Button>
+                        </View>
+                    )}
+                />
+            </>
         )
     }
 
