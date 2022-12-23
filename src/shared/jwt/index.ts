@@ -88,12 +88,6 @@ export const getAccessToken = async (): Promise<Token | undefined> => {
 }
 
 /**
- * @callback requestRefresh
- * @param {string} refreshToken - Token that is sent to the backend
- * @returns {Promise} Promise that resolves an access token
- */
-
-/**
  * Gets the current access token, exchanges it with a new one if it's expired and then returns the token.
  * @async
  * @param {requestRefresh} requestRefresh - Function that is used to get a new access token
@@ -105,6 +99,7 @@ export const refreshTokenIfNeeded = async (requestRefresh: TokenRefreshRequest):
 
     // check if access token is expired
     if (!accessToken || isTokenExpired(accessToken)) {
+        console.log('accessToken expired')
         // do refresh
         accessToken = await refreshToken(requestRefresh)
     }
@@ -203,7 +198,8 @@ const getExpiresIn = (token: Token): number => {
  * @returns {Promise<string>} - Fresh access token
  */
 const refreshToken = async (requestRefresh: TokenRefreshRequest): Promise<Token> => {
-    const refreshToken = await getRefreshToken()
+    const refreshToken = await getRefreshToken();
+
     if (!refreshToken) throw new Error('No refresh token available')
 
     try {
@@ -268,15 +264,11 @@ export const authTokenInterceptor =
             requestConfig.transitional = {silentJSONParsing: true}
 
             // We need refresh token to do any authenticated requests
-            console.log('getting refresh token')
             const refreshToken = await getRefreshToken()
             if (!refreshToken) return requestConfig
-            console.log('got refresh token')
 
             const authenticateRequest = (token: string | undefined) => {
-                console.log('authenticating request')
                 if (token) {
-                    console.log('setting auth header')
                     requestConfig.headers = requestConfig.headers ?? {}
                     requestConfig.headers[header] = `${headerPrefix}${token}`
                 }
@@ -285,7 +277,6 @@ export const authTokenInterceptor =
 
             // Queue the request if another refresh request is currently happening
             if (isRefreshing) {
-                console.log('is refreshing')
                 return new Promise((resolve: (token?: string) => void, reject) => {
                     queue.push({resolve, reject})
                 }).then(authenticateRequest)
@@ -294,10 +285,9 @@ export const authTokenInterceptor =
             // Do refresh if needed
             let accessToken
             try {
-                console.log('Refreshing token')
                 setIsRefreshing(true)
                 accessToken = await refreshTokenIfNeeded(requestRefresh)
-                console.log('Token refreshed', accessToken)
+                console.log('Token refreshed')
             } catch (error) {
                 console.log('Token refresh failed', error)
                 declineQueue(error as Error)

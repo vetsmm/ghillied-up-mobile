@@ -141,7 +141,6 @@ function NavContainer() {
         nextAppState === "active"
       ) {
         dispatch(getAccount());
-        // dispatch(getUnreadNotifications());
       }
     };
     const subscription = AppState.addEventListener("change", handleChange);
