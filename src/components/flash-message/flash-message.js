@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import { StyleSheet, TouchableWithoutFeedback, Platform, StatusBar, Animated, Image, Text, View } from "react-native";
-// import { isIphoneX, getStatusBarHeight } from "react-native-iphone-screen-helper";
+import { getStatusBarHeight } from "react-native-iphone-x-helper";
 import PropTypes from "prop-types";
 
 import FlashMessageManager from "./flash-message-manager";
 import FlashMessageWrapper, { styleWithInset } from "./flash-message-wrapper";
-import {getStatusBarHeight} from "react-native-iphone-x-helper";
 
 /**
  * MessageComponent `minHeight` property used mainly in vertical transitions
