@@ -73,7 +73,6 @@ export const CreateChildCommentScreen: React.FC<{ route: Route }> = ({route}) =>
       <KeyboardAvoidingContainer
         enableScroll={true}
       >
-        {/* TODO add parent comment detail*/}
         <VStack style={{margin: 25, marginBottom: 100}}>
           <Formik
             enableReinitialize={true}

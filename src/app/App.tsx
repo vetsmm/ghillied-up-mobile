@@ -46,7 +46,6 @@ const AppContainer = _renderApp;
 
 const actions = bindActionCreators({ logout }, store.dispatch);
 applyAxiosErrorInterceptor(axiosInstance, () => {
-    // TODO: Add universal alert on why the user has been kicked out
     FlashMessageRef.current?.showMessage({
         message: 'You have been logged out',
         type: 'danger',
