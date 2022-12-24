@@ -9,7 +9,7 @@ import {
 } from '../style-components';
 import {getTimeAgo} from "../../shared/utils/date-utils";
 import {ServiceBranch} from "../../shared/models/users";
-import {Icon, IconButton, Image, Text, VStack} from "native-base";
+import {Icon, IconButton, Image, Spinner, Text, VStack} from "native-base";
 import {getMilitaryString} from "../../shared/utils/military-utils";
 import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import {SvgXml} from "react-native-svg";
@@ -23,6 +23,7 @@ export interface ChildCommentProps {
     isOp: boolean;
     onCommentReact: (commentId: string, shouldDelete: boolean) => void;
     setOpenActionSheet: (isOpen: boolean) => void;
+    reactionLoading?: boolean;
 }
 
 const ChildComment = ({
@@ -30,7 +31,8 @@ const ChildComment = ({
                           index,
                           isOp = false,
                           onCommentReact,
-                          setOpenActionSheet
+                          setOpenActionSheet,
+                          reactionLoading = false
                       }: ChildCommentProps) => {
 
     const getServiceBranchSealPng = (serviceBranch: ServiceBranch) => {
@@ -172,10 +174,16 @@ const ChildComment = ({
                 </View>
 
                 <BottomRowWrapper>
-                    {comment.currentUserReaction ? (
-                        _renderFilledReaction()
+                    {reactionLoading ? (
+                        <Spinner color={"white"} size="sm"/>
                     ) : (
-                        _renderEmptyReaction()
+                        <>
+                            {comment.currentUserReaction ? (
+                                _renderFilledReaction()
+                            ) : (
+                                _renderEmptyReaction()
+                            )}
+                        </>
                     )}
 
                 </BottomRowWrapper>

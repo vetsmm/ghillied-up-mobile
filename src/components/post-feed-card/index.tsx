@@ -6,7 +6,7 @@ import {
     IconButton,
     Icon,
     Avatar,
-    View, Box
+    View, Box, Spinner
 } from "native-base";
 import {AntDesign, MaterialIcons} from "@expo/vector-icons";
 import {getMilitaryString} from "../../shared/utils/military-utils";
@@ -239,7 +239,7 @@ export const PostFeedCard = ({
                     mt={2}
                 >
                     {isLoadingReactionUpdate ? (
-                        <ActivityIndicator size="small" color="#00C6B1"/>
+                        <Spinner size="small" color="white"/>
                     ) : _renderReactionButton()}
                     <CommentButton
                         disabled={!isGhillieMember}
