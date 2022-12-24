@@ -7,7 +7,7 @@ import {
   IconButton,
   Icon,
   Avatar,
-  View
+  View, Spinner
 } from "native-base";
 import {PostListingDto} from "../../shared/models/posts/post-listing.dto";
 import {AntDesign, MaterialIcons} from "@expo/vector-icons";
@@ -39,6 +39,7 @@ export interface IPostCardProps {
   onOwnerDelete: (post: PostListingDto | PostDetailDto) => void;
   onModeratorRemoval: (post: PostListingDto | PostDetailDto) => void;
   onHandleReaction: (postId: string, reaction: ReactionType | null) => void;
+  reactionLoading?: boolean;
 }
 
 export const PostHeader = ({
@@ -50,7 +51,8 @@ export const PostHeader = ({
                              onReport,
                              isAdmin,
                              isOwner,
-                             isModerator
+                             isModerator,
+                             reactionLoading = false
                            }: IPostCardProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
@@ -158,15 +160,20 @@ export const PostHeader = ({
         px="4"
         mt={10}
       >
-        <ReactionButton
-          onReact={(reaction) => {
-            onHandleReaction(post.id, reaction);
-          }}
-          onUnReact={() => {
-            onHandleReaction(post.id, null);
-          }}
-          currentReaction={post.currentUserReaction}
-        />
+        {reactionLoading ? (
+            <Spinner color={colorsVerifyCode.secondary} />
+        ): (
+            <ReactionButton
+                onReact={(reaction) => {
+                  onHandleReaction(post.id, reaction);
+                }}
+                onUnReact={() => {
+                  onHandleReaction(post.id, null);
+                }}
+                currentReaction={post.currentUserReaction}
+            />
+        )}
+
         <CommentButton
           onPress={() => {
             moveTo("Posts", {params: {postId: post.id,}, screen: "PostDetail"});

@@ -37,7 +37,7 @@ import VerifiedMilitaryProtected from "../../../shared/protection/verified-milit
 import {GhillieStatus} from "../../../shared/models/ghillies/ghillie-status";
 import GhillieService from "../../../shared/services/ghillie.service";
 import {FlashMessageRef} from "../../../app/App";
-import {Autolink, GhilliedUpHashTagMatcher} from "../../../components/autolink";
+import {Autolink} from "../../../components/autolink";
 
 const {primary, secondary, fail} = colorsVerifyCode;
 
@@ -244,7 +244,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 setPostList(updatedPosts);
                 setSubmittingReaction(false);
             })
-            .catch(err => {
+            .catch(() => {
                 setSubmittingReaction(false);
                 FlashMessageRef.current?.showMessage({
                     message: 'An error occurred while reacting to the post.',

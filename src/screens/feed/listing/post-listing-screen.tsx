@@ -76,7 +76,7 @@ function PostListingScreen() {
     const [posts, setPosts] = React.useState<PostFeedDto[]>([]);
     const [currentPage, setCurrentPage] = React.useState<number>(1);
     const [isLoading, setIsLoading] = React.useState(false);
-    const [isLoadingReactionUpdate, setIsLoadingReactionUpdate] = useStateWithCallback(false);
+    const [submittingReaction, setSubmittingReaction] = React.useState(false);
     const [userGhillies, setUserGhillies] = useStateWithCallback<GhillieDetailDto[]>([]);
     const [isLoadingUserGhillies, setIsLoadingUserGhillies] = useStateWithCallback(false);
     const [selectedGhillie, setSelectedGhillie] = useStateWithCallback<GhillieDetailDto | undefined>(undefined);
@@ -287,33 +287,29 @@ function PostListingScreen() {
     }
 
     const onHandleReaction = (postId: string, reaction: ReactionType | null) => {
-        setIsLoadingReactionUpdate(true, () => {
-            postReactionService.reactToPost(reaction, postId)
-                .then(async res => {
-                    setIsLoadingReactionUpdate(false, () => {
-                        // find the post and update the reaction, set the state with the existing list of posts with updated value
-                        const updatedPosts = posts.map(foundPost => {
-                            if (foundPost.id === postId) {
-                                foundPost.currentUserReactionType = reaction;
-                                foundPost.postReactionsCount = getReactionCount(foundPost, reaction);
-                            }
-                            return foundPost;
-                        });
-                        setPosts(updatedPosts);
-                    })
-                })
-                .catch(err => {
-                    FlashMessageRef.current?.showMessage({
-                        message: 'An error occurred while reacting to the post',
-                        type: 'danger',
-                        style: {
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }
-                    });
-                    setIsLoadingReactionUpdate(false)
+        setSubmittingReaction(true);
+        postReactionService.reactToPost(reaction, postId)
+            .then(async () => {
+                const updatedPosts = posts.map(foundPost => {
+                    if (foundPost.id === postId) {
+                        foundPost.currentUserReactionType = reaction;
+                        foundPost.postReactionsCount = getReactionCount(foundPost, reaction);
+                    }
+                    return foundPost;
                 });
-        });
+                setPosts(updatedPosts);
+            })
+            .catch(() => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while reacting to the post',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            });
+        setSubmittingReaction(false);
     }
 
     return (
@@ -397,7 +393,7 @@ function PostListingScreen() {
                                 onModeratorRemoval={moderatorRemovePost}
                                 onOwnerDelete={ownerDeletePost}
                                 onHandleReaction={onHandleReaction}
-                                isLoadingReactionUpdate={isLoadingReactionUpdate}
+                                isLoadingReactionUpdate={submittingReaction}
                             />
                         )}
                         refreshControl={

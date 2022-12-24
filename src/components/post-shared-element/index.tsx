@@ -22,6 +22,7 @@ export interface PostSharedElementProps {
     isAdmin: boolean;
     isModerator: boolean;
     navigation: any;
+    reactionLoading?: boolean;
 }
 
 export const PostSharedElement = ({
@@ -35,7 +36,8 @@ export const PostSharedElement = ({
                                       isPostOwner,
                                       isAdmin,
                                       isModerator,
-                                      navigation
+                                      navigation,
+                                      reactionLoading = false
                                   }: PostSharedElementProps) => {
     return (
         <View mb={5}>
@@ -54,6 +56,7 @@ export const PostSharedElement = ({
                         isOwner={isPostOwner}
                         isAdmin={isAdmin}
                         isModerator={isModerator}
+                        reactionLoading={reactionLoading}
                     />
                 )}
             </SharedElement>
