@@ -113,15 +113,6 @@ export const HashTagPostListingScreen = ({route}: { route: Route }) => {
     (state: IRootState) => state.authentication.account
   );
   
-  
-  React.useEffect(() => {
-    const initialLoad = navigation.addListener('focus', async () => {
-      getFeed(1);
-    });
-    
-    return initialLoad;
-  }, [navigation]);
-  
   React.useEffect(() => {
     getFeed(1);
   }, [hashtag]);

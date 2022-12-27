@@ -105,6 +105,9 @@ export const ApplicationTabBar = ({navigation}: any) => {
             <Tab.Screen
                 name="Feed"
                 component={FeedStackScreen}
+                options={{
+                    lazy: true,
+                }}
                 listeners={({navigation}) => ({
                     tabPress: (e) => {
                         // Prevent default action

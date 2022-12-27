@@ -2,8 +2,8 @@ import React, {useCallback} from "react";
 import MainContainer from "../../../components/containers/MainContainer";
 import {useSelector} from "react-redux";
 import {IRootState} from "../../../store";
-import {Center, Column, HStack, ScrollView, Text, View} from "native-base";
-import {FlatList} from "react-native";
+import {Center, Column, HStack, ScrollView, Spinner, Text, View} from "native-base";
+import {ActivityIndicator, RefreshControl} from "react-native";
 import {TouchableOpacity} from "react-native-gesture-handler";
 import {Feather, Ionicons} from "@expo/vector-icons";
 import styles from "./styles";
@@ -18,6 +18,7 @@ import GhillieCardV2 from '../../../components/ghillie-card-v2';
 import RegularText from '../../../components/texts/regular-texts';
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 import {FlashMessageRef} from "../../../app/App";
+import {FlashList} from "@shopify/flash-list";
 
 function GhillieListingHeader({isVerifiedMilitary, isAdmin}) {
     const navigation: any = useNavigation();
@@ -81,6 +82,7 @@ function GhillieListingScreen() {
     const [isLoadingPopularGhillies, setIsLoadingPopularGhillies] = useStateWithCallback(false);
     const [isLoadingTrendingGhillies, setIsLoadingTrendingGhillies] = useStateWithCallback(false);
     const [isLoadingNewGhillies, setIsLoadingNewGhillies] = useStateWithCallback(false);
+    const [isLoadingAll, setIsLoadingAll] = useStateWithCallback(false);
 
     const [isVerifiedMilitary, isAdmin] = useSelector(
         (state: IRootState) => [
@@ -91,15 +93,93 @@ function GhillieListingScreen() {
     const navigation: any = useNavigation();
 
     React.useEffect(() => {
-        const initialLoad = navigation.addListener('focus', async () => {
-            getMyGhillies();
-            getPopularGhillies();
-            getPopularGhilliesByTrendingPosts();
-            getNewestGhillies();
-        });
+        loadGhillieTypes();
+    }, []);
 
-        return initialLoad;
-    }, [navigation]);
+    const loadGhillieTypes = useCallback(async () => {
+        setIsLoadingAll(true);
+        setIsLoadingNewGhillies(true);
+        setIsLoadingPopularGhillies(true);
+        setIsLoadingTrendingGhillies(true);
+        setIsLoadingUserGhillies(true);
+
+        GhillieService.getMyGhillies()
+            .then((response) => {
+                setUserGhillies(response.data);
+                setIsLoadingUserGhillies(false);
+            })
+            .then(() => {
+                GhillieService.getPopularGhilliesByMembers()
+                    .then((response) => {
+                        setPopularGhilliesByMembers(response);
+                        setIsLoadingPopularGhillies(false);
+                    })
+                    .catch((error) => {
+                        setIsLoadingPopularGhillies(false);
+                        FlashMessageRef.current?.showMessage({
+                            message: 'An error occurred while loading popular ghillies',
+                            type: 'danger',
+                            style: {
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }
+                        });
+                    });
+            })
+            .then(() => {
+                GhillieService.getPopularGhilliesByTrendingPosts()
+                    .then((response) => {
+                        setTrendingGhillies(response);
+                        setIsLoadingTrendingGhillies(false);
+                    })
+                    .catch((error) => {
+                        setIsLoadingTrendingGhillies(false);
+                        FlashMessageRef.current?.showMessage({
+                            message: 'An error occurred while loading trending ghillies',
+                            type: 'danger',
+                            style: {
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }
+                        });
+                    });
+            })
+            .then(() => {
+                GhillieService.getNewestGhillies()
+                    .then((response) => {
+                        setNewGhillies(response);
+                        setIsLoadingNewGhillies(false);
+                    })
+                    .catch((error) => {
+                        setIsLoadingNewGhillies(false);
+                        FlashMessageRef.current?.showMessage({
+                            message: 'An error occurred while loading newest ghillies',
+                            type: 'danger',
+                            style: {
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }
+                        });
+                    });
+            })
+            .catch((error) => {
+                setIsLoadingUserGhillies(false);
+                setIsLoadingPopularGhillies(false);
+                setIsLoadingTrendingGhillies(false);
+                setIsLoadingNewGhillies(false);
+
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while loading your ghillies',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            });
+
+        setIsLoadingAll(false);
+    }, []);
 
     const getMyGhillies = useCallback(() => {
         setIsLoadingUserGhillies(true);
@@ -144,9 +224,12 @@ function GhillieListingScreen() {
             });
     }, []);
 
+    // Memo to set popular ghillie state
+
+
     const getPopularGhilliesByTrendingPosts = useCallback(() => {
         setIsLoadingTrendingGhillies(true);
-        GhillieService.getPopularGhilliesByTrendingPosts(10)
+        return GhillieService.getPopularGhilliesByTrendingPosts(10)
             .then((response) => {
                 setTrendingGhillies(response);
             })
@@ -215,6 +298,13 @@ function GhillieListingScreen() {
         <MainContainer style={[styles.container]}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        onRefresh={loadGhillieTypes}
+                        refreshing={isLoadingAll}
+                        tintColor={colorsVerifyCode.secondary}
+                    />
+                }
             >
                 <GhillieListingHeader
                     isVerifiedMilitary={isVerifiedMilitary}
@@ -240,12 +330,19 @@ function GhillieListingScreen() {
                         </RegularText>
                         Ghillies
                     </RegularText>
-                    <GhillieRow
-                        ghillieList={userGhillies}
-                        onPress={ghillie => {
-                            navigation.navigate("GhillieDetail", {ghillieId: ghillie.id});
-                        }}
-                    />
+                    {isLoadingUserGhillies ? (
+                        <View style={{alignItems: "center"}}>
+                            <ActivityIndicator size="large" color={colorsVerifyCode.secondary}/>
+                        </View>
+                    ) : (
+                        <GhillieRow
+                            ghillieList={userGhillies}
+                            onPress={ghillie => {
+                                navigation.navigate("GhillieDetail", {ghillieId: ghillie.id});
+                            }}
+                        />
+                    )}
+
                 </View>
 
                 <View mb={40}>
@@ -268,36 +365,42 @@ function GhillieListingScreen() {
                             </RegularText>
                             Ghillies
                         </RegularText>
-                        <FlatList
-                            horizontal={true}
-                            nestedScrollEnabled={true}
-                            contentContainerStyle={{
-                                paddingLeft: 15,
-                                paddingRight: 15
-                            }}
-                            showsHorizontalScrollIndicator={false}
-                            keyExtractor={(item) => item.id}
-                            data={popularGhilliesByMembers}
-                            // estimatedItemSize={327}
-                            renderItem={({item}: any) => (
-                                <View mr={2}>
-                                    <GhillieCardV2
-                                        ghillie={item}
-                                        isVerifiedMilitary={isVerifiedMilitary}
-                                        onJoinPress={() => onJoinGhilliePress(item, "POPULAR")}
-                                        isMember={item.memberMeta !== null}
-                                    />
-                                </View>
-                            )}
-                            refreshing={isLoadingPopularGhillies}
-                            ListEmptyComponent={
-                                <Center>
-                                    <Text style={{
-                                        color: Colors.secondary
-                                    }}>No Ghillies Found</Text>
-                                </Center>
-                            }
-                        />
+                        {isLoadingPopularGhillies ? (
+                            <View style={{alignItems: "center"}}>
+                                <ActivityIndicator size="large" color={colorsVerifyCode.secondary}/>
+                            </View>
+                        ) : (
+                            <FlashList
+                                horizontal={true}
+                                estimatedItemSize={300}
+                                nestedScrollEnabled={true}
+                                contentContainerStyle={{
+                                    paddingLeft: 15,
+                                    paddingRight: 15
+                                }}
+                                showsHorizontalScrollIndicator={false}
+                                keyExtractor={(item) => item.id}
+                                data={popularGhilliesByMembers}
+                                renderItem={({item}: any) => (
+                                    <View mr={2}>
+                                        <GhillieCardV2
+                                            ghillie={item}
+                                            isVerifiedMilitary={isVerifiedMilitary}
+                                            onJoinPress={() => onJoinGhilliePress(item, "POPULAR")}
+                                            isMember={item.memberMeta !== null}
+                                        />
+                                    </View>
+                                )}
+                                refreshing={isLoadingPopularGhillies}
+                                ListEmptyComponent={
+                                    <Center>
+                                        <Text style={{
+                                            color: Colors.secondary
+                                        }}>No Ghillies Found</Text>
+                                    </Center>
+                                }
+                            />
+                        )}
                     </View>
 
                     <View style={styles.listContainer}>
@@ -319,35 +422,41 @@ function GhillieListingScreen() {
                             </RegularText>
                             Ghillies
                         </RegularText>
-                        <FlatList
-                            horizontal={true}
-                            contentContainerStyle={{
-                                paddingLeft: 15,
-                                paddingRight: 15
-                            }}
-                            showsHorizontalScrollIndicator={false}
-                            keyExtractor={(item) => item.id}
-                            data={trendingGhillies}
-                            // estimatedItemSize={327}
-                            renderItem={({item}: any) => (
-                                <View key={item.id} mb={2} mr={2}>
-                                    <GhillieCardV2
-                                        ghillie={item}
-                                        onJoinPress={() => onJoinGhilliePress(item, "TRENDING")}
-                                        isVerifiedMilitary={isVerifiedMilitary}
-                                        isMember={item.memberMeta !== null}
-                                    />
-                                </View>
-                            )}
-                            refreshing={isLoadingTrendingGhillies}
-                            ListEmptyComponent={
-                                <Center>
-                                    <Text style={{
-                                        color: Colors.secondary
-                                    }}>No Ghillies Found</Text>
-                                </Center>
-                            }
-                        />
+                        {isLoadingTrendingGhillies ? (
+                            <View style={{alignItems: "center"}}>
+                                <ActivityIndicator size="large" color={colorsVerifyCode.secondary}/>
+                            </View>
+                        ) : (
+                            <FlashList
+                                horizontal={true}
+                                estimatedItemSize={300}
+                                contentContainerStyle={{
+                                    paddingLeft: 15,
+                                    paddingRight: 15
+                                }}
+                                showsHorizontalScrollIndicator={false}
+                                keyExtractor={(item) => item.id}
+                                data={trendingGhillies}
+                                renderItem={({item}: any) => (
+                                    <View key={item.id} mb={2} mr={2}>
+                                        <GhillieCardV2
+                                            ghillie={item}
+                                            onJoinPress={() => onJoinGhilliePress(item, "TRENDING")}
+                                            isVerifiedMilitary={isVerifiedMilitary}
+                                            isMember={item.memberMeta !== null}
+                                        />
+                                    </View>
+                                )}
+                                refreshing={isLoadingTrendingGhillies}
+                                ListEmptyComponent={
+                                    <Center>
+                                        <Text style={{
+                                            color: Colors.secondary
+                                        }}>No Ghillies Found</Text>
+                                    </Center>
+                                }
+                            />
+                        )}
                     </View>
 
                     <View style={styles.popularContainer}>
@@ -369,35 +478,42 @@ function GhillieListingScreen() {
                             </RegularText>
                             Ghillies
                         </RegularText>
-                        <FlatList
-                            horizontal={true}
-                            contentContainerStyle={{
-                                paddingLeft: 15,
-                                paddingRight: 15
-                            }}
-                            showsHorizontalScrollIndicator={false}
-                            keyExtractor={(item) => item.id}
-                            data={newGhillies}
-                            // estimatedItemSize={327}
-                            renderItem={({item}: any) => (
-                                <View key={item.id} mr={2}>
-                                    <GhillieCardV2
-                                        ghillie={item}
-                                        onJoinPress={() => onJoinGhilliePress(item, "NEW")}
-                                        isVerifiedMilitary={isVerifiedMilitary}
-                                        isMember={item.memberMeta !== null}
-                                    />
-                                </View>
-                            )}
-                            refreshing={isLoadingNewGhillies}
-                            ListEmptyComponent={
-                                <Center>
-                                    <Text style={{
-                                        color: Colors.secondary
-                                    }}>No Ghillies Found</Text>
-                                </Center>
-                            }
-                        />
+                        {isLoadingNewGhillies ? (
+                            <View style={{alignItems: "center"}}>
+                                <ActivityIndicator size="large" color={colorsVerifyCode.secondary}/>
+                            </View>
+                        ) : (
+                            <FlashList
+                                horizontal={true}
+                                estimatedItemSize={300}
+                                contentContainerStyle={{
+                                    paddingLeft: 15,
+                                    paddingRight: 15
+                                }}
+                                showsHorizontalScrollIndicator={false}
+                                keyExtractor={(item) => item.id}
+                                data={newGhillies}
+                                // estimatedItemSize={327}
+                                renderItem={({item}: any) => (
+                                    <View key={item.id} mr={2}>
+                                        <GhillieCardV2
+                                            ghillie={item}
+                                            onJoinPress={() => onJoinGhilliePress(item, "NEW")}
+                                            isVerifiedMilitary={isVerifiedMilitary}
+                                            isMember={item.memberMeta !== null}
+                                        />
+                                    </View>
+                                )}
+                                refreshing={isLoadingNewGhillies}
+                                ListEmptyComponent={
+                                    <Center>
+                                        <Text style={{
+                                            color: Colors.secondary
+                                        }}>No Ghillies Found</Text>
+                                    </Center>
+                                }
+                            />
+                        )}
                     </View>
                 </View>
             </ScrollView>

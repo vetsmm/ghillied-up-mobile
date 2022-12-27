@@ -1,4 +1,4 @@
-import {createStackNavigator} from "@react-navigation/stack";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {useSelector} from "react-redux";
 import {IRootState, useAppDispatch} from "../store";
 import LoginScreen from "../screens/auth/login.screen";
@@ -21,8 +21,8 @@ import {usePolling} from "../shared/hooks";
 import NotFoundScreen from '../screens/not-found-screen';
 
 // https://reactnavigation.org/docs/tab-based-navigation/
-const Stack = createStackNavigator();
-const AuthStack = createStackNavigator();
+const Stack = createNativeStackNavigator();
+const AuthStack = createNativeStackNavigator();
 
 const _renderAuthNavigation = () => {
   const isAuthenticated = useSelector(
