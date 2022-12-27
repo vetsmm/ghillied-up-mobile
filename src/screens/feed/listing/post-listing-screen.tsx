@@ -101,14 +101,10 @@ function PostListingScreen() {
 
 
     React.useEffect(() => {
-        const initialLoad = navigation.addListener('focus', async () => {
-            setSelectedGhillie(undefined);
-            getFeed(1);
-            getMyGhillies();
-        });
-
-        return initialLoad;
-    }, [navigation]);
+        setSelectedGhillie(undefined);
+        getFeed(1);
+        getMyGhillies();
+    }, []);
 
     React.useEffect(() => {
         if (selectedGhillie) {

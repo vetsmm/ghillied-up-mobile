@@ -16,8 +16,11 @@ import {applyAxiosErrorInterceptor, axiosInstance} from "../shared/services/api"
 import {bindActionCreators} from "redux";
 import FlashMessage from "../components/flash-message/index";
 import {useNetInfo} from "@react-native-community/netinfo";
+import {enableFreeze} from "react-native-screens";
 
 export const FlashMessageRef = React.createRef<FlashMessage>();
+
+enableFreeze(true);
 
 Sentry.init({
     dsn: AppConfig.sentryDsn,
