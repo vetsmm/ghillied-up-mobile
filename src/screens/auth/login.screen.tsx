@@ -11,148 +11,161 @@ import RegularButton from "../../components/buttons/regular-button";
 import RowContainer from "../../components/containers/row-container";
 import PressableText from "../../components/texts/pressable-text";
 import {Hidden, HStack, Text, VStack} from "native-base";
-import { IRootState, useAppDispatch } from "../../store";
+import {IRootState, useAppDispatch} from "../../store";
 import AuthService from "../../shared/services/auth.service";
 import {login} from "../../shared/reducers/authentication.reducer";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 
 const {primary} = colorsVerifyCode;
 
 // custom components
 export interface LoginScreenProps {
-  navigation: NavigationProp<ParamListBase>
+    navigation: NavigationProp<ParamListBase>
 }
 
 function MobileHeader() {
-  return (
-    <Hidden from="md">
-      <VStack px="4" mt="4" mb="5" space="9">
-        <HStack space="2" alignItems="center">
-        </HStack>
-        <VStack space={0.5}>
-          <Text
-            fontSize="3xl"
-            fontWeight="bold"
-            _light={{color: 'white'}}
-            _dark={{color: 'white'}}
-          >
-            Sign in to continue
-          </Text>
-        </VStack>
-      </VStack>
-    </Hidden>
-  );
+    return (
+        <Hidden from="md">
+            <VStack px="4" mt="4" mb="5" space="9">
+                <HStack space="2" alignItems="center">
+                </HStack>
+                <VStack space={0.5}>
+                    <Text
+                        fontSize="3xl"
+                        fontWeight="bold"
+                        _light={{color: 'white'}}
+                        _dark={{color: 'white'}}
+                        accessible={true}
+                        accessibilityLabel="Sign in to your account"
+                    >
+                        Sign in to continue
+                    </Text>
+                </VStack>
+            </VStack>
+        </Hidden>
+    );
 }
 
 
 const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) => {
-  const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch()
 
-  const [message, setMessage] = useState<string | null>('');
-  const [isSuccessMessage, setIsSuccessMessage] = useState(false);
+    const [message, setMessage] = useState<string | null>('');
+    const [isSuccessMessage, setIsSuccessMessage] = useState(false);
 
-  const moveTo = (screen, payload?) => {
-    navigation.navigate(screen, {...payload});
-  };
+    const moveTo = (screen, payload?) => {
+        navigation.navigate(screen, {...payload});
+    };
 
-  const isLoading = useSelector(
-    (state: IRootState) => state.authentication.loading,
-  );
+    const isLoading = useSelector(
+        (state: IRootState) => state.authentication.loading,
+    );
 
-  const handleLogin = async (credentials, setSubmitting) => {
-    setMessage(null);
+    const handleLogin = async (credentials, setSubmitting) => {
+        setMessage(null);
 
-    AuthService.login(credentials)
-      .then((res) => {
-        dispatch(login({
-          authTokenOutput: res.data,
-          credentials: credentials
-        }))
-      })
-      .catch((error) => {
-        const err = JSON.parse(JSON.stringify(error));
-        if (err.status === 403) {
-          navigation.navigate("VerifyEmail", {
-            username: credentials.username,
-          });
-        } else if (err.status === 401) {
-          setMessage('Login failed: Invalid Credentials');
-        } else {
-          // Sentry.Native.captureException(err);
-          setMessage('Login failed: Unknown error');
-        }
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
-  };
-
-  return (
-    <MainContainer>
-      <KeyboardAvoidingContainer>
-        <MobileHeader/>
-        <VStack style={{margin: 25}}>
-          <Formik
-            initialValues={{username: '', password: ''}}
-            onSubmit={async (values, {setSubmitting}) => {
-              if (values.username === '' || values.password === '') {
-                setMessage('Please fill in all fields');
+        AuthService.login(credentials)
+            .then((res) => {
+                dispatch(login({
+                    authTokenOutput: res.data,
+                    credentials: credentials
+                }))
+            })
+            .catch((error) => {
+                const err = JSON.parse(JSON.stringify(error));
+                if (err.status === 403) {
+                    navigation.navigate("VerifyEmail", {
+                        username: credentials.username,
+                    });
+                } else if (err.status === 401) {
+                    setMessage('Login failed: Invalid Credentials');
+                } else {
+                    // Sentry.Native.captureException(err);
+                    setMessage('Login failed: Unknown error');
+                }
+            })
+            .finally(() => {
                 setSubmitting(false);
-              } else {
-                handleLogin(values, setSubmitting);
-              }
-            }}
-          >
-            {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
-              <>
-                <StyledTextInput
-                  label="Username"
-                  icon="account-outline"
-                  placeholder="maddog"
-                  keyboardType="default"
-                  onChangeText={handleChange('username')}
-                  onBlur={handleBlur('username')}
-                  value={values.username}
-                  style={{marginBottom: 25}}
-                />
+            });
+    };
 
-                <StyledTextInput
-                  label="Password"
-                  icon="lock-open"
-                  placeholder="* * * * * * * *"
-                  onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  value={values.password}
-                  isPassword={true}
-                  style={{marginBottom: 25}}
-                />
+    return (
+        <MainContainer>
+            <KeyboardAvoidingContainer>
+                <MobileHeader/>
+                <VStack style={{margin: 25}}>
+                    <Formik
+                        initialValues={{username: '', password: ''}}
+                        onSubmit={async (values, {setSubmitting}) => {
+                            if (values.username === '' || values.password === '') {
+                                setMessage('Please fill in all fields');
+                                setSubmitting(false);
+                            } else {
+                                handleLogin(values, setSubmitting);
+                            }
+                        }}
+                    >
+                        {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+                            <>
+                                <StyledTextInput
+                                    label="Username"
+                                    icon="account-outline"
+                                    placeholder="maddog"
+                                    keyboardType="default"
+                                    onChangeText={handleChange('username')}
+                                    onBlur={handleBlur('username')}
+                                    value={values.username}
+                                    style={{marginBottom: 25}}
+                                    accessible={true}
+                                    accessibilityLabel="Username"
+                                />
 
-                <MsgBox style={{marginBottom: 25}} success={isSuccessMessage}>
-                  {message || ' '}
-                </MsgBox>
-                {(!isSubmitting && !isLoading) && <RegularButton onPress={handleSubmit}>Login</RegularButton>}
-                {(isSubmitting || isLoading) && (
-                  <RegularButton disabled={true}>
-                    <ActivityIndicator size="small" color={primary}/>
-                  </RegularButton>
-                )}
+                                <StyledTextInput
+                                    label="Password"
+                                    icon="lock-open"
+                                    placeholder="* * * * * * * *"
+                                    onChangeText={handleChange('password')}
+                                    onBlur={handleBlur('password')}
+                                    value={values.password}
+                                    isPassword={true}
+                                    style={{marginBottom: 25}}
+                                    accessible={true}
+                                    accessibilityLabel="Password"
+                                />
 
-                <RowContainer>
-                  <PressableText onPress={() => {
-                    moveTo('Register')
-                  }}>Need an Account?</PressableText>
-                  <PressableText onPress={() => {
-                    moveTo('PasswordResetInit')
-                  }}>Forgot Password</PressableText>
-                </RowContainer>
-              </>
-            )}
-          </Formik>
-        </VStack>
-      </KeyboardAvoidingContainer>
-    </MainContainer>
-  );
+                                <MsgBox style={{marginBottom: 25}} success={isSuccessMessage}>
+                                    {message || ' '}
+                                </MsgBox>
+                                {(!isSubmitting && !isLoading) && <RegularButton onPress={handleSubmit}
+                                                                                 accessibilityLabel={"Login"}>Login</RegularButton>}
+                                {(isSubmitting || isLoading) && (
+                                    <RegularButton disabled={true}>
+                                        <ActivityIndicator size="small" color={primary}/>
+                                    </RegularButton>
+                                )}
+
+                                <RowContainer>
+                                    <PressableText
+                                        accessibility={true}
+                                        accessibilityLabel="Register new account"
+                                        onPress={() => {
+                                            moveTo('Register')
+                                        }}>Need an Account?</PressableText>
+                                    <PressableText
+                                        accessibility={true}
+                                        accessibilityLabel="Forgot password"
+                                        onPress={() => {
+                                        moveTo('PasswordResetInit')
+                                    }}>Forgot Password</PressableText>
+                                </RowContainer>
+                            </>
+                        )}
+                    </Formik>
+                </VStack>
+            </KeyboardAvoidingContainer>
+        </MainContainer>
+    );
 };
 
 export default LoginScreen;

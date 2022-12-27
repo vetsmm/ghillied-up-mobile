@@ -6,4 +6,6 @@ export interface TextProps {
   style?: StyleProp<TextStyle>;
   onPress?: () => void;
   success?: boolean;
+  accessibilityLabel?: string;
+  accessibility?: boolean;
 }

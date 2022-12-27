@@ -1,15 +1,16 @@
 import React from 'react';
-import { Modal } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {Modal} from 'react-native';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 // styled components
 // @ts-ignore
 import styled from 'styled-components/native';
-import { colorsVerifyCode } from '../colors';
+import {colorsVerifyCode} from '../colors';
 import BigText from '../texts/big-text';
 import RegularText from '../texts/regular-texts';
 import RegularButton from '../buttons/regular-button';
-const { primary, black, success, fail, tertiary } = colorsVerifyCode;
+
+const {primary, black, success, fail, tertiary} = colorsVerifyCode;
 
 export const ModalPressableContainer = styled.Pressable`
   flex: 1;
@@ -32,23 +33,34 @@ export const ModalView = styled.View`
   shadow-radius: 4px;
 `;
 
-const MessageModal = ({ modalVisible, buttonHandler, type, headerText, message, buttonText }: any) => {
-  return (
-    <Modal animationType="slide" visible={modalVisible} transparent={true}>
-      <ModalPressableContainer onPress={buttonHandler}>
-        <ModalView>
-          <MaterialCommunityIcons
-            name={type === 'success' ? 'check-circle' : 'close-circle'}
-            size={100}
-            color={type === 'success' ? success : fail}
-          />
-          <BigText style={{ fontSize: 25, color: tertiary, marginVertical: 10 }}>{headerText}</BigText>
-          <RegularText style={{ marginBottom: 20 }}>{message}</RegularText>
-          <RegularButton onPress={buttonHandler}>{buttonText || `Complete`}</RegularButton>
-        </ModalView>
-      </ModalPressableContainer>
-    </Modal>
-  );
+const MessageModal = ({modalVisible, buttonHandler, type, headerText, message, buttonText}: any) => {
+    return (
+        <Modal animationType="slide" visible={modalVisible} transparent={true}>
+            <ModalPressableContainer onPress={buttonHandler}>
+                <ModalView>
+                    <MaterialCommunityIcons
+                        name={type === 'success' ? 'check-circle' : 'close-circle'}
+                        size={100}
+                        color={type === 'success' ? success : fail}
+                    />
+                    <BigText
+                        style={{fontSize: 25, color: tertiary, marginVertical: 10}}
+                        accessibility={true}
+                        accessibilityLabel={headerText}
+                    >{headerText}</BigText>
+                    <RegularText
+                        style={{marginBottom: 20}}
+                        accessibility={true}
+                        accessibilityLabel={message}
+                    >{message}</RegularText>
+                    <RegularButton
+                        onPress={buttonHandler}
+                        accessibilityLabel={buttonText || `Complete`}
+                    >{buttonText || `Complete`}</RegularButton>
+                </ModalView>
+            </ModalPressableContainer>
+        </Modal>
+    );
 };
 
 export default MessageModal;

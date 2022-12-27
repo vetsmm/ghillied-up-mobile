@@ -8,7 +8,7 @@ import styled from 'styled-components/native';
 import {colorsVerifyCode} from '../colors';
 import SmallText from "../texts/small-text";
 
-const {primary, secondary, tertiary, accent, lightGray, fail} = colorsVerifyCode;
+const {primary, secondary, tertiary, accent, lighterGray, fail} = colorsVerifyCode;
 
 interface ExtraInputProps {
   label?: ReactNode;
@@ -79,7 +79,7 @@ const StyledTextInput = ({icon, label, isPassword, isError, disabled = false, ..
       )}
       <InputField
         {...props}
-        placeholderTextColor={lightGray}
+        placeholderTextColor={lighterGray}
         // @ts-ignore
         style={{backgroundColor: inputBackgroundColor, borderColor: isError ? fail : secondary, ...props?.style}}
         onBlur={customOnBlur}
