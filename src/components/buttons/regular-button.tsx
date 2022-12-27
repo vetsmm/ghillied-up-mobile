@@ -5,7 +5,7 @@ import { colorsVerifyCode } from "../colors";
 
 import { ButtonProps } from "./types";
 import RegularText from "../texts/regular-texts";
-const { primary, accent } = colorsVerifyCode;
+const { white, accent } = colorsVerifyCode;
 
 const ButtonView = styled.TouchableOpacity`
   background-color: ${accent};
@@ -19,8 +19,8 @@ const ButtonView = styled.TouchableOpacity`
 
 const RegularButton: FunctionComponent<ButtonProps> = (props) => {
   return (
-    <ButtonView onPress={props.onPress} style={props.style}>
-      <RegularText style={[{ color: primary }, props.textStyle]}>
+    <ButtonView onPress={props.onPress} style={props.style} accessibility={true} accessibilityLabel={props.accessibilityLabel}>
+      <RegularText style={[{ color: white }, props.textStyle]}>
         {props.children}
       </RegularText>
     </ButtonView>

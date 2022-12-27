@@ -58,8 +58,6 @@ const ActionButtons: React.FunctionComponent<ActionButtonsProps> = ({navigation}
                 loginUser(credentials);
             })
             .catch((err) => {
-                console.log("Error getting credentials: ", err);
-                // ignore
                 setIsAttemptingLogin(false);
             });
     }

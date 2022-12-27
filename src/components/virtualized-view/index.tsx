@@ -25,7 +25,7 @@ export default function VirtualizedView({hideData, isVerified = true, isActive =
                 ListEmptyComponent={() => (
                     <View alignSelf={"center"}>
                         <RegularText style={{
-                            color: colorsVerifyCode.failLighter,
+                            color: colorsVerifyCode.fail,
                         }}>
                             This Ghillie has been archived.
                         </RegularText>

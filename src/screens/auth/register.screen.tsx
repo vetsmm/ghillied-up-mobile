@@ -37,6 +37,7 @@ function MobileHeader() {
                         fontWeight="bold"
                         _light={{color: 'white'}}
                         _dark={{color: 'white'}}
+                        accessibilityLabel={'Welcome!'}
                     >
                         Welcome!
                     </Text>
@@ -49,6 +50,7 @@ function MobileHeader() {
                         _light={{
                             color: 'primary.300',
                         }}
+                        accessibilityLabel={'Sign up to continue'}
                     >
                         Sign up to continue
                     </Text>
@@ -155,6 +157,8 @@ const RegisterScreen = ({navigation}) => {
                                     value={values.username}
                                     style={{marginBottom: 25}}
                                     isError={formErrors.username !== null}
+                                    accessible={true}
+                                    accessibilityLabel={'Enter username'}
                                 />
 
                                 <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
@@ -171,6 +175,8 @@ const RegisterScreen = ({navigation}) => {
                                     value={values.email}
                                     style={{marginBottom: 15}}
                                     isError={formErrors.email !== null}
+                                    accessible={true}
+                                    accessibilityLabel={'Enter email address'}
                                 />
 
                                 <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
@@ -187,6 +193,8 @@ const RegisterScreen = ({navigation}) => {
                                     isPassword={true}
                                     style={{marginBottom: 15}}
                                     isError={formErrors.password !== null}
+                                    accessible={true}
+                                    accessibilityLabel={'Enter password'}
                                 />
 
                                 <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
@@ -203,6 +211,8 @@ const RegisterScreen = ({navigation}) => {
                                     isPassword={true}
                                     style={{marginBottom: 15}}
                                     isError={formErrors.confirmPassword !== null}
+                                    accessible={true}
+                                    accessibilityLabel={'Enter password again'}
                                 />
 
                                 <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
@@ -211,8 +221,8 @@ const RegisterScreen = ({navigation}) => {
 
                                 <StyledSelect
                                     label={'Branch of Service'}
-                                    accessibilityLabel={"Select your branch of services"}
-                                    placeholder={'Select your branch of services'}
+                                    accessibilityLabel={"Select your branch of service"}
+                                    placeholder={'Select your branch of service'}
                                     options={
                                         Object.keys(ServiceBranch)
                                             .filter(key => stringToServiceBranch(key) !== ServiceBranch.UNKNOWN
@@ -235,8 +245,8 @@ const RegisterScreen = ({navigation}) => {
 
                                 <StyledSelect
                                     label={'Service Status'}
-                                    accessibilityLabel={"Select your services status"}
-                                    placeholder={'Select your services status'}
+                                    accessibilityLabel={"Select your service status"}
+                                    placeholder={'Select your service status'}
                                     options={
                                         Object.keys(ServiceStatus)
                                             .filter(key => stringToServiceStatus(key) !== ServiceStatus.UNKNOWN
@@ -262,17 +272,25 @@ const RegisterScreen = ({navigation}) => {
                                     {message || ' '}
                                 </MsgBox>
 
-                                <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    flexWrap: 'wrap',
-                                    marginBottom: 25
-                                }}>
-                                    <Text color={colorsVerifyCode.white}>By creating an account, you agree to Ghillied Up's </Text>
-                                    <PressableText onPress={() => {
-                                        WebBrowser.openBrowserAsync(AppConfig.links.termsOfService);
-                                    }}>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        flexWrap: 'wrap',
+                                        marginBottom: 25
+                                    }}
+                                    accessible={true}
+                                    accessibilityLabel={'By signing up, you agree to our terms of service and privacy policy'}
+                                >
+                                    <Text
+                                        color={colorsVerifyCode.white}
+                                    >By creating an account, you agree to Ghillied Up's </Text>
+                                    <PressableText
+                                        onPress={() => {
+                                            WebBrowser.openBrowserAsync(AppConfig.links.termsOfService);
+                                        }}
+                                    >
                                         Terms of Service
                                     </PressableText>
                                     <Text color={colorsVerifyCode.white}> and </Text>
@@ -283,14 +301,22 @@ const RegisterScreen = ({navigation}) => {
                                     </PressableText>
                                 </View>
 
-                                {!isSubmitting && <RegularButton onPress={handleSubmit}>Signup</RegularButton>}
+                                {!isSubmitting && (
+                                    <RegularButton
+                                        onPress={handleSubmit}
+                                        accessibilityLabel={'Sign up'}
+                                    >Signup</RegularButton>
+                                )}
                                 {isSubmitting && (
                                     <RegularButton disabled={true}>
                                         <ActivityIndicator size="small" color={primary}/>
                                     </RegularButton>
                                 )}
 
-                                <PressableText style={{paddingVertical: 15}} onPress={() => {
+                                <PressableText
+                                    accessibility={true}
+                                    accessibilityLabel={'Already have an account? Sign in'}
+                                    style={{paddingVertical: 15}} onPress={() => {
                                     moveTo('Login')
                                 }}>
                                     Sign in to an existing account

@@ -11,4 +11,5 @@ export interface ButtonProps {
   textStyle?: StyleProp<TextStyle>;
   onPress?: ((event: any) => void) | undefined;
   disabled?: boolean;
+  accessibilityLabel?: string;
 }
