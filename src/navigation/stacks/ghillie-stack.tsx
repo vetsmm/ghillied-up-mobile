@@ -6,9 +6,11 @@ import styled from "styled-components/native";
 import {colorsVerifyCode} from '../../components/colors';
 import MainContainer from "../../components/containers/MainContainer";
 import {GhillieDetailScreen} from "../../screens/ghillies/detail";
-import GhillieCreateScreen from "../../screens/ghillies/create";
+import GhillieCreateScreen1 from "../../screens/ghillies/create/ghillie-create-screen1";
+import GhillieCreateScreen3 from "../../screens/ghillies/create/ghillie-create-screen3";
 import GhillieUpdateScreen from "../../screens/ghillies/update";
 import GhillieSearchScreen from '../../screens/ghillies/search';
+import GhillieCreateScreen2 from "../../screens/ghillies/create/ghillie-create-screen2";
 
 const {primary} = colorsVerifyCode;
 
@@ -39,9 +41,63 @@ export const ghilliesScreen: Array<GhillieScreenProps> = [
   {
     name: "GhillieCreate",
     route: "ghillie-create",
-    component: GhillieCreateScreen,
+    component: GhillieCreateScreen1,
     options: {
-      headerShown: false,
+      title: "Choose Category",
+      headerShown: true,
+      gestureEnabled: true,
+      // title bar color
+      headerStyle: {
+        backgroundColor: colorsVerifyCode.primary,
+      },
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        color: colorsVerifyCode.white,
+      },
+      headerTintColor: colorsVerifyCode.white,
+    }
+  },
+  {
+    name: "GhillieCreateScreen2",
+    route: "ghillie-create-screen2",
+    component: GhillieCreateScreen2,
+    options: {
+      title: "Ghillie Topics",
+      headerBackTitle: "Category",
+      headerShown: true,
+      gestureEnabled: true,
+      // title bar color
+      headerStyle: {
+        backgroundColor: colorsVerifyCode.primary,
+      },
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        color: colorsVerifyCode.white,
+      },
+      headerTintColor: colorsVerifyCode.white,
+    }
+  },
+  {
+    name: "GhillieCreateScreen3",
+    route: "ghillie-create-screen3",
+    component: GhillieCreateScreen3,
+    options: {
+      title: "Set Up Your Ghillie",
+      headerBackTitle: "Topics",
+      headerShown: true,
+      gestureEnabled: true,
+      // title bar color
+      headerStyle: {
+        backgroundColor: colorsVerifyCode.primary,
+      },
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        color: colorsVerifyCode.white,
+      },
+      headerTintColor: colorsVerifyCode.white,
     }
   },
   {

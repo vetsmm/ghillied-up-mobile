@@ -22,7 +22,6 @@ const Switch = styled.Switch`
   font-size: 16px;
   height: 60px;
   margin-top: 3px;
-  margin-bottom: 10px;
   color: ${tertiary};
   border-color: ${secondary};
 `;

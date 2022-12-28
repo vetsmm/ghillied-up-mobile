@@ -26,9 +26,9 @@ export const createGhillieFormValidator = (
   };
 }
 
-const isBadWord = (name: string): boolean => {
-  // if the name string contains a bad word, return true
-  return badWords.some(badWord => name.includes(badWord));
+export const isBadWord = (name: string): boolean => {
+  // if the name string contains a bad word, return true, this is case insensitive
+    return badWords.some((badWord) => name.toLowerCase().includes(badWord));
 }
 
 const validateLogo = (logo: ImageInfo|null): string|null => {

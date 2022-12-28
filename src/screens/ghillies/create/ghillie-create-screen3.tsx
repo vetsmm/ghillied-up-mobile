@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Formik} from 'formik';
 import {ActivityIndicator} from 'react-native';
 
-import {Hidden, HStack, Text, VStack} from "native-base";
+import {VStack} from "native-base";
 import {colorsVerifyCode} from "../../../components/colors";
 import ghillieValidators from "../../../shared/validators/ghillies";
 import {CreateGhillieFormValidationResponse} from "../../../shared/validators/ghillies/create-ghillie-form.validator";
@@ -15,39 +15,19 @@ import StyledTextFieldInput from "../../../components/inputs/styled-text-field-i
 import StyledCheckboxInput from "../../../components/inputs/styled-checkbox-input";
 import {useSelector} from "react-redux";
 import {IRootState} from "../../../store";
-import TopicListInput from "../../../components/inputs/topic-list.input";
 import GhillieService from "../../../shared/services/ghillie.service";
 import ghillieErrorHandler from "../../../shared/handlers/errors/ghillie-error.handler";
 import {ImagePickerResult} from 'expo-image-picker';
 import ImageUploader from '../../../components/upload/image-upload';
 import {CreateGhillieInputDto} from '../../../shared/models/ghillies/create-ghillie-input.dto';
+import {GhillieCategory} from "../../../shared/models/ghillies/ghillie-category";
 
 
 const {primary} = colorsVerifyCode;
 
-function MobileHeader() {
-    return (
-        <Hidden from="md">
-            <VStack px="4" mt="4" mb="5" space="9">
-                <HStack space="2" alignItems="center">
-                </HStack>
-                <VStack space={0.5}>
-                    <Text
-                        fontSize="3xl"
-                        fontWeight="bold"
-                        _light={{color: 'white'}}
-                        _dark={{color: 'white'}}
-                    >
-                        Create a new Ghillie!
-                    </Text>
-                </VStack>
-            </VStack>
-        </Hidden>
-    );
-}
+const GhillieCreateScreen3 = ({route, navigation}) => {
+        const {category, topics} = route.params;
 
-
-const GhillieCreateScreen = ({navigation}) => {
         const [message, setMessage] = useState<string | null>('');
         const [isSuccessMessage, setIsSuccessMessage] = useState(false);
 
@@ -60,6 +40,8 @@ const GhillieCreateScreen = ({navigation}) => {
             name: string | null;
             about: string | null;
             readOnly: boolean | null;
+            isPrivate: boolean | null;
+            adminInviteOnly: boolean | null;
             ghillieLogo: string | null;
             topicNames: string | null;
         }
@@ -67,6 +49,8 @@ const GhillieCreateScreen = ({navigation}) => {
             name: null,
             about: null,
             readOnly: null,
+            isPrivate: null,
+            adminInviteOnly: null,
             ghillieLogo: null,
             topicNames: null
         });
@@ -82,7 +66,10 @@ const GhillieCreateScreen = ({navigation}) => {
                 name: formData.name,
                 about: formData.about,
                 readOnly: formData.readOnly,
-                topicNames: formData.topicNames
+                topicNames: formData.topicNames,
+                isPrivate: formData.isPrivate,
+                adminInviteOnly: formData.adminInviteOnly,
+                category: category
             } as CreateGhillieInputDto;
 
             let hasError = false;
@@ -138,7 +125,9 @@ const GhillieCreateScreen = ({navigation}) => {
                 about: errors.about,
                 ghillieLogo: errors.ghillieLogo,
                 topicNames: errors.topicNames,
-                readOnly: null
+                readOnly: null,
+                isPrivate: null,
+                adminInviteOnly: null
             });
 
             return Object.values(errors).some(error => error !== null);
@@ -147,15 +136,17 @@ const GhillieCreateScreen = ({navigation}) => {
         return (
             <MainContainer>
                 <KeyboardAvoidingContainer>
-                    <MobileHeader/>
                     <VStack style={{margin: 25, marginBottom: 100}}>
                         <Formik
                             initialValues={{
                                 name: '',
                                 about: '',
                                 ghillieLogo: null as unknown as ImagePickerResult,
-                                topicNames: [] as string[],
-                                readOnly: false
+                                category: GhillieCategory[category],
+                                topicNames: topics,
+                                readOnly: false,
+                                adminInviteOnly: false,
+                                isPrivate: false
                             }}
                             onSubmit={(values, {setSubmitting}) => {
                                 if (!_isFormInvalid(values)) {
@@ -216,36 +207,39 @@ const GhillieCreateScreen = ({navigation}) => {
                                         {formErrors.about || ' '}
                                     </MsgBox>
 
-                                    <TopicListInput
-                                        addItem={(topicName) => {
-                                            // ensure topic name is not already in the list
-                                            if (values.topicNames.indexOf(topicName) === -1) {
-                                                if (topicName.length < 2 || topicName.length > 10) {
-                                                    setIsSuccessMessage(false);
-                                                    setFormErrors({
-                                                        ...formErrors,
-                                                        topicNames: 'Topic name must be between 2 and 10 characters'
-                                                    });
-                                                } else {
-                                                    setIsSuccessMessage(true);
-                                                    setFieldValue('topicNames', [...values.topicNames, topicName]);
-                                                    setFormErrors({
-                                                        ...formErrors,
-                                                        topicNames: null
-                                                    });
-                                                }
-                                            }
-                                        }}
-                                        removeItem={(topicName) => {
-                                            setFieldValue('topicNames', values.topicNames.filter(name => name !== topicName));
-                                        }
-                                        }
-                                        data={values.topicNames}
+                                    {/* TODO: Value not picking up */}
+                                    <StyledCheckboxInput
+                                        label="Is this a private Ghillie? (Invite Only)"
+                                        onValueChange={(value) => setFieldValue('isPrivate', value)}
+                                        value={values.isPrivate}
+                                        isError={false}
                                     />
 
-                                    <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                                        {formErrors.topicNames || ' '}
+                                    <MsgBox
+                                        style={message ? { marginBottom: 5} : { marginBottom: 0}}
+                                        success={isSuccessMessage}
+                                    >
+                                        {formErrors.isPrivate || ' '}
                                     </MsgBox>
+
+                                    {/* TODO: Value not picking up */}
+                                    {values.isPrivate && (
+                                        <>
+                                            <StyledCheckboxInput
+                                                label="Should only admins be able to invite people to this Ghillie?"
+                                                onValueChange={(value) => setFieldValue('adminInviteOnly', value)}
+                                                value={values.adminInviteOnly}
+                                                isError={false}
+                                            />
+
+                                            <MsgBox
+                                                style={message ? { marginBottom: 5} : { marginBottom: 0}}
+                                                success={isSuccessMessage}
+                                            >
+                                                {message || ' '}
+                                            </MsgBox>
+                                        </>
+                                    )}
 
                                     {isAdmin && (
                                         <>
@@ -253,7 +247,6 @@ const GhillieCreateScreen = ({navigation}) => {
                                                 label="Is Read Only"
                                                 onValueChange={(value) => setFieldValue('readOnly', value)}
                                                 value={values.readOnly}
-                                                style={{marginBottom: 15}}
                                                 isError={false}
                                             />
 
@@ -279,4 +272,4 @@ const GhillieCreateScreen = ({navigation}) => {
     }
 ;
 
-export default GhillieCreateScreen;
+export default GhillieCreateScreen3;
