@@ -1,5 +1,5 @@
 import {GhillieStatus} from "./ghillie-status";
-import {PaginationParamsDto} from "../pagination/types";
+import {GhillieCategory} from "./ghillie-category";
 
 export interface GhillieSearchCriteria {
     cursor?: string;
@@ -10,4 +10,5 @@ export interface GhillieSearchCriteria {
     status?: GhillieStatus;
     readonly?: boolean;
     topicIds?: Array<string>;
+    category?: GhillieCategory;
 }

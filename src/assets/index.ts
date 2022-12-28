@@ -9,3 +9,16 @@ export const ARMY_NATIONAL_GUARD_SEAL_PNG = require('../../assets/seals/png/army
 export const US_FLAG_PNG = require('../../assets/seals/png/us-flag.png');
 
 export const US_FLAG_CHECKMARK_PNG = require('../../assets/us-flag-checkmark.png');
+
+
+/**
+ * Category Icons
+ */
+
+export const BASE_ICON = require('../../assets/categories/base.png');
+export const COMPANY_ICON = require('../../assets/categories/company.png');
+export const CUSTOM_ICON = require('../../assets/categories/custom.png');
+export const EDUCATION_ICON = require('../../assets/categories/education.png');
+export const INDUSTRY_ICON = require('../../assets/categories/industry.png');
+export const SOCIAL_ICON = require('../../assets/categories/social.png');
+export const UNIT_ICON = require('../../assets/categories/unit.png');
