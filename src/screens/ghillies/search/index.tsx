@@ -2,9 +2,9 @@ import React, {useCallback, useEffect} from 'react';
 import MainContainer from '../../../components/containers/MainContainer';
 import {RefreshControl, StyleSheet} from 'react-native';
 import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
-import {Column, HStack, Icon, Text, View} from 'native-base';
+import {Center, Column, HStack, Icon, Text, View} from 'native-base';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {Entypo, Ionicons, MaterialIcons} from '@expo/vector-icons';
+import {Ionicons, MaterialIcons} from '@expo/vector-icons';
 import {colorsVerifyCode} from '../../../components/colors';
 import StyledSearchInput from '../../../components/inputs/styled-search-input';
 import {FlashList} from '@shopify/flash-list';
@@ -17,6 +17,10 @@ import {IRootState} from '../../../store';
 import {useNavigation} from '@react-navigation/native';
 import {FlashMessageRef} from "../../../app/App";
 import GhillieCreateOrJoin from "../../../components/ghillie-create-or-join";
+import {GhillieCategory} from "../../../shared/models/ghillies/ghillie-category";
+import GhillieCategoryCircle from "../../../components/ghillie-category-circle";
+import GhillieCategoryRow from "../../../components/ghillie-category-row";
+import RegularText from "../../../components/texts/regular-texts";
 
 
 function GhillieListingHeader({searchText, setSearchText, clearSearch, onSearchPress, navigation}) {
@@ -84,6 +88,7 @@ function GhillieSearchScreen() {
     const [searchText, setSearchText] = useStateWithCallback<string>("");
     const [ghillieList, setGhillieList] = useStateWithCallback<GhillieDetailDto[]>([]);
     const [isLoadingGhillies, setIsLoadingGhillies] = useStateWithCallback(false);
+    const [selectedCategory, setSelectedCategory] = React.useState<GhillieCategory>();
 
     const navigation: any = useNavigation();
 
@@ -98,6 +103,10 @@ function GhillieSearchScreen() {
             getGhillies();
         }
     }, [searchText])
+
+    useEffect(() => {
+        getGhillies();
+    }, [selectedCategory])
 
     const [isVerifiedMilitary] = useSelector(
         (state: IRootState) => [
@@ -134,7 +143,7 @@ function GhillieSearchScreen() {
 
             const name = searchText.length > 0 ? searchText : undefined;
 
-            GhillieService.getGhillies({take: 10, name})
+            GhillieService.getGhillies({take: 10, name, category: selectedCategory})
                 .then((response) => {
                     setGhillieList(response.data);
                 })
@@ -170,6 +179,30 @@ function GhillieSearchScreen() {
             />
 
             <View style={styles.listContainer}>
+                <View mt="2%" mb="2%">
+                    <RegularText style={{
+                        marginLeft: 15,
+                        fontSize: 20,
+                        fontWeight: "bold",
+                        marginBottom: 10
+                    }}>
+                        Ghillie Categories
+                    </RegularText>
+                    {selectedCategory && (
+                        <Center>
+                            <GhillieCategoryCircle
+                                onPress={() => setSelectedCategory(undefined)}
+                                category={selectedCategory}
+                            />
+                        </Center>
+                    )}
+                    {!selectedCategory && (
+                        <GhillieCategoryRow
+                            onPress={(category => setSelectedCategory(category))}
+                        />
+                    )}
+                </View>
+
                 <FlashList
                     keyExtractor={(item) => item.id}
                     data={ghillieList}
