@@ -7,6 +7,11 @@ export default StyleSheet.create({
     flexGrow: 1,
     paddingTop: isIphoneX() ? getStatusBarHeight() + 20 : 30,
   },
+  internalGhillieContainer: {
+    flex: 1,
+    flexGrow: 2,
+    paddingVertical: 8,
+  },
   popularContainer: {
     flex: 1,
     flexGrow: 2,
