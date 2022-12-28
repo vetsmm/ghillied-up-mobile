@@ -2,7 +2,7 @@ import React, {useCallback} from "react";
 import MainContainer from "../../../components/containers/MainContainer";
 import {useSelector} from "react-redux";
 import {IRootState} from "../../../store";
-import {Center, Column, HStack, ScrollView, Spinner, Text, View} from "native-base";
+import {Center, Column, HStack, ScrollView, Text, View} from "native-base";
 import {ActivityIndicator, RefreshControl} from "react-native";
 import {TouchableOpacity} from "react-native-gesture-handler";
 import {Feather, Ionicons} from "@expo/vector-icons";
@@ -77,11 +77,14 @@ function GhillieListingScreen() {
     const [popularGhilliesByMembers, setPopularGhilliesByMembers] = useStateWithCallback<GhillieDetailDto[]>([]);
     const [trendingGhillies, setTrendingGhillies] = useStateWithCallback<GhillieDetailDto[]>([]);
     const [newGhillies, setNewGhillies] = useStateWithCallback<GhillieDetailDto[]>([]);
+    const [internalGhillies, setInternalGhillies] = useStateWithCallback<GhillieDetailDto[]>([]);
+    const [promotedGhillies, setPromotedGhillies] = useStateWithCallback<GhillieDetailDto[]>([]);
+    const [sponsoredGhillies, setSponsoredGhillies] = useStateWithCallback<GhillieDetailDto[]>([]);
 
-    const [isLoadingUserGhillies, setIsLoadingUserGhillies] = useStateWithCallback(false);
-    const [isLoadingPopularGhillies, setIsLoadingPopularGhillies] = useStateWithCallback(false);
-    const [isLoadingTrendingGhillies, setIsLoadingTrendingGhillies] = useStateWithCallback(false);
-    const [isLoadingNewGhillies, setIsLoadingNewGhillies] = useStateWithCallback(false);
+    // const [isLoadingUserGhillies, setIsLoadingUserGhillies] = useStateWithCallback(false);
+    // const [isLoadingPopularGhillies, setIsLoadingPopularGhillies] = useStateWithCallback(false);
+    // const [isLoadingTrendingGhillies, setIsLoadingTrendingGhillies] = useStateWithCallback(false);
+    // const [isLoadingNewGhillies, setIsLoadingNewGhillies] = useStateWithCallback(false);
     const [isLoadingAll, setIsLoadingAll] = useStateWithCallback(false);
 
     const [isVerifiedMilitary, isAdmin] = useSelector(
@@ -93,195 +96,40 @@ function GhillieListingScreen() {
     const navigation: any = useNavigation();
 
     React.useEffect(() => {
-        loadGhillieTypes();
+        loadCombinedGhillies();
     }, []);
 
-    const loadGhillieTypes = useCallback(async () => {
+    const loadCombinedGhillies = useCallback(async () => {
         setIsLoadingAll(true);
-        setIsLoadingNewGhillies(true);
-        setIsLoadingPopularGhillies(true);
-        setIsLoadingTrendingGhillies(true);
-        setIsLoadingUserGhillies(true);
-
-        GhillieService.getMyGhillies()
+        GhillieService.getCombinedGhillies()
             .then((response) => {
-                setUserGhillies(response.data);
-                setIsLoadingUserGhillies(false);
-            })
-            .then(() => {
-                GhillieService.getPopularGhilliesByMembers()
-                    .then((response) => {
-                        setPopularGhilliesByMembers(response);
-                        setIsLoadingPopularGhillies(false);
-                    })
-                    .catch((error) => {
-                        setIsLoadingPopularGhillies(false);
-                        FlashMessageRef.current?.showMessage({
-                            message: 'An error occurred while loading popular ghillies',
-                            type: 'danger',
-                            style: {
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }
-                        });
-                    });
-            })
-            .then(() => {
-                GhillieService.getPopularGhilliesByTrendingPosts()
-                    .then((response) => {
-                        setTrendingGhillies(response);
-                        setIsLoadingTrendingGhillies(false);
-                    })
-                    .catch((error) => {
-                        setIsLoadingTrendingGhillies(false);
-                        FlashMessageRef.current?.showMessage({
-                            message: 'An error occurred while loading trending ghillies',
-                            type: 'danger',
-                            style: {
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }
-                        });
-                    });
-            })
-            .then(() => {
-                GhillieService.getNewestGhillies()
-                    .then((response) => {
-                        setNewGhillies(response);
-                        setIsLoadingNewGhillies(false);
-                    })
-                    .catch((error) => {
-                        setIsLoadingNewGhillies(false);
-                        FlashMessageRef.current?.showMessage({
-                            message: 'An error occurred while loading newest ghillies',
-                            type: 'danger',
-                            style: {
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }
-                        });
-                    });
+                setPopularGhilliesByMembers(response.popularByMembers);
+                setTrendingGhillies(response.popularByTrending);
+                setNewGhillies(response.newest);
+                setInternalGhillies(response.internal);
+                setPromotedGhillies(response.promoted);
+                setSponsoredGhillies(response.sponsored);
+                setUserGhillies(response.users);
+                setIsLoadingAll(false);
             })
             .catch((error) => {
-                setIsLoadingUserGhillies(false);
-                setIsLoadingPopularGhillies(false);
-                setIsLoadingTrendingGhillies(false);
-                setIsLoadingNewGhillies(false);
-
+                setIsLoadingAll(false);
                 FlashMessageRef.current?.showMessage({
-                    message: 'An error occurred while loading your ghillies',
+                    message: 'An error occurred while loading ghillies',
                     type: 'danger',
                     style: {
                         justifyContent: 'center',
                         alignItems: 'center',
                     }
                 });
-            });
-
-        setIsLoadingAll(false);
-    }, []);
-
-    const getMyGhillies = useCallback(() => {
-        setIsLoadingUserGhillies(true);
-        GhillieService.getMyGhillies()
-            .then((response) => {
-                setUserGhillies(response.data);
-            })
-            .catch((error) => {
-                FlashMessageRef.current?.showMessage({
-                    message: 'An error occurred while loading your ghillies',
-                    type: 'danger',
-                    style: {
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                });
-            })
-            .finally(() => {
-                setIsLoadingUserGhillies(false);
-            });
-
-    }, []);
-
-    const getPopularGhillies = useCallback(() => {
-        setIsLoadingPopularGhillies(true);
-        GhillieService.getPopularGhilliesByMembers(10)
-            .then((response) => {
-                setPopularGhilliesByMembers(response);
-            })
-            .catch((error) => {
-                FlashMessageRef.current?.showMessage({
-                    message: 'An error occurred while loading popular ghillies',
-                    type: 'danger',
-                    style: {
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                });
-            })
-            .finally(() => {
-                setIsLoadingPopularGhillies(false);
-            });
-    }, []);
-
-    // Memo to set popular ghillie state
-
-
-    const getPopularGhilliesByTrendingPosts = useCallback(() => {
-        setIsLoadingTrendingGhillies(true);
-        return GhillieService.getPopularGhilliesByTrendingPosts(10)
-            .then((response) => {
-                setTrendingGhillies(response);
-            })
-            .catch((error) => {
-                FlashMessageRef.current?.showMessage({
-                    message: 'An error occurred while loading trending ghillies',
-                    type: 'danger',
-                    style: {
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                });
-            })
-            .finally(() => {
-                setIsLoadingTrendingGhillies(false);
-            });
-    }, []);
-
-    const getNewestGhillies = useCallback(() => {
-        setIsLoadingNewGhillies(true);
-        GhillieService.getNewestGhillies(10)
-            .then((response) => {
-                setNewGhillies(response);
-            })
-            .catch((error) => {
-                FlashMessageRef.current?.showMessage({
-                    message: 'An error occurred while loading newest ghillies',
-                    type: 'danger',
-                    style: {
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                });
-            })
-            .finally(() => {
-                setIsLoadingNewGhillies(false);
             });
     }, []);
 
     const onJoinGhilliePress = (ghillie: GhillieDetailDto, list: "POPULAR" | "NEW" | "TRENDING") => {
         GhillieService.joinGhillie(ghillie.id).then(() => {
-            switch (list) {
-                case "POPULAR":
-                    getPopularGhillies();
-                    break;
-                case "NEW":
-                    getNewestGhillies();
-                    break;
-                case "TRENDING":
-                    getPopularGhilliesByTrendingPosts();
-                    break;
-            }
+            // TODO: We should actually return the memberMeta here and plug it into the correct ghillie
+            //  in the list. For now, we'll just reload the list.
+            loadCombinedGhillies();
         }).catch((e) => {
             FlashMessageRef.current?.showMessage({
                 message: 'An error occurred while joining ghillie',
@@ -300,7 +148,7 @@ function GhillieListingScreen() {
                 showsVerticalScrollIndicator={false}
                 refreshControl={
                     <RefreshControl
-                        onRefresh={loadGhillieTypes}
+                        onRefresh={loadCombinedGhillies}
                         refreshing={isLoadingAll}
                         tintColor={colorsVerifyCode.secondary}
                     />
@@ -330,7 +178,7 @@ function GhillieListingScreen() {
                         </RegularText>
                         Ghillies
                     </RegularText>
-                    {isLoadingUserGhillies ? (
+                    {isLoadingAll ? (
                         <View style={{alignItems: "center"}}>
                             <ActivityIndicator size="large" color={colorsVerifyCode.secondary}/>
                         </View>
@@ -346,6 +194,63 @@ function GhillieListingScreen() {
                 </View>
 
                 <View mb={40}>
+                    {/* Internal Ghillies */}
+                    <View style={styles.internalGhillieContainer}>
+                        <RegularText style={{
+                            marginLeft: 15,
+                            fontSize: 20,
+                            fontWeight: "bold",
+                            marginBottom: 10
+                        }}>
+                            <RegularText style={{
+                                marginLeft: 15,
+                                fontSize: 20,
+                                fontStyle: "italic",
+                                fontWeight: "bold",
+                                color: colorsVerifyCode.secondary,
+                                marginBottom: 10
+                            }}>
+                                Base{" "}
+                            </RegularText>
+                            Ghillies
+                        </RegularText>
+                        {isLoadingAll ? (
+                            <View style={{alignItems: "center"}}>
+                                <ActivityIndicator size="large" color={colorsVerifyCode.secondary}/>
+                            </View>
+                        ) : (
+                            <FlashList
+                                horizontal={true}
+                                estimatedItemSize={300}
+                                contentContainerStyle={{
+                                    paddingLeft: 15,
+                                    paddingRight: 15
+                                }}
+                                showsHorizontalScrollIndicator={false}
+                                keyExtractor={(item) => item.id}
+                                data={internalGhillies}
+                                renderItem={({item}: any) => (
+                                    <View key={item.id} mb={2} mr={2}>
+                                        <GhillieCardV2
+                                            ghillie={item}
+                                            onJoinPress={() => onJoinGhilliePress(item, "TRENDING")}
+                                            isVerifiedMilitary={isVerifiedMilitary}
+                                            isMember={item.memberMeta !== null}
+                                        />
+                                    </View>
+                                )}
+                                refreshing={isLoadingAll}
+                                ListEmptyComponent={
+                                    <Center>
+                                        <Text style={{
+                                            color: Colors.secondary
+                                        }}>No Ghillies Found</Text>
+                                    </Center>
+                                }
+                            />
+                        )}
+                    </View>
+
                     <View style={styles.popularContainer}>
                         <RegularText style={{
                             marginLeft: 15,
@@ -365,7 +270,7 @@ function GhillieListingScreen() {
                             </RegularText>
                             Ghillies
                         </RegularText>
-                        {isLoadingPopularGhillies ? (
+                        {isLoadingAll ? (
                             <View style={{alignItems: "center"}}>
                                 <ActivityIndicator size="large" color={colorsVerifyCode.secondary}/>
                             </View>
@@ -391,7 +296,7 @@ function GhillieListingScreen() {
                                         />
                                     </View>
                                 )}
-                                refreshing={isLoadingPopularGhillies}
+                                refreshing={isLoadingAll}
                                 ListEmptyComponent={
                                     <Center>
                                         <Text style={{
@@ -422,7 +327,7 @@ function GhillieListingScreen() {
                             </RegularText>
                             Ghillies
                         </RegularText>
-                        {isLoadingTrendingGhillies ? (
+                        {isLoadingAll ? (
                             <View style={{alignItems: "center"}}>
                                 <ActivityIndicator size="large" color={colorsVerifyCode.secondary}/>
                             </View>
@@ -447,7 +352,7 @@ function GhillieListingScreen() {
                                         />
                                     </View>
                                 )}
-                                refreshing={isLoadingTrendingGhillies}
+                                refreshing={isLoadingAll}
                                 ListEmptyComponent={
                                     <Center>
                                         <Text style={{
@@ -478,7 +383,7 @@ function GhillieListingScreen() {
                             </RegularText>
                             Ghillies
                         </RegularText>
-                        {isLoadingNewGhillies ? (
+                        {isLoadingAll ? (
                             <View style={{alignItems: "center"}}>
                                 <ActivityIndicator size="large" color={colorsVerifyCode.secondary}/>
                             </View>
@@ -504,7 +409,7 @@ function GhillieListingScreen() {
                                         />
                                     </View>
                                 )}
-                                refreshing={isLoadingNewGhillies}
+                                refreshing={isLoadingAll}
                                 ListEmptyComponent={
                                     <Center>
                                         <Text style={{
