@@ -1,10 +1,12 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 
 // styled components
 // @ts-ignore
 import styled from 'styled-components/native';
-import { colorsVerifyCode } from '../colors';
-const { secondary, tertiary, accent } = colorsVerifyCode;
+import {colorsVerifyCode} from '../colors';
+import {KeyboardTypeOptions, ReturnKeyTypeOptions} from "react-native";
+
+const {secondary, tertiary, accent} = colorsVerifyCode;
 
 
 const CodeInputSection = styled.View`
@@ -19,6 +21,8 @@ const HiddenTextInput = styled.TextInput`
   width: 1px;
   height: 1px;
   opacity: 0;
+  color: white;
+  z-index: 999;
 `;
 
 const CodeInputsContainer = styled.Pressable`
@@ -46,65 +50,90 @@ const CodeInputFocused = styled(CodeInput)`
   border-color: ${accent};
 `;
 
-const StyledCodeInput = ({ code, setCode, maxLength, setPinReady }: any) => {
-  const codeDigitsArray = new Array(maxLength).fill(0);
+export interface StyledCodeInputProps {
+    code: string;
+    setCode: (code: string) => void;
+    maxLength: number;
+    setPinReady: (pinReady: boolean) => void;
+    keyBoardType?: KeyboardTypeOptions;
+    returnKeyType?: ReturnKeyTypeOptions;
+    onReturnPress?: () => void;
+    autoCapitalize?: boolean;
+}
 
-  const [inputContainerIsFocused, setInputContainerIsFocused] = useState(false);
+const StyledCodeInput = ({
+                             code,
+                             setCode,
+                             maxLength,
+                             setPinReady,
+                             onReturnPress,
+                             keyBoardType = 'number-pad',
+                             returnKeyType = "done",
+                             autoCapitalize = false
+                         }: StyledCodeInputProps) => {
+    const codeDigitsArray = new Array(maxLength).fill(0);
 
-  // ref for text input
-  const textInputRef = useRef(null);
+    const [inputContainerIsFocused, setInputContainerIsFocused] = useState(false);
 
-  const handleOnPress = () => {
-    setInputContainerIsFocused(true);
-    // @ts-ignore
-    textInputRef?.current?.focus();
-  };
+    // ref for text input
+    const textInputRef = useRef(null);
 
-  const handleOnSubmitEditing = () => {
-    setInputContainerIsFocused(false);
-  };
+    const handleOnPress = () => {
+        setInputContainerIsFocused(true);
+        // @ts-ignore
+        textInputRef?.current?.focus();
+    };
 
-  useEffect(() => {
-    // toggle pinReady
-    setPinReady(code.length === maxLength);
-    return () => setPinReady(false);
-  }, [code]);
+    const handleOnSubmitEditing = () => {
+        setInputContainerIsFocused(false);
 
-  const toCodeDigitInput = (value: any, index: number) => {
-    const emptyInputChar = ' ';
-    const digit = code[index] || emptyInputChar;
+        if (onReturnPress) {
+            onReturnPress();
+        }
+    };
 
-    // formatting
-    const isCurrentDigit = index === code.length;
-    const isLastDigit = index === maxLength - 1;
-    const isCodeFull = code.length === maxLength;
+    useEffect(() => {
+        // toggle pinReady
+        setPinReady(code.length === maxLength);
+        return () => setPinReady(false);
+    }, [code]);
 
-    const isDigitFocused = isCurrentDigit || (isLastDigit && isCodeFull);
+    const toCodeDigitInput = (value: any, index: number) => {
+        const emptyInputChar = ' ';
+        const digit = code[index] || emptyInputChar;
 
-    const StyledCodeInput = inputContainerIsFocused && isDigitFocused ? CodeInputFocused : CodeInput;
+        // formatting
+        const isCurrentDigit = index === code.length;
+        const isLastDigit = index === maxLength - 1;
+        const isCodeFull = code.length === maxLength;
+
+        const isDigitFocused = isCurrentDigit || (isLastDigit && isCodeFull);
+
+        const StyledCodeInput = inputContainerIsFocused && isDigitFocused ? CodeInputFocused : CodeInput;
+
+        return (
+            <StyledCodeInput key={index}>
+                <CodeInputText>{digit}</CodeInputText>
+            </StyledCodeInput>
+        );
+    };
 
     return (
-      <StyledCodeInput key={index}>
-        <CodeInputText>{digit}</CodeInputText>
-      </StyledCodeInput>
+        <CodeInputSection>
+            <CodeInputsContainer onPress={handleOnPress}>{codeDigitsArray.map(toCodeDigitInput)}</CodeInputsContainer>
+            <HiddenTextInput
+                autoCapitalize={autoCapitalize ? "characters" : "none"}
+                keyboardType={keyBoardType}
+                returnKeyType={returnKeyType}
+                textContentType="oneTimeCode"
+                ref={textInputRef}
+                value={code}
+                onChangeText={setCode}
+                maxLength={maxLength}
+                onSubmitEditing={handleOnSubmitEditing}
+            />
+        </CodeInputSection>
     );
-  };
-
-  return (
-    <CodeInputSection>
-      <CodeInputsContainer onPress={handleOnPress}>{codeDigitsArray.map(toCodeDigitInput)}</CodeInputsContainer>
-      <HiddenTextInput
-        keyboardType="number-pad"
-        returnKeyType="done"
-        textContentType="oneTimeCode"
-        ref={textInputRef}
-        value={code}
-        onChangeText={setCode}
-        maxLength={maxLength}
-        onSubmitEditing={handleOnSubmitEditing}
-      />
-    </CodeInputSection>
-  );
 };
 
 export default StyledCodeInput;

@@ -16,6 +16,7 @@ import {useSelector} from 'react-redux';
 import {IRootState} from '../../../store';
 import {useNavigation} from '@react-navigation/native';
 import {FlashMessageRef} from "../../../app/App";
+import GhillieCreateOrJoin from "../../../components/ghillie-create-or-join";
 
 
 function GhillieListingHeader({searchText, setSearchText, clearSearch, onSearchPress, navigation}) {
@@ -97,10 +98,6 @@ function GhillieSearchScreen() {
             getGhillies();
         }
     }, [searchText])
-
-    const handleCreateNavigate = useCallback(() => {
-        navigation.navigate("GhillieCreate");
-    }, [navigation]);
 
     const [isVerifiedMilitary] = useSelector(
         (state: IRootState) => [
@@ -199,41 +196,7 @@ function GhillieSearchScreen() {
                     }
                     ListFooterComponent={
                         isVerifiedMilitary ? (
-                            <View alignItems={"center"} mt={10}>
-                                <Text style={{
-                                    color: colorsVerifyCode.white,
-                                    alignSelf: "center",
-                                    fontSize: 18,
-                                    marginBottom: 10
-                                }}>
-                                    Don't See what you're looking for?
-                                </Text>
-                                <TouchableOpacity
-                                    style={{
-                                        borderRadius: 80,
-                                        borderWidth: 1,
-                                        height: 50,
-                                        width: 50,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        backgroundColor: colorsVerifyCode.secondary
-                                    }}
-                                    onPress={() => handleCreateNavigate()}
-                                >
-                                    <Icon
-                                        as={Entypo}
-                                        name="plus"
-                                        size={18}
-                                        color={colorsVerifyCode.white}
-                                    />
-                                </TouchableOpacity>
-                                <Text style={{
-                                    color: colorsVerifyCode.secondary,
-                                    alignSelf: "center"
-                                }}>
-                                    Create Ghillie
-                                </Text>
-                            </View>
+                            <GhillieCreateOrJoin/>
                         ) : null}
                 />
             </View>

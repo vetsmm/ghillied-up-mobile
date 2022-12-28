@@ -25,6 +25,7 @@ import {getGhillie, updateGhillie} from "../../../shared/reducers/ghillie.reduce
 import {GhillieDetailDto} from "../../../shared/models/ghillies/ghillie-detail.dto";
 import MessageModal from "../../../components/modals/message-modal";
 import ImageUploader from '../../../components/upload/image-upload';
+// TODO: Update to ImagePickerResult
 import {ImageInfo} from 'expo-image-picker';
 import {UpdateGhillieDto} from '../../../shared/models/ghillies/update-ghillie.dto';
 

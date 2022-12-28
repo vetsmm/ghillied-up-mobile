@@ -113,6 +113,13 @@ const getCombinedGhillies = async (): Promise<CombinedGhilliesDto> => {
         });
 }
 
+const joinGhillieByCode = async (inviteCode: string): Promise<GhillieDetailDto> => {
+    return await axios.put(`${AppConfig.apiUrl}/ghillies/join/${inviteCode}`)
+        .then(response => {
+            return response.data;
+        });
+}
+
 const ghillieService = {
     getGhillies,
     joinGhillie,
@@ -128,6 +135,7 @@ const ghillieService = {
     getPopularGhilliesByTrendingPosts,
     getNewestGhillies,
     getCombinedGhillies,
+    joinGhillieByCode,
 }
 
 export default ghillieService;

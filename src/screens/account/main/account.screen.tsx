@@ -30,6 +30,7 @@ import idmeService from "../../../shared/services/idme.service";
 import {getAccount} from "../../../shared/reducers/authentication.reducer";
 import MessageModal from "../../../components/modals/message-modal";
 import {FlashMessageRef} from "../../../app/App";
+import GhillieCreateOrJoin from "../../../components/ghillie-create-or-join";
 
 
 const RenderGhillies: React.FC<{
@@ -47,6 +48,13 @@ const RenderGhillies: React.FC<{
           getMoreGhillies,
           handleRefresh
       }) => {
+
+    const [isVerifiedMilitary, isAdmin] = useSelector(
+        (state: IRootState) => [
+            state.authentication.isVerifiedMilitary,
+            state.authentication.isAdmin
+        ]);
+
     return (
         <View style={styles.myGhilliesContainer}>
             <FlatList
@@ -101,6 +109,9 @@ const RenderGhillies: React.FC<{
                         }}>No Ghillies Found</Text>
                     </Center>
                 }
+                ListFooterComponent={isVerifiedMilitary
+                    ? <GhillieCreateOrJoin/>
+                    : null}
             />
         </View>
     );
