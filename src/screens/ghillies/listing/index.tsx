@@ -19,6 +19,7 @@ import RegularText from '../../../components/texts/regular-texts';
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 import {FlashMessageRef} from "../../../app/App";
 import {FlashList} from "@shopify/flash-list";
+import GhillieCreateOrJoin from "../../../components/ghillie-create-or-join";
 
 function GhillieListingHeader({isVerifiedMilitary, isAdmin}) {
     const navigation: any = useNavigation();
@@ -419,6 +420,10 @@ function GhillieListingScreen() {
                                 }
                             />
                         )}
+
+                        {isVerifiedMilitary
+                            ? <GhillieCreateOrJoin/>
+                            : null}
                     </View>
                 </View>
             </ScrollView>
