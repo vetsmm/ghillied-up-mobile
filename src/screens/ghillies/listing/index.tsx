@@ -82,10 +82,6 @@ function GhillieListingScreen() {
     const [promotedGhillies, setPromotedGhillies] = useStateWithCallback<GhillieDetailDto[]>([]);
     const [sponsoredGhillies, setSponsoredGhillies] = useStateWithCallback<GhillieDetailDto[]>([]);
 
-    // const [isLoadingUserGhillies, setIsLoadingUserGhillies] = useStateWithCallback(false);
-    // const [isLoadingPopularGhillies, setIsLoadingPopularGhillies] = useStateWithCallback(false);
-    // const [isLoadingTrendingGhillies, setIsLoadingTrendingGhillies] = useStateWithCallback(false);
-    // const [isLoadingNewGhillies, setIsLoadingNewGhillies] = useStateWithCallback(false);
     const [isLoadingAll, setIsLoadingAll] = useStateWithCallback(false);
 
     const [isVerifiedMilitary, isAdmin] = useSelector(

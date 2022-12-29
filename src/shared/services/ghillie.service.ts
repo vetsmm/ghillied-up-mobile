@@ -121,6 +121,26 @@ const joinGhillieByCode = async (inviteCode: string): Promise<GhillieDetailDto> 
         });
 }
 
+const addTopicsToGhillie = async (id: string, topicsNames: string[]): Promise<GhillieDetailDto> => {
+    console.log('topicsNames', topicsNames);
+    return await axios.put(`${AppConfig.apiUrl}/ghillies/${id}/add-topics`, topicsNames)
+        .then(response => {
+            return response.data;
+        });
+}
+
+const removeTopicsFromGhillies = async (id: string, topicsNames: string[]): Promise<GhillieDetailDto> => {
+    console.log('topicsNames', topicsNames);
+    return await axios.put(`${AppConfig.apiUrl}/ghillies/${id}/delete-topics`, topicsNames)
+        .then(response => {
+            return response.data;
+        });
+}
+
+const generateInviteCode = async (id: string): Promise<void> => {
+    return await axios.put(`${AppConfig.apiUrl}/ghillies/${id}/generate-invite-code`);
+}
+
 const ghillieService = {
     getGhillies,
     joinGhillie,
@@ -137,6 +157,9 @@ const ghillieService = {
     getNewestGhillies,
     getCombinedGhillies,
     joinGhillieByCode,
+    addTopicsToGhillie,
+    removeTopicsFromGhillies,
+    generateInviteCode
 }
 
 export default ghillieService;

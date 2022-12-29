@@ -13,14 +13,14 @@ export interface GhillieDetailDto {
   topics: TopicLiteOutputDto[];
   ownerUsername?: string;
   status: GhillieStatus
-  createdAt: Date;
-  updatedAt: Date;
+  createdDate: string;
+  updatedDate: string;
   lastPostDate?: string;
   totalMembers?: number;
   memberMeta?: GhillieMemberDto | null;
   adminInviteOnly?: boolean;
   isPrivate?: boolean;
-  category?: GhillieCategory;
+  category: GhillieCategory;
   inviteCode?: string;
   postCount?: number;
 }

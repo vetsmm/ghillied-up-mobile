@@ -8,9 +8,12 @@ import MainContainer from "../../components/containers/MainContainer";
 import {GhillieDetailScreen} from "../../screens/ghillies/detail";
 import GhillieCreateScreen1 from "../../screens/ghillies/create/ghillie-create-screen1";
 import GhillieCreateScreen3 from "../../screens/ghillies/create/ghillie-create-screen3";
-import GhillieUpdateScreen from "../../screens/ghillies/update";
 import GhillieSearchScreen from '../../screens/ghillies/search';
 import GhillieCreateScreen2 from "../../screens/ghillies/create/ghillie-create-screen2";
+import GhillieSettingsScreen from "../../screens/ghillies/settings/main";
+import GhillieUpdateScreen from "../../screens/ghillies/settings/update";
+import UpdateGhillieCategoryScreen from "../../screens/ghillies/settings/update-category";
+import UpdateGhillieTopicsScreen from "../../screens/ghillies/settings/update-topics";
 
 const {primary} = colorsVerifyCode;
 
@@ -101,11 +104,87 @@ export const ghilliesScreen: Array<GhillieScreenProps> = [
     }
   },
   {
+    name: "GhillieSettings",
+    route: "ghillie-settings/:id",
+    component: GhillieSettingsScreen,
+    options: {
+      title: "Ghillie Settings",
+      headerBackTitle: "Ghillie",
+      headerShown: true,
+      gestureEnabled: true,
+      // title bar color
+      headerStyle: {
+        backgroundColor: colorsVerifyCode.primary,
+      },
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        color: colorsVerifyCode.white,
+      },
+      headerTintColor: colorsVerifyCode.white,
+    }
+  },
+  {
     name: "GhillieUpdate",
     route: "ghillie-update/:id",
     component: GhillieUpdateScreen,
     options: {
-      headerShown: false,
+      title: "Update Ghillie",
+      headerBackTitle: "Settings",
+      headerShown: true,
+      gestureEnabled: true,
+      // title bar color
+      headerStyle: {
+        backgroundColor: colorsVerifyCode.primary,
+      },
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        color: colorsVerifyCode.white,
+      },
+      headerTintColor: colorsVerifyCode.white,
+    }
+  },
+  {
+    name: "UpdateGhillieCategory",
+    route: "ghillie-category-update/:id",
+    component: UpdateGhillieCategoryScreen,
+    options: {
+      title: "Update Category",
+      headerBackTitle: "Settings",
+      headerShown: true,
+      gestureEnabled: true,
+      // title bar color
+      headerStyle: {
+        backgroundColor: colorsVerifyCode.primary,
+      },
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        color: colorsVerifyCode.white,
+      },
+      headerTintColor: colorsVerifyCode.white,
+    }
+  },
+  {
+    name: "UpdateGhillieTopics",
+    route: "ghillie-topics-update/:id",
+    component: UpdateGhillieTopicsScreen,
+    options: {
+      title: "Update Topics",
+      headerBackTitle: "Settings",
+      headerShown: true,
+      gestureEnabled: true,
+      // title bar color
+      headerStyle: {
+        backgroundColor: colorsVerifyCode.primary,
+      },
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        color: colorsVerifyCode.white,
+      },
+      headerTintColor: colorsVerifyCode.white,
     }
   },
   {

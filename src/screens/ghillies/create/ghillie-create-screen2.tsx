@@ -1,11 +1,12 @@
 import React from 'react';
 
-import {Badge, Box, Center, FlatList, Icon, KeyboardAvoidingView, Text, View, VStack} from "native-base";
+import {Badge, Center, FlatList, KeyboardAvoidingView, View, VStack} from "native-base";
 import MainContainer from "../../../components/containers/MainContainer";
 import RegularText from "../../../components/texts/regular-texts";
 import {colorsVerifyCode} from "../../../components/colors";
-import {Button, Platform, TextInput, TouchableOpacity} from "react-native";
+import {Platform, TextInput, TouchableOpacity} from "react-native";
 import ghillieValidators from "../../../shared/validators/ghillies";
+import RegularButton from "../../../components/buttons/regular-button";
 
 
 const GhillieCreateScreen2 = ({route, navigation}) => {
@@ -14,18 +15,6 @@ const GhillieCreateScreen2 = ({route, navigation}) => {
         const [currentTopic, setCurrentTopic] = React.useState('');
         const [topics, setTopics] = React.useState<string[]>([]);
         const [topicError, setTopicError] = React.useState<string>('');
-
-        React.useEffect(() => {
-            navigation.setOptions({
-                headerRight: () => (
-                    <Button
-                        title={"Next"}
-                        onPress={() => onMoveToNextScreen()}
-                        color={colorsVerifyCode.white}
-                    />
-                )
-            });
-        }, [navigation]);
 
         const onMoveToNextScreen = () => {
             setTopicError('');
@@ -163,6 +152,12 @@ const GhillieCreateScreen2 = ({route, navigation}) => {
                                     returnKeyLabel={"Add"}
                                     returnKeyType={"next"}
                                 />
+
+                                <RegularButton
+                                    onPress={() => onMoveToNextScreen()}
+                                >
+                                    Submit
+                                </RegularButton>
                             </View>
 
                         </Center>
