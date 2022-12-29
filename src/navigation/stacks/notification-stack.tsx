@@ -4,15 +4,17 @@ import NotificationListingScreen from "../../screens/notifications/listing";
 
 interface NotificationScreenProps {
   name: string;
-  route: string;
-  component: React.ComponentType<any>;
+  path: string;
+  parse?: any;
+  stringify?: any;
+  component: any;
   options?: any;
 }
 
 export const notificationsScreen: Array<NotificationScreenProps> = [
   {
     name: "NotificationListing",
-    route: "notification-listing",
+    path: "",
     component: NotificationListingScreen,
     options: {
       headerShown: false,

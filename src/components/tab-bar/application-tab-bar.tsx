@@ -28,9 +28,6 @@ const CustomTabBarButton = (props: any) => {
 };
 
 export const ApplicationTabBar = ({navigation}: any) => {
-    const isAuthenticated = useSelector(
-        (state: IRootState) => state.authentication.isVerifiedMilitary,
-    );
 
     const unreadNotifications = useSelector(
         (state: IRootState) => state.notifications.unreadNotifications,
@@ -38,6 +35,7 @@ export const ApplicationTabBar = ({navigation}: any) => {
 
     return (
         <Tab.Navigator
+            initialRouteName={"Feed"}
             backBehavior="history"
             screenOptions={({route}) => ({
                 headerShown: false,
@@ -135,7 +133,6 @@ export const ApplicationTabBar = ({navigation}: any) => {
                 name={"Posts"}
                 component={PostStackScreen}
                 // Navigate to FeedStack -> Create Post
-
                 options={{
                     tabBarLabel: "",
                     tabBarIcon: ({focused, color, size}) => (

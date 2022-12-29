@@ -37,13 +37,66 @@ export default {
     ios: {
         supportsTablet: true,
         bundleIdentifier: "com.ghilliedup",
+        associatedDomains: [
+            "applinks:ghilliedup.com",
+            "webcredentials:ghilliedup.com",
+            "activitycontinuation:ghilliedup.com"
+        ],
     },
     android: {
         adaptiveIcon: {
             foregroundImage: "./assets/logos/ic_launcher.png",
             backgroundColor: "#1E4C69"
         },
-        package: "com.ghilliedup"
+        package: "com.ghilliedup",
+        intentFilters: [
+            {
+                action: "MAIN",
+                data: {
+                    scheme: "https",
+                    host: "ghilliedup.com",
+                },
+                category: [
+                    "LAUNCHER"
+                ]
+            },
+            {
+                action: "VIEW",
+                data: {
+                    scheme: "https",
+                    host: "*.ghilliedup.com",
+                    pathPrefix: "/ghillie-detail"
+                },
+                category: [
+                    "BROWSABLE",
+                    "DEFAULT"
+                ]
+            },
+            {
+                action: "VIEW",
+                data: {
+                    scheme: "https",
+                    host: "*.ghilliedup.com",
+                    pathPrefix: "/ghillie-invite"
+                },
+                category: [
+                    "BROWSABLE",
+                    "DEFAULT"
+                ]
+            },
+            {
+                action: "VIEW",
+                data: {
+                    scheme: "https",
+                    host: "*.ghilliedup.com",
+                    pathPrefix: "/post-detail"
+                },
+                category: [
+                    "BROWSABLE",
+                    "DEFAULT"
+                ]
+            }
+        ]
     },
     web: {
         favicon: "./assets/logos/favicon.png"

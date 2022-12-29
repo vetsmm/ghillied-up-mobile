@@ -85,7 +85,7 @@ export const GhillieSlice = createSlice({
     });
     builder.addCase(getGhillie.rejected, (state, action) => {
       // @ts-ignore
-      state.errorMessage = action.payload.error.message;
+      state.errorMessage = action.payload.error.data.error.message;
       state.loading = false;
       state.ghillie = {} as GhillieDetailDto;
     });

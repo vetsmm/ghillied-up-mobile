@@ -5,7 +5,7 @@ const extra = Constants.manifest?.extra ?? {};
 
 const ENV = {
     dev: {
-        appUrl: 'exp://192.168.0.210:19000/--/',
+        appUrls: ['exp://127.0.0.1:19000/--/', "https://ghilliedup.com", 'ghilliedup://'],
         apiUrl: 'http://192.168.0.210:3333',
         amplitudeApiKey: null,
         idme: {
@@ -15,7 +15,7 @@ const ENV = {
         sentryEnvironment: 'development',
     },
     qa: {
-        appUrl: 'ghilliedup://',
+        appUrls: ['ghilliedup://', "https://ghilliedup.com"],
         apiUrl: 'https://api.ghilliedupqa.com',
         amplitudeApiKey: extra.amplitudeApiKey,
         idme: {
@@ -25,7 +25,7 @@ const ENV = {
         sentryEnvironment: 'qa'
     },
     prod: {
-        appUrl: 'ghilliedup://',
+        appUrls: ['ghilliedup://', "https://ghilliedup.com"],
         apiUrl: 'https://api.ghilliedup.com',
         amplitudeApiKey: extra.amplitudeApiKey,
         idme: {
@@ -51,12 +51,12 @@ const getEnvVars = (env = Constants.manifest?.releaseChannel) => {
     return ENV.qa;
 };
 
-const {apiUrl, amplitudeApiKey, idme, sentryEnvironment, appUrl} = getEnvVars();
+const {apiUrl, amplitudeApiKey, idme, sentryEnvironment, appUrls} = getEnvVars();
 
 export default {
     // use 10.0.2.2 for Android to connect to host machine
     apiUrl: apiUrl,
-    appUrl: appUrl,
+    appUrls: appUrls,
     nativeClientId: "",
     // debug mode
     debugMode: __DEV__,
