@@ -1,6 +1,6 @@
 import React from "react";
 
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native";
 import {Text, View} from "native-base";
 import {InterfaceIconButtonProps} from "native-base/lib/typescript/components/composites/IconButton/types";
 

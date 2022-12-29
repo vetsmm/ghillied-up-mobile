@@ -3,7 +3,6 @@ import {
     Text,
     HStack,
     VStack,
-    Pressable,
     IconButton,
     Icon,
     Avatar,

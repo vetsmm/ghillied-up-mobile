@@ -1,5 +1,5 @@
 import React from "react";
-import {TouchableOpacity} from "react-native-gesture-handler";
+import {TouchableOpacity} from "react-native";
 import {Text, VStack, HStack, Avatar, Pressable} from "native-base";
 import {colorsVerifyCode} from '../colors';
 import {GhillieCategory} from "../../shared/models/ghillies/ghillie-category";
@@ -45,19 +45,17 @@ export const GhillieCategoryCircle = (props: IGhillieCategoryCircle) => {
         <HStack px={{base: 3, md: 4}} justifyContent="space-evenly">
             <TouchableOpacity onPress={() => props.category ? props.onPress(props.category) : props.onPress()}>
                 <VStack space={1} alignItems="center">
-                    <Pressable>
-                        <Avatar
-                            width={props.width || 20}
-                            height={props.height || 20}
-                            borderWidth="2"
-                            borderColor={colorsVerifyCode.secondary}
-                            source={
-                                getCategoryIcon()
-                                    ? getCategoryIcon()
-                                    : require("../../../assets/logos/icon.png")
-                            }
-                        />
-                    </Pressable>
+                    <Avatar
+                        width={props.width || 20}
+                        height={props.height || 20}
+                        borderWidth="2"
+                        borderColor={colorsVerifyCode.secondary}
+                        source={
+                            getCategoryIcon()
+                                ? getCategoryIcon()
+                                : require("../../../assets/logos/icon.png")
+                        }
+                    />
                     <Text
                         fontSize="xs"
                         fontWeight="normal"
