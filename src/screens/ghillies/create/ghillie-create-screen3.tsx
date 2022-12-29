@@ -207,7 +207,6 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
                                         {formErrors.about || ' '}
                                     </MsgBox>
 
-                                    {/* TODO: Value not picking up */}
                                     <StyledCheckboxInput
                                         label="Is this a private Ghillie? (Invite Only)"
                                         onValueChange={(value) => setFieldValue('isPrivate', value)}
@@ -222,7 +221,6 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
                                         {formErrors.isPrivate || ' '}
                                     </MsgBox>
 
-                                    {/* TODO: Value not picking up */}
                                     {values.isPrivate && (
                                         <>
                                             <StyledCheckboxInput
