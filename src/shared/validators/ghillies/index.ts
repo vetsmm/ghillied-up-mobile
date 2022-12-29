@@ -1,7 +1,8 @@
-import {createGhillieFormValidator} from "./create-ghillie-form.validator";
+import {createGhillieFormValidator, isBadWord} from "./create-ghillie-form.validator";
 
 const ghillieValidators = {
-  createGhillieFormValidator
+  createGhillieFormValidator,
+  isBadWord
 }
 
 export default ghillieValidators;

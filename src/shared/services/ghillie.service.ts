@@ -67,6 +67,7 @@ const getGhillie = async (id: string): Promise<BaseApiResponse<GhillieDetailDto,
 }
 
 const createGhillie = async (ghillie: CreateGhillieInputDto): Promise<BaseApiResponse<GhillieDetailDto, never>> => {
+    console.log('ghillie', ghillie);
     return await axios.post(`${AppConfig.apiUrl}/ghillies`, ghillie)
         .then(response => {
             return response.data;
