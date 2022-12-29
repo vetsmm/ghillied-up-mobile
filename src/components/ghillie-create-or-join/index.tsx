@@ -1,7 +1,7 @@
 import React from "react";
 import {Icon, Text, View} from "native-base";
 import {colorsVerifyCode} from "../colors";
-import {TouchableOpacity} from "react-native-gesture-handler";
+import {TouchableOpacity} from "react-native";
 import {Entypo} from "@expo/vector-icons";
 import {useNavigation} from "@react-navigation/core";
 import CodeInputModal from "../code-input-modal";

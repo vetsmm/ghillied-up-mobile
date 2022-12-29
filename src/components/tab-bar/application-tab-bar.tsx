@@ -5,7 +5,7 @@ import {
     MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import {TouchableOpacity} from "react-native-gesture-handler";
+import {TouchableOpacity} from "react-native";
 import {Image, View} from "native-base";
 import styles from "./application-tab-bar.styles";
 import {Colors} from "../../shared/styles";

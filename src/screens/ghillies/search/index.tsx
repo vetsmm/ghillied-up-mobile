@@ -3,7 +3,7 @@ import MainContainer from '../../../components/containers/MainContainer';
 import {RefreshControl, StyleSheet} from 'react-native';
 import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
 import {Center, Column, HStack, Icon, Text, View} from 'native-base';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native';
 import {Ionicons, MaterialIcons} from '@expo/vector-icons';
 import {colorsVerifyCode} from '../../../components/colors';
 import StyledSearchInput from '../../../components/inputs/styled-search-input';

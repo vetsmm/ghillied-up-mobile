@@ -1,6 +1,6 @@
 import React from "react";
-import {TouchableOpacity} from "react-native-gesture-handler";
-import {Text, VStack, HStack, Avatar, Pressable} from "native-base";
+import {TouchableOpacity} from "react-native";
+import {Text, VStack, HStack, Avatar} from "native-base";
 import {colorsVerifyCode} from '../colors';
 
 export interface IGhillieCircle {
@@ -15,21 +15,21 @@ export interface IGhillieCircle {
 export const GhillieCircle = (props: IGhillieCircle) => {
     return (
         <HStack px={{base: 3, md: 4}} justifyContent="space-evenly">
-            <TouchableOpacity onPress={() => props.ghillieId ? props.onPress(props.ghillieId) : props.onPress()}>
+            <TouchableOpacity
+                onPress={() => props.ghillieId ? props.onPress(props.ghillieId) : props.onPress()}
+            >
                 <VStack space={1} alignItems="center">
-                    <Pressable>
-                        <Avatar
-                            width={props.width || 20}
-                            height={props.height || 20}
-                            borderWidth="2"
-                            borderColor={colorsVerifyCode.secondary}
-                            source={
-                                props.image
-                                    ? {uri: props.image}
-                                    : require("../../../assets/logos/icon.png")
-                            }
-                        />
-                    </Pressable>
+                    <Avatar
+                        width={props.width || 20}
+                        height={props.height || 20}
+                        borderWidth="2"
+                        borderColor={colorsVerifyCode.secondary}
+                        source={
+                            props.image
+                                ? {uri: props.image}
+                                : require("../../../assets/logos/icon.png")
+                        }
+                    />
                     {props.text && (
                         <Text
                             fontSize="xs"
