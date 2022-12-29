@@ -6,7 +6,6 @@ import RegularText from "../../../components/texts/regular-texts";
 import {colorsVerifyCode} from "../../../components/colors";
 import {Button, Platform, TextInput, TouchableOpacity} from "react-native";
 import ghillieValidators from "../../../shared/validators/ghillies";
-import {isBadWord} from "../../../shared/validators/ghillies/create-ghillie-form.validator";
 
 
 const GhillieCreateScreen2 = ({route, navigation}) => {
