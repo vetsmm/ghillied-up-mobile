@@ -1,4 +1,7 @@
 // Convert date to how many minutes, hours, days, months, years ago
+import {APP_LOCAL_DATE_FORMAT, APP_LOCAL_DATE_FORMAT_FULL} from "../../config/app.config";
+import dayjs from "dayjs";
+
 export const getTimeAgoShort = (date: string) => {
   const time = new Date(date).getTime();
   const now = new Date().getTime();
@@ -53,3 +56,5 @@ export const getTimeAgo = (date: string) => {
     return `${years} years ago`;
   }
 }
+
+export const convertDateTimeFromServer = date => (date ? dayjs(date).format(APP_LOCAL_DATE_FORMAT_FULL) : null);

@@ -97,3 +97,13 @@ export default {
         supportEmail: "mailto:support@ghilliedup.com"
     }
 };
+
+export const APP_DATE_FORMAT = 'MM/DD/YY HH:mm';
+export const APP_TIMESTAMP_FORMAT = 'MM/DD/YY HH:mm:ss';
+export const APP_LOCAL_DATE_FORMAT = 'MM/DD/YYYY';
+
+export const APP_LOCAL_DATE_FORMAT_FULL = 'MMMM D, YYYY';
+export const APP_TIMESTAMP_FORMAT_MM_DD_YY = 'MM/DD/YY HH:mm';
+export const APP_LOCAL_DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm';
+export const APP_WHOLE_NUMBER_FORMAT = '0,0';
+export const APP_TWO_DIGITS_AFTER_POINT_NUMBER_FORMAT = '0,0.[00]';

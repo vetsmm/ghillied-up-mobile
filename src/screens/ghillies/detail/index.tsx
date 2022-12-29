@@ -381,17 +381,22 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             <TouchableOpacity style={styles.backButton} onPress={goBack}>
                 <Ionicons name="arrow-back-circle-outline" size={40} color={secondary}/>
             </TouchableOpacity>
-            {(isAdmin || isGhillieOwner) ? (
-                <TouchableOpacity style={styles.updateButton} onPress={handleGhillieUpdate}>
+            <VerifiedMilitaryProtected>
+                <TouchableOpacity style={styles.updateButton} onPress={() => navigation.navigate("GhillieSettings", {ghillie})}>
                     <Ionicons name="cog" size={40} color={secondary}/>
                 </TouchableOpacity>
-            ) : (
-                <VerifiedMilitaryProtected>
-                    <TouchableOpacity style={styles.updateButton} onPress={() => setIsReportDialogOpen(true)}>
-                        <Ionicons name="alert-circle" size={40} color={secondary}/>
-                    </TouchableOpacity>
-                </VerifiedMilitaryProtected>
-            )}
+            </VerifiedMilitaryProtected>
+            {/*{(isAdmin || isGhillieOwner) ? (*/}
+            {/*    <TouchableOpacity style={styles.updateButton} onPress={handleGhillieUpdate}>*/}
+            {/*        <Ionicons name="cog" size={40} color={secondary}/>*/}
+            {/*    </TouchableOpacity>*/}
+            {/*) : (*/}
+            {/*    <VerifiedMilitaryProtected>*/}
+            {/*        <TouchableOpacity style={styles.updateButton} onPress={() => setIsReportDialogOpen(true)}>*/}
+            {/*            <Ionicons name="alert-circle" size={40} color={secondary}/>*/}
+            {/*        </TouchableOpacity>*/}
+            {/*    </VerifiedMilitaryProtected>*/}
+            {/*)}*/}
             <VirtualizedView
                 isVerified={isVerifiedMilitary}
                 isActive={ghillie?.status === GhillieStatus.ACTIVE}
@@ -417,6 +422,16 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                 : require("../../../../assets/logos/logo.png")
                         }
                     />
+                    <View style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: 350,
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        top: 0,
+                        opacity: 0.5
+                    }}/>
                 </SharedElement>
                 <View marginBottom={50}>
                     {showReportAlert && (
