@@ -137,6 +137,10 @@ const removeTopicsFromGhillies = async (id: string, topicsNames: string[]): Prom
         });
 }
 
+const generateInviteCode = async (id: string): Promise<void> => {
+    return await axios.put(`${AppConfig.apiUrl}/ghillies/${id}/generate-invite-code`);
+}
+
 const ghillieService = {
     getGhillies,
     joinGhillie,
@@ -155,6 +159,7 @@ const ghillieService = {
     joinGhillieByCode,
     addTopicsToGhillie,
     removeTopicsFromGhillies,
+    generateInviteCode
 }
 
 export default ghillieService;

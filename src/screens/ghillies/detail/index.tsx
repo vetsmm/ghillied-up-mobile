@@ -28,18 +28,13 @@ import {MemberStatus} from "../../../shared/models/members/member-status";
 import {PostStatus} from "../../../shared/models/posts/post-status";
 import {ReactionType} from "../../../shared/models/reactions/reaction-type";
 import postFeedService from "../../../shared/services/post-feed.service";
-import {ReportMenuDialog} from '../../../components/reporting/report-menu-dialog';
-import {FlagCategory} from '../../../shared/models/flags/flag-category';
-import flagService from '../../../shared/services/flag.service';
-import {SuccessAlert} from '../../../components/alerts/success-alert';
-import AppConfig from '../../../config/app.config';
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 import {GhillieStatus} from "../../../shared/models/ghillies/ghillie-status";
 import GhillieService from "../../../shared/services/ghillie.service";
 import {FlashMessageRef} from "../../../app/App";
 import {Autolink} from "../../../components/autolink";
 
-const {primary, secondary, fail} = colorsVerifyCode;
+const {primary, secondary} = colorsVerifyCode;
 
 
 interface Route {
@@ -54,12 +49,11 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const [postCurrentPage, setPostCurrentPage] = React.useState(1);
     const [isLoadingGhillies, setIsLoadingGhillies] = React.useState(false);
     const [postList, setPostList] = React.useState<PostFeedDto[]>([]);
-    const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
-    const [showReportAlert, setShowReportAlert] = React.useState(false);
     const [submittingReaction, setSubmittingReaction] = React.useState(false);
     const [isLoadingOrLeaving, setIsLoadingOrLeaving] = React.useState(false);
 
-    const cancelRef = React.useRef(null);
+    // eslint-disable-next-line no-unsafe-optional-chaining
+    const {ghillieId} = route?.params;
 
     const currentUser = useSelector(
         (state: IRootState) => state.authentication.account
@@ -102,9 +96,6 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         (state: IRootState) => state.authentication.isVerifiedMilitary || state.authentication.isAdmin);
 
 
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    const {ghillieId} = route?.params;
-
     const dispatch = useAppDispatch();
 
     const navigation: any = useNavigation();
@@ -118,58 +109,28 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         return initialLoad;
     }, [ghillieId]);
 
-    useEffect(() => {
-        if (showReportAlert) {
-            setTimeout(() => {
-                setShowReportAlert(false);
-            }, AppConfig.timeouts.reportDialogs);
-        }
-    }, [showReportAlert]);
-
-
     const goBack = useCallback(() => {
         navigation.goBack();
     }, [navigation]);
 
-    const handleGhillieUpdate = useCallback(() => {
-        navigation.navigate("GhillieUpdate", {ghillie});
-    }, [navigation, ghillie]);
-
     const color = useColorScheme() === "dark" ? "#fff" : "#000";
 
-    const onGhillieJoinOrLeave = () => {
+    const onJoinGhillie = () => {
         setIsLoadingOrLeaving(true);
-        if (ghillie.memberMeta) {
-            GhillieService.leaveGhillie(ghillieId).then(() => {
-                setIsLoadingOrLeaving(false);
-                navigation.goBack();
-            }).catch((err) => {
-                setIsLoadingOrLeaving(false);
-                FlashMessageRef.current?.showMessage({
-                    message: err.message,
-                    type: 'danger',
-                    style: {
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                });
+        GhillieService.joinGhillie(ghillieId).then(() => {
+            setIsLoadingOrLeaving(false);
+            dispatch(getGhillie(ghillieId));
+        }).catch((err) => {
+            setIsLoadingOrLeaving(false);
+            FlashMessageRef.current?.showMessage({
+                message: err.message,
+                type: 'danger',
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
             });
-        } else {
-            GhillieService.joinGhillie(ghillieId).then(() => {
-                setIsLoadingOrLeaving(false);
-                dispatch(getGhillie(ghillieId));
-            }).catch((err) => {
-                setIsLoadingOrLeaving(false);
-                FlashMessageRef.current?.showMessage({
-                    message: err.message,
-                    type: 'danger',
-                    style: {
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                });
-            });
-        }
+        });
     };
 
     const moderatorRemovePost = (post) => {
@@ -208,27 +169,6 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             });
         }
     };
-
-    const reportGhillie = (category: FlagCategory, details: string) => {
-        flagService.flagGhillie({
-            ghillieId: ghillieId,
-            flagCategory: category,
-            details
-        })
-            .then(() => {
-                setShowReportAlert(true);
-            })
-            .catch((err) => {
-                FlashMessageRef.current?.showMessage({
-                    message: 'An error occurred while reporting the ghillie.',
-                    type: 'danger',
-                    style: {
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                });
-            });
-    }
 
     const onHandleReaction = (postId: string, reaction: ReactionType | null) => {
         setSubmittingReaction(true);
@@ -279,7 +219,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                     setPostCurrentPage(page);
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 FlashMessageRef.current?.showMessage({
                     message: page > 1 ? 'An error occurred while loading more posts.' : 'An error occurred while loading the feed.',
                     type: 'danger',
@@ -382,7 +322,8 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 <Ionicons name="arrow-back-circle-outline" size={40} color={secondary}/>
             </TouchableOpacity>
             <VerifiedMilitaryProtected>
-                <TouchableOpacity style={styles.updateButton} onPress={() => navigation.navigate("GhillieSettings", {ghillie})}>
+                <TouchableOpacity style={styles.updateButton}
+                                  onPress={() => navigation.navigate("GhillieSettings", {ghillie})}>
                     <Ionicons name="cog" size={40} color={secondary}/>
                 </TouchableOpacity>
             </VerifiedMilitaryProtected>
@@ -434,12 +375,6 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                     }}/>
                 </SharedElement>
                 <View marginBottom={50}>
-                    {showReportAlert && (
-                        <SuccessAlert
-                            title="Report Sent"
-                            body="Thank you for reporting this Ghillie. We appreciate your help in keeping our community safe. If appropriate, we will take the necessary actions."
-                        />
-                    )}
                     <Center>
                         <Text style={[styles.title, {color: colorsVerifyCode.white}]}>{ghillie?.name}</Text>
                         <Badge variant="solid" color="default">
@@ -462,65 +397,37 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                         </Badge>
                         <VerifiedMilitaryProtected>
                             {ghillie?.status === GhillieStatus.ACTIVE && (
-                                <TouchableOpacity
-                                    style={{
-                                        marginTop: 10
-                                    }}
-                                    disabled={isBanned || isLoadingOrLeaving}
-                                    onPress={() => onGhillieJoinOrLeave()}
-                                >
-                                    {isLoadingOrLeaving ? (
-                                        <Spinner color={secondary}/>
-                                    ) : (
-                                        <Badge
-                                            variant="solid"
+                                <>
+                                    {(!isBanned && !isMember) && (
+                                        <TouchableOpacity
                                             style={{
-                                                backgroundColor: !ghillie.memberMeta ? secondary : fail,
-                                                borderRadius: 10
+                                                marginTop: 10
                                             }}
+                                            disabled={isLoadingOrLeaving}
+                                            onPress={() => onJoinGhillie()}
                                         >
-                                            <Text style={{
-                                                color: "white",
-                                                fontSize: 20
-                                            }}
-                                            >
-                                                {!ghillie.memberMeta
-                                                    ? "Join Ghillie"
-                                                    : isBanned ? "Banned" : "Leave Ghillie"
-                                                }
-                                            </Text>
-                                        </Badge>
+                                            {isLoadingOrLeaving ? (
+                                                <Spinner color={secondary}/>
+                                            ) : (
+                                                <Badge
+                                                    variant="solid"
+                                                    style={{
+                                                        backgroundColor: secondary,
+                                                        borderRadius: 10
+                                                    }}
+                                                >
+                                                    <Text style={{
+                                                        color: "white",
+                                                        fontSize: 20
+                                                    }}
+                                                    >
+                                                        Join Ghillie
+                                                    </Text>
+                                                </Badge>
+                                            )}
+                                        </TouchableOpacity>
                                     )}
-                                </TouchableOpacity>
-                            )}
-                            {(ghillie?.status !== GhillieStatus.ACTIVE && ghillie.memberMeta) && (
-                                <TouchableOpacity
-                                    style={{
-                                        marginTop: 10
-                                    }}
-                                    disabled={isBanned || isLoadingOrLeaving}
-                                    onPress={() => onGhillieJoinOrLeave()}
-                                >
-                                    {isLoadingOrLeaving ? (
-                                        <Spinner color={secondary}/>
-                                    ) : (
-                                        <Badge
-                                            variant="solid"
-                                            style={{
-                                                backgroundColor: fail,
-                                                borderRadius: 10
-                                            }}
-                                        >
-                                            <Text style={{
-                                                color: "white",
-                                                fontSize: 20
-                                            }}
-                                            >
-                                                Leave Ghillie
-                                            </Text>
-                                        </Badge>
-                                    )}
-                                </TouchableOpacity>
+                                </>
                             )}
                         </VerifiedMilitaryProtected>
 
@@ -616,12 +523,6 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 )}
 
             </VirtualizedView>
-            <ReportMenuDialog
-                isOpen={isReportDialogOpen}
-                onClose={() => setIsReportDialogOpen(false)}
-                cancelRef={cancelRef}
-                onReport={reportGhillie}
-            />
         </View>
     );
 };

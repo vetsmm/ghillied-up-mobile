@@ -36,13 +36,13 @@ export const ReportMenuDialog: React.FC<ReportMenuDialogProps> = ({isOpen, onClo
     onReport(category, details);
     onClose();
   }
-  
+
   return (
     <Modal animationType="slide" visible={isOpen} transparent={true}>
       <ModalPressableContainer>
         <ModalView>
           <BigText style={{fontSize: 25, color: tertiary, marginVertical: 10}}>{title}</BigText>
-  
+
           <StyledSelect
             containerStyle={{
               width: "100%",
@@ -78,20 +78,11 @@ export const ReportMenuDialog: React.FC<ReportMenuDialogProps> = ({isOpen, onClo
             }))}
             accessibilityLabel="Report Description"
           />
-          
+
           {isLoading ? (
             <Spinner color={tertiary}/>
           ): (
             <ButtonRow>
-              <RegularButton
-                onPress={() => submitReport()}
-                style={{
-                  width: '50%',
-                  marginRight: 10
-                }}
-              >
-                Submit Report
-              </RegularButton>
               <RegularButton
                 onPress={() => onClose()}
                 style={{
@@ -103,6 +94,15 @@ export const ReportMenuDialog: React.FC<ReportMenuDialogProps> = ({isOpen, onClo
                 }}
               >
                 Cancel
+              </RegularButton>
+              <RegularButton
+                  onPress={() => submitReport()}
+                  style={{
+                    width: '50%',
+                    marginRight: 10
+                  }}
+              >
+                Submit Report
               </RegularButton>
             </ButtonRow>
           )}
