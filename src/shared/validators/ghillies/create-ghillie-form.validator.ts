@@ -8,6 +8,12 @@ export type CreateGhillieFormValidationResponse = {
   ghillieLogo: string|null;
 }
 
+export type UpdateGhillieFormValidationResponse = {
+  name: string|null;
+  about: string|null;
+  ghillieLogo: string|null;
+}
+
 export const createGhillieFormValidator = (
   formData: {
     name: string;
@@ -22,6 +28,22 @@ export const createGhillieFormValidator = (
     name: validateName(name),
     about: validateAbout(about),
     topicNames: validateTopicNames(topicNames),
+    ghillieLogo: validateLogo(formData.ghillieLogo),
+  };
+}
+
+export const updateGhillieFormValidator = (
+    formData: {
+      name: string;
+      about: string;
+      ghillieLogo: ImageInfo|null;
+    }
+): UpdateGhillieFormValidationResponse => {
+  const { name, about } = formData;
+
+  return {
+    name: validateName(name),
+    about: validateAbout(about),
     ghillieLogo: validateLogo(formData.ghillieLogo),
   };
 }

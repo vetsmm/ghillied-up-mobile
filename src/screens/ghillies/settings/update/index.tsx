@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
 import {Formik} from 'formik';
 import {ActivityIndicator} from 'react-native';
@@ -7,7 +7,7 @@ import {VStack} from "native-base";
 import {colorsVerifyCode} from "../../../../components/colors";
 import ghillieValidators from "../../../../shared/validators/ghillies";
 import {
-    CreateGhillieFormValidationResponse
+    UpdateGhillieFormValidationResponse
 } from "../../../../shared/validators/ghillies/create-ghillie-form.validator";
 import MainContainer from "../../../../components/containers/MainContainer";
 import KeyboardAvoidingContainer from "../../../../components/containers/KeyboardAvoidingContainer";
@@ -137,7 +137,7 @@ export const GhillieUpdateScreen: React.FC = () => {
         const _isFormInvalid = (formData): boolean => {
             setMessage(null);
 
-            const errors: CreateGhillieFormValidationResponse = ghillieValidators.createGhillieFormValidator(formData);
+            const errors: UpdateGhillieFormValidationResponse = ghillieValidators.updateGhillieFormValidator(formData);
 
             if (ghillie.imageUrl && !formData.ghillieLogo) {
                 errors.ghillieLogo = null;
