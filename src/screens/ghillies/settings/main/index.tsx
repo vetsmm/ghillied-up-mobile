@@ -176,13 +176,14 @@ export const GhillieSettingsScreen: React.FC = () => {
                             Code: {ghillie.inviteCode}</Text>
                         <Ionicons name="copy-outline" size={24} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.sectionButton}
-                        // onPress={button.onPress}
-                    >
-                        <Text style={styles.sectionButtonText}>Share Ghillie</Text>
-                        <Ionicons name="share-social" size={24} color={colorsVerifyCode.secondary}/>
-                    </TouchableOpacity>
+                    {/* TODO: Add this once deep linking is in: https://docs.expo.dev/guides/deep-linking/ */}
+                    {/*<TouchableOpacity*/}
+                    {/*    style={styles.sectionButton}*/}
+                    {/*    // onPress={button.onPress}*/}
+                    {/*>*/}
+                    {/*    <Text style={styles.sectionButtonText}>Share Ghillie</Text>*/}
+                    {/*    <Ionicons name="share-social" size={24} color={colorsVerifyCode.secondary}/>*/}
+                    {/*</TouchableOpacity>*/}
                 </>
             )
         } else if (isAdminOrModerator) {
