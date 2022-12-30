@@ -52,6 +52,7 @@ export default {
         intentFilters: [
             {
                 action: "MAIN",
+                autoVerify: true,
                 data: {
                     scheme: "https",
                     host: "ghilliedup.com",
@@ -62,10 +63,11 @@ export default {
             },
             {
                 action: "VIEW",
+                autoVerify: true,
                 data: {
                     scheme: "https",
                     host: "*.ghilliedup.com",
-                    pathPrefix: "/ghillie-detail"
+                    pathPrefix: "/ghillies/detail"
                 },
                 category: [
                     "BROWSABLE",
@@ -74,10 +76,11 @@ export default {
             },
             {
                 action: "VIEW",
+                autoVerify: true,
                 data: {
                     scheme: "https",
                     host: "*.ghilliedup.com",
-                    pathPrefix: "/ghillie-invite"
+                    pathPrefix: "/ghillies/invite"
                 },
                 category: [
                     "BROWSABLE",
@@ -86,10 +89,11 @@ export default {
             },
             {
                 action: "VIEW",
+                autoVerify: true,
                 data: {
                     scheme: "https",
                     host: "*.ghilliedup.com",
-                    pathPrefix: "/post-detail"
+                    pathPrefix: "/posts/detail"
                 },
                 category: [
                     "BROWSABLE",
