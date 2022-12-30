@@ -26,6 +26,9 @@ Sentry.init({
     environment: AppConfig.sentry.env,
     enableInExpoDevelopment: AppConfig.sentry.enableInExpoDevelopment,
     enableNative: AppConfig.sentry.enableNative,
+    enableNativeCrashHandling: AppConfig.sentry.enableNativeCrashHandling,
+    enableAutoPerformanceTracking: AppConfig.sentry.enableAutoPerformanceTracking,
+    enableOutOfMemoryTracking: AppConfig.sentry.enableOutOfMemoryTracking,
     debug: AppConfig.sentry.enableDebug, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
 });
 

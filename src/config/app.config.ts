@@ -18,6 +18,9 @@ const ENV = {
             enableInExpoDevelopment: false,
             enableNative: false,
             enableDebug: false,
+            enableNativeCrashHandling: false,
+            enableAutoPerformanceTracking: false,
+            enableOutOfMemoryTracking: false,
         }
     },
     qa: {
@@ -32,8 +35,11 @@ const ENV = {
             dsn: "https://2d1a539e23db489fba7b6ef7ad1382ba@o228030.ingest.sentry.io/6615776",
             env: 'qa',
             enableInExpoDevelopment: false,
-            enableNative: false,
+            enableNative: true,
             enableDebug: false,
+            enableNativeCrashHandling: true,
+            enableAutoPerformanceTracking: true,
+            enableOutOfMemoryTracking: true,
         }
     },
     prod: {
@@ -48,8 +54,11 @@ const ENV = {
             dsn: "https://2d1a539e23db489fba7b6ef7ad1382ba@o228030.ingest.sentry.io/6615776",
             env: 'prod',
             enableInExpoDevelopment: false,
-            enableNative: false,
+            enableNative: true,
             enableDebug: false,
+            enableNativeCrashHandling: true,
+            enableAutoPerformanceTracking: true,
+            enableOutOfMemoryTracking: true,
         }
     },
 };
