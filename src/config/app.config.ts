@@ -12,7 +12,13 @@ const ENV = {
             authorizationEndpoint: 'https://api.id.me/oauth/authorize',
             tokenEndpoint: 'https://api.id.me/oauth/token',
         },
-        sentryEnvironment: 'development',
+        sentry: {
+            dsn: "https://2d1a539e23db489fba7b6ef7ad1382ba@o228030.ingest.sentry.io/6615776",
+            env: 'development',
+            enableInExpoDevelopment: false,
+            enableNative: false,
+            enableDebug: false,
+        }
     },
     qa: {
         appUrls: ['ghilliedup://', "https://ghilliedup.com"],
@@ -22,7 +28,13 @@ const ENV = {
             authorizationEndpoint: 'https://api.id.me/oauth/authorize',
             tokenEndpoint: 'https://api.id.me/oauth/token',
         },
-        sentryEnvironment: 'qa'
+        sentry: {
+            dsn: "https://2d1a539e23db489fba7b6ef7ad1382ba@o228030.ingest.sentry.io/6615776",
+            env: 'qa',
+            enableInExpoDevelopment: false,
+            enableNative: false,
+            enableDebug: false,
+        }
     },
     prod: {
         appUrls: ['ghilliedup://', "https://ghilliedup.com"],
@@ -32,7 +44,13 @@ const ENV = {
             authorizationEndpoint: 'https://api.id.me/oauth/authorize',
             tokenEndpoint: 'https://api.id.me/oauth/token',
         },
-        sentryEnvironment: 'prod'
+        sentry: {
+            dsn: "https://2d1a539e23db489fba7b6ef7ad1382ba@o228030.ingest.sentry.io/6615776",
+            env: 'prod',
+            enableInExpoDevelopment: false,
+            enableNative: false,
+            enableDebug: false,
+        }
     },
 };
 
@@ -51,7 +69,7 @@ const getEnvVars = (env = Constants.manifest?.releaseChannel) => {
     return ENV.qa;
 };
 
-const {apiUrl, amplitudeApiKey, idme, sentryEnvironment, appUrls} = getEnvVars();
+const {apiUrl, amplitudeApiKey, idme, sentry, appUrls} = getEnvVars();
 
 export default {
     // use 10.0.2.2 for Android to connect to host machine
@@ -63,8 +81,7 @@ export default {
     extra,
     AuthObject: "GhilliedUpAuthObject",
     CredentialsObject: "GhilliedUpCredentialsObject",
-    sentryDsn: "https://2d1a539e23db489fba7b6ef7ad1382ba@o228030.ingest.sentry.io/6615776",
-    sentryEnvironment: sentryEnvironment,
+    sentry: sentry,
     amplitudeApiKey: amplitudeApiKey,
     useExpoAuthProxy: Platform.select({ web: false, default: true }),
     oauth: {

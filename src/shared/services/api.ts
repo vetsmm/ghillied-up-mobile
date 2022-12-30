@@ -60,7 +60,7 @@ export const applyAxiosErrorInterceptor = (axiosInstance: any, onUnauthenticated
                 onUnauthenticated();
             }
 
-            if (!error.response) {
+            if (!error.response || error.response.status === 500) {
                 Sentry.Native.captureException(error);
             }
 
