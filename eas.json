@@ -18,9 +18,16 @@
       "distribution": "internal",
       "env": {
         "APP_ENV": "development"
-      },
+      }
+    },
+    "development-simulator": {
+      "developmentClient": true,
+      "distribution": "internal",
       "ios": {
         "simulator": true
+      },
+      "env": {
+        "APP_ENV": "development"
       }
     },
     "staging": {
