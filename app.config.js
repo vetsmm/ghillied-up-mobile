@@ -1,10 +1,43 @@
+const getProperties = () => {
+    switch (process.env.APP_ENV) {
+        case 'development':
+            return {
+                appName: `Ghillied Up (DEV)`,
+                icon: "./assets/app-icons/dev.png",
+                bundleIdentifier: 'com.ghilliedup.dev',
+                package: 'com.ghilliedup.dev',
+            }
+        case 'staging':
+            return {
+                appName: `Ghillied Up (BETA)`,
+                icon: "./assets/app-icons/beta.png",
+                bundleIdentifier: 'com.ghilliedup.qa',
+                package: 'com.ghilliedup'
+            }
+        case 'production':
+            return {
+                appName: `Ghillied Up`,
+                icon: "./assets/app-icons/prod.png",
+                bundleIdentifier: 'com.ghilliedup',
+                package: 'com.ghilliedup'
+            }
+        default:
+            return {
+                appName: `Ghillied Up`,
+                icon: "./assets/app-icons/prod.png",
+                bundleIdentifier: 'com.ghilliedup',
+                package: 'com.ghilliedup'
+            }
+    }
+}
+
 export default {
-    name: "Ghillied Up",
+    name: getProperties().appName,
     slug: "ghillied-up",
     owner: "ghilliedup",
     version: "1.1.2",
     orientation: "portrait",
-    icon: "./assets/logos/logo-square.png",
+    icon: getProperties().icon,
     scheme: "ghilliedup",
     notification: {
         "icon": "./assets/logos/notification/Icon-1024.png"
@@ -36,11 +69,14 @@ export default {
     assetBundlePatterns: ["**/*"],
     ios: {
         supportsTablet: true,
-        bundleIdentifier: "com.ghilliedup",
+        bundleIdentifier: getProperties().bundleIdentifier,
         associatedDomains: [
             "applinks:ghilliedup.com",
+            "applinks:ghilliedup.com.*",
             "webcredentials:ghilliedup.com",
-            "activitycontinuation:ghilliedup.com"
+            "webcredentials:ghilliedup.com.*",
+            "activitycontinuation:ghilliedup.com",
+            "activitycontinuation:ghilliedup.com.*"
         ],
     },
     android: {
@@ -48,7 +84,7 @@ export default {
             foregroundImage: "./assets/logos/ic_launcher.png",
             backgroundColor: "#1E4C69"
         },
-        package: "com.ghilliedup",
+        package: getProperties().package,
         intentFilters: [
             {
                 action: "MAIN",
