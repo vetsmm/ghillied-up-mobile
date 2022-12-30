@@ -19,7 +19,6 @@ import VerifiedMilitaryProtected from "../../../shared/protection/verified-milit
 import {FlashMessageRef} from "../../../app/App";
 import {FlashList} from "@shopify/flash-list";
 import GhillieCreateOrJoin from "../../../components/ghillie-create-or-join";
-import RegularButton from "../../../components/buttons/regular-button";
 
 function GhillieListingHeader({isVerifiedMilitary, isAdmin}) {
     const navigation: any = useNavigation();
@@ -155,15 +154,6 @@ function GhillieListingScreen() {
                     isVerifiedMilitary={isVerifiedMilitary}
                     isAdmin={isAdmin}
                 />
-
-                {/* TODO: REMOVE THIS */}
-                <View mt={5}>
-                    <RegularButton
-                        onPress={() => navigation.navigate("GhillieInvite", {inviteCode: "2RBRV8"})}
-                    >
-                        GOTO GHILLIE
-                    </RegularButton>
-                </View>
 
                 <View mt={5}>
                     <RegularText style={{
