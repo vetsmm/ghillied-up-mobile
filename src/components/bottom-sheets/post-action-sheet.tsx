@@ -16,6 +16,7 @@ export interface PostActionSheetProps {
     isModerator?: boolean;
     isAdmin?: boolean;
     isGhillieMember: boolean;
+    onShare: () => void;
 }
 
 export const PostActionSheet = ({
@@ -27,11 +28,13 @@ export const PostActionSheet = ({
                                     onReport,
                                     onEdit,
                                     onBookmark,
+                                    onShare,
                                     isOwner = false,
                                     isModerator = false,
                                     isAdmin = false,
                                     isGhillieMember = false,
                                 }: PostActionSheetProps) => {
+
     return (
         <Actionsheet isOpen={isOpen} onClose={onClose}>
             <Actionsheet.Content>
@@ -66,6 +69,21 @@ export const PostActionSheet = ({
                             }}
                         >
                             Bookmark Post
+                        </Actionsheet.Item>
+                        <Actionsheet.Item
+                            onPress={() => onShare()}
+                            mr={3}
+                            startIcon={
+                                <Icon
+                                    as={<Ionicons name="share-social"/>}
+                                    size={30}
+                                />
+                            }
+                            _text={{
+                                fontSize: 20
+                            }}
+                        >
+                            Share
                         </Actionsheet.Item>
                         <Divider borderColor="gray.300"/>
                     </>

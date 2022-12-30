@@ -30,6 +30,7 @@ import PostService from "../../shared/services/post.service";
 import AppConfig from '../../config/app.config';
 import {PostContent} from '../post-content';
 import {FlashMessageRef} from "../../app/App";
+import ShareUtils from "../../shared/utils/share-utils";
 
 export interface IPostCardProps {
     post: PostFeedDto;
@@ -296,6 +297,10 @@ export const PostFeedCard = ({
                             params: {post: post, ghillieImageUrl: post.ghillieImageUrl},
                             screen: "UpdatePost"
                         });
+                    }}
+                    onShare={async () => {
+                        await ShareUtils.sharePost(post);
+                        setIsOpen(false);
                     }}
                     isAdmin={isAdmin}
                     isModerator={isModerator}

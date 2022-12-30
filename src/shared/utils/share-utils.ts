@@ -3,14 +3,13 @@ import Share from 'react-native-share';
 import {ShareOptions} from "react-native-share/lib/typescript/types";
 import {PostDetailDto} from "../models/posts/post-detail.dto";
 import {PostFeedDto} from "../models/feed/post-feed.dto";
+import {PostListingDto} from "../models/posts/post-listing.dto";
 
 const shareGhillie = async (ghillie: GhillieDetailDto) => {
     const url = `https://ghilliedup.com/ghillies/invite/${ghillie.inviteCode}`;
-    const title = 'Ghillied Up';
     const message = 'Join the discussion on Ghillied Up!';
 
     const options: ShareOptions = {
-        title,
         message,
         subject: message,
         urls: [url],
@@ -20,13 +19,11 @@ const shareGhillie = async (ghillie: GhillieDetailDto) => {
     await Share.open(options);
 }
 
-const sharePost = async (postId: PostDetailDto | PostFeedDto) => {
+const sharePost = async (postId: PostDetailDto | PostFeedDto | PostListingDto) => {
     const url = `https://ghilliedup.com/posts/detail/${postId.id}`;
-    const title = 'Ghillied Up';
     const message = 'Check out this post on Ghillied Up!';
 
     const options: ShareOptions = {
-        title,
         message,
         subject: message,
         urls: [url],

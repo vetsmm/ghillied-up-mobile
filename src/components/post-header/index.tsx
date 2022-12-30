@@ -28,6 +28,7 @@ import {colorsVerifyCode} from '../colors';
 import {LinkPreview} from '../link-preview';
 import {PostContent} from '../post-content';
 import {FlashMessageRef} from "../../app/App";
+import ShareUtils from "../../shared/utils/share-utils";
 
 export interface IPostCardProps {
   post: PostListingDto | PostDetailDto;
@@ -208,6 +209,10 @@ export const PostHeader = ({
         onBookmark={() => {
           setIsOpen(false);
           onBookmarkPost(post);
+        }}
+        onShare={async () => {
+          await ShareUtils.sharePost(post);
+          setIsOpen(false);
         }}
         isAdmin={isAdmin}
         isModerator={isModerator}
