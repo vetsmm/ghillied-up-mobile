@@ -141,6 +141,13 @@ const generateInviteCode = async (id: string): Promise<void> => {
     return await axios.put(`${AppConfig.apiUrl}/ghillies/${id}/generate-invite-code`);
 }
 
+const getGhillieByInviteCode = async (inviteCode: string): Promise<GhillieDetailDto> => {
+    return await axios.get(`${AppConfig.apiUrl}/ghillies/invite-code/${inviteCode}`)
+        .then(response => {
+            return response.data;
+        });
+}
+
 const ghillieService = {
     getGhillies,
     joinGhillie,
@@ -159,7 +166,8 @@ const ghillieService = {
     joinGhillieByCode,
     addTopicsToGhillie,
     removeTopicsFromGhillies,
-    generateInviteCode
+    generateInviteCode,
+    getGhillieByInviteCode
 }
 
 export default ghillieService;

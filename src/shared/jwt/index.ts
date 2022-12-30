@@ -287,7 +287,6 @@ export const authTokenInterceptor =
             try {
                 setIsRefreshing(true)
                 accessToken = await refreshTokenIfNeeded(requestRefresh)
-                console.log('Token refreshed')
             } catch (error) {
                 console.log('Token refresh failed', error)
                 declineQueue(error as Error)
@@ -299,7 +298,6 @@ export const authTokenInterceptor =
                 throw error
             } finally {
                 setIsRefreshing(false)
-                console.log('Token refresh finished')
             }
             resolveQueue(accessToken)
 

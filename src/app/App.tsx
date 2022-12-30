@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React from 'react';
-// import 'react-native-gesture-handler'
 import {Provider} from 'react-redux'
 import {PersistGate} from 'redux-persist/integration/react'
 import {persistor, store} from "../store";
@@ -23,11 +22,14 @@ export const FlashMessageRef = React.createRef<FlashMessage>();
 enableFreeze(true);
 
 Sentry.init({
-    dsn: AppConfig.sentryDsn,
-    environment: AppConfig.sentryEnvironment,
-    enableInExpoDevelopment: false,
-    enableNative: false,
-    debug: __DEV__, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+    dsn: AppConfig.sentry.dsn,
+    environment: AppConfig.sentry.env,
+    enableInExpoDevelopment: AppConfig.sentry.enableInExpoDevelopment,
+    enableNative: AppConfig.sentry.enableNative,
+    enableNativeCrashHandling: AppConfig.sentry.enableNativeCrashHandling,
+    enableAutoPerformanceTracking: AppConfig.sentry.enableAutoPerformanceTracking,
+    enableOutOfMemoryTracking: AppConfig.sentry.enableOutOfMemoryTracking,
+    debug: AppConfig.sentry.enableDebug, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
 });
 
 Notifications.setNotificationHandler({

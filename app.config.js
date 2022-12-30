@@ -9,9 +9,9 @@ const getProperties = () => {
             }
         case 'staging':
             return {
-                appName: `Ghillied Up (BETA)`,
+                appName: `Ghillied Up`,
                 icon: "./assets/app-icons/beta.png",
-                bundleIdentifier: 'com.ghilliedup.qa',
+                bundleIdentifier: 'com.ghilliedup',
                 package: 'com.ghilliedup'
             }
         case 'production':

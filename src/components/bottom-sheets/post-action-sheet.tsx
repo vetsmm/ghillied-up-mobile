@@ -15,6 +15,8 @@ export interface PostActionSheetProps {
     isOwner?: boolean;
     isModerator?: boolean;
     isAdmin?: boolean;
+    isGhillieMember: boolean;
+    onShare: () => void;
 }
 
 export const PostActionSheet = ({
@@ -26,43 +28,66 @@ export const PostActionSheet = ({
                                     onReport,
                                     onEdit,
                                     onBookmark,
+                                    onShare,
                                     isOwner = false,
                                     isModerator = false,
-                                    isAdmin = false
+                                    isAdmin = false,
+                                    isGhillieMember = false,
                                 }: PostActionSheetProps) => {
+
     return (
         <Actionsheet isOpen={isOpen} onClose={onClose}>
             <Actionsheet.Content>
-                <Actionsheet.Item
-                    onPress={() => onViewGhillie()}
-                    mr={3}
-                    startIcon={
-                        <Icon
-                            as={<MaterialIcons name="remove-red-eye"/>}
-                            size={30}
-                        />
-                    }
-                    _text={{
-                        fontSize: 20
-                    }}
-                >
-                    View Ghillie
-                </Actionsheet.Item>
-                <Actionsheet.Item
-                    onPress={() => onBookmark()}
-                    mr={3}
-                    startIcon={
-                        <Icon
-                            as={<MaterialIcons name="bookmark"/>}
-                            size={30}
-                        />
-                    }
-                    _text={{
-                        fontSize: 20
-                    }}
-                >
-                    Bookmark Post
-                </Actionsheet.Item>
+                {isGhillieMember && (
+                    <>
+                        <Actionsheet.Item
+                            onPress={() => onViewGhillie()}
+                            mr={3}
+                            startIcon={
+                                <Icon
+                                    as={<MaterialIcons name="remove-red-eye"/>}
+                                    size={30}
+                                />
+                            }
+                            _text={{
+                                fontSize: 20
+                            }}
+                        >
+                            View Ghillie
+                        </Actionsheet.Item>
+                        <Actionsheet.Item
+                            onPress={() => onBookmark()}
+                            mr={3}
+                            startIcon={
+                                <Icon
+                                    as={<MaterialIcons name="bookmark"/>}
+                                    size={30}
+                                />
+                            }
+                            _text={{
+                                fontSize: 20
+                            }}
+                        >
+                            Bookmark Post
+                        </Actionsheet.Item>
+                        <Actionsheet.Item
+                            onPress={() => onShare()}
+                            mr={3}
+                            startIcon={
+                                <Icon
+                                    as={<Ionicons name="share-social"/>}
+                                    size={30}
+                                />
+                            }
+                            _text={{
+                                fontSize: 20
+                            }}
+                        >
+                            Share
+                        </Actionsheet.Item>
+                        <Divider borderColor="gray.300"/>
+                    </>
+                )}
                 {(isOwner) && (
                     <Actionsheet.Item
                         onPress={() => onEdit()}
@@ -80,24 +105,25 @@ export const PostActionSheet = ({
                         Edit Post
                     </Actionsheet.Item>
                 )}
-                <Divider borderColor="gray.300"/>
-                <Actionsheet.Item
-                    onPress={() => onReport()}
-                    mr={3}
-                    startIcon={
-                        <Icon
-                            as={<MaterialIcons name="report"/>}
-                            size={30}
-                            color={colorsVerifyCode.fail}
-                        />
-                    }
-                    _text={{
-                        color: colorsVerifyCode.fail,
-                        fontSize: 20
-                    }}
-                >
-                    Report
-                </Actionsheet.Item>
+                {isGhillieMember || isAdmin && (
+                    <Actionsheet.Item
+                        onPress={() => onReport()}
+                        mr={3}
+                        startIcon={
+                            <Icon
+                                as={<MaterialIcons name="report"/>}
+                                size={30}
+                                color={colorsVerifyCode.fail}
+                            />
+                        }
+                        _text={{
+                            color: colorsVerifyCode.fail,
+                            fontSize: 20
+                        }}
+                    >
+                        Report
+                    </Actionsheet.Item>
+                )}
                 {(isAdmin || isModerator) && (
                     <Actionsheet.Item
                         onPress={() => onRemove()}

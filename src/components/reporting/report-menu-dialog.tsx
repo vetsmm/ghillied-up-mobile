@@ -22,7 +22,6 @@ export interface ReportMenuDialogProps {
   isLoading?: boolean;
 }
 
-// TODO: Change to a styled modal
 export const ReportMenuDialog: React.FC<ReportMenuDialogProps> = ({isOpen, onClose, onReport, isLoading, title = "Report Post"}) => {
   const [{
     category,

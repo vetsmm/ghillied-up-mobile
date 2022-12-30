@@ -26,6 +26,7 @@ import {FlagCategory} from "../../shared/models/flags/flag-category";
 import flagService from "../../shared/services/flag.service";
 import {SuccessAlert} from "../alerts/success-alert";
 import {FlashMessageRef} from "../../app/App";
+import ShareUtils from "../../shared/utils/share-utils";
 
 export interface IPostCardProps {
     post: PostListingDto | PostDetailDto;
@@ -227,6 +228,10 @@ export const PostCard = ({
                     setIsOpen(false);
                     moveTo("GhillieDetail", {ghillieId: post.ghillie.id});
                 }}
+                onShare={async () => {
+                    await ShareUtils.sharePost(post);
+                    setIsOpen(false);
+                }}
                 onReport={() => {
                     setIsOpen(false);
                     setIsReportDialogOpen(true);
@@ -241,6 +246,7 @@ export const PostCard = ({
                 isAdmin={isAdmin}
                 isModerator={isModerator}
                 isOwner={isOwner}
+                isGhillieMember={true}
             />
 
             <ReportMenuDialog
