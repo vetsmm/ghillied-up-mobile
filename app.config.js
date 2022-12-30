@@ -33,7 +33,7 @@ export default {
     owner: "ghilliedup",
     version: "1.1.2",
     orientation: "portrait",
-    icon: "./assets/logos/prod.png",
+    icon: getProperties().icon,
     scheme: "ghilliedup",
     notification: {
         "icon": "./assets/logos/notification/Icon-1024.png"
