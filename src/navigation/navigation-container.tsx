@@ -23,27 +23,23 @@ import * as Linking from "expo-linking";
 import {colorsVerifyCode} from "../components/colors";
 import {LinkingOptions} from "@react-navigation/native/lib/typescript/src/types";
 import AppConfig from "../config/app.config";
-import FeedStackScreen, {getFeedScreenRoutes} from "./stacks/feed-stack";
-import PostStackScreen, {getPostScreenRoutes} from "./stacks/post-stack";
-import NotificationStackScreen, {getNotificationScreenRoutes} from "./stacks/notification-stack";
-import AccountStackScreen, {getAccountRoutes} from "./stacks/account-stack";
-import GhillieStackScreen, {getGhillieScreenRoutes} from "./stacks/ghillie-stack";
+import {getFeedScreenRoutes} from "./stacks/feed-stack";
+import {getPostScreenRoutes} from "./stacks/post-stack";
+import {getNotificationScreenRoutes} from "./stacks/notification-stack";
+import {getAccountRoutes} from "./stacks/account-stack";
+import {getGhillieScreenRoutes} from "./stacks/ghillie-stack";
 
 export const linkingConfig: LinkingOptions<any> | undefined = {
     enabled: true,
     prefixes: AppConfig.appUrls,
     async getInitialURL() {
-        const url = await Linking.getInitialURL();
-
-        return url;
+        return await Linking.getInitialURL();
     },
     subscribe(listener) {
         // Listen to incoming links from deep linking
         const linkingSubscription = Linking.addEventListener('url', ({url}) => {
-            console.log('url', url);
             listener(url);
         });
-
         return () => {
             // Clean up the event listeners
             linkingSubscription.remove();

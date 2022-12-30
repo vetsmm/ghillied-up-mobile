@@ -25,7 +25,7 @@ export const notificationsScreen: Array<NotificationScreenProps> = [
 export const getNotificationScreenRoutes = () => {
   const routes: any = {};
   notificationsScreen.forEach((screen: any) => {
-    routes[screen.name] = screen.route;
+    routes[screen.name] = screen.path;
   });
   return routes;
 };

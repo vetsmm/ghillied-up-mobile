@@ -197,11 +197,9 @@ export const ghilliesScreen: Array<GhillieScreenProps> = [
 
 export const getGhillieScreenRoutes = () => {
   const routes: any = {};
-  console.log("ghilliesScreen", ghilliesScreen);
   ghilliesScreen.forEach((screen: any) => {
     routes[screen.name] = screen.path;
   });
-  console.log("routes", routes);
   return routes;
 };
 

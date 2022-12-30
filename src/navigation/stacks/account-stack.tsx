@@ -28,26 +28,6 @@ export const accountScreens: Array<AccountScreenProps> = [
         },
     },
     {
-        name: "AccountSettings",
-        path: "settings",
-        component: AccountSettings,
-        options: {
-            title: "Settings",
-            headerShown: true,
-            gestureEnabled: true,
-            // title bar color
-            headerStyle: {
-                backgroundColor: colorsVerifyCode.primary,
-            },
-            headerTitleAlign: 'center',
-            headerTitleStyle: {
-                fontWeight: 'bold',
-                color: colorsVerifyCode.white,
-            },
-            headerTintColor: colorsVerifyCode.white,
-        }
-    },
-    {
         name: "AccountPushNotificationSettings",
         path: "settings/push-notification",
         component: PushNotificationSettings,
@@ -127,6 +107,26 @@ export const accountScreens: Array<AccountScreenProps> = [
             headerTintColor: colorsVerifyCode.white,
         }
     },
+    {
+        name: "AccountSettings",
+        path: "settings",
+        component: AccountSettings,
+        options: {
+            title: "Settings",
+            headerShown: true,
+            gestureEnabled: true,
+            // title bar color
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+        }
+    },
 ];
 
 export const getAccountRoutes = () => {
@@ -142,12 +142,12 @@ const AccountStack = createNativeStackNavigator();
 export default function AccountStackScreen() {
     return (
         <AccountStack.Navigator>
-            {accountScreens.map((screen, index) => {
+            {accountScreens.map((screen) => {
                 return (
                     <AccountStack.Screen
                         name={screen.name}
                         component={screen.component}
-                        key={index}
+                        key={screen.name}
                         options={screen.options}
                     />
                 );
