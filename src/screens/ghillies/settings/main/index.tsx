@@ -19,6 +19,7 @@ import * as Clipboard from 'expo-clipboard';
 import {ReportMenuDialog} from "../../../../components/reporting/report-menu-dialog";
 import {FlagCategory} from "../../../../shared/models/flags/flag-category";
 import flagService from "../../../../shared/services/flag.service";
+import ShareUtils from "../../../../shared/utils/share-utils";
 
 
 export const GhillieSettingsScreen: React.FC = () => {
@@ -85,7 +86,17 @@ export const GhillieSettingsScreen: React.FC = () => {
     }
 
     const onSocialSharePress = () => {
-
+        ShareUtils.shareGhillie(ghillie)
+            .catch(() => {
+                FlashMessageRef.current?.showMessage({
+                    message: `Error sharing ghillie, please try again`,
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            });
     }
 
     const copyCodeToClipboard = async () => {
@@ -180,10 +191,9 @@ export const GhillieSettingsScreen: React.FC = () => {
                             Code: {ghillie.inviteCode}</Text>
                         <Ionicons name="copy-outline" size={24} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
-                    {/* TODO: Add this once deep linking is in: https://docs.expo.dev/guides/deep-linking/ */}
                     <TouchableOpacity
                         style={styles.sectionButton}
-                        // onPress={button.onPress}
+                        onPress={() => onSocialSharePress()}
                     >
                         <Text style={styles.sectionButtonText}>Share Ghillie</Text>
                         <Ionicons name="share-social" size={24} color={colorsVerifyCode.secondary}/>

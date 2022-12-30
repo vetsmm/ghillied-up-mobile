@@ -135,7 +135,7 @@ export const PostHeader = ({
         }}>
           {post.title}
         </RegularText>
-  
+
         <PostContent
           content={post.content}
           linkMeta={post.linkMeta}
@@ -143,7 +143,7 @@ export const PostHeader = ({
             backgroundColor: colorsVerifyCode.dialogPrimary
           }}
         />
-        
+
         <SmallText>
           {post.numberOfReactions > 0
             ? `${numberToReadableFormat(post.numberOfReactions)} reaction(s)`
@@ -212,6 +212,7 @@ export const PostHeader = ({
         isAdmin={isAdmin}
         isModerator={isModerator}
         isOwner={isOwner}
+        isGhillieMember={true}
       />
 
       <ReportMenuDialog

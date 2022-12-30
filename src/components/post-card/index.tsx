@@ -241,6 +241,7 @@ export const PostCard = ({
                 isAdmin={isAdmin}
                 isModerator={isModerator}
                 isOwner={isOwner}
+                isGhillieMember={true}
             />
 
             <ReportMenuDialog

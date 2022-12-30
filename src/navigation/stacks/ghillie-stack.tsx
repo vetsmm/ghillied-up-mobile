@@ -11,6 +11,7 @@ import GhillieSettingsScreen from "../../screens/ghillies/settings/main";
 import GhillieUpdateScreen from "../../screens/ghillies/settings/update";
 import UpdateGhillieCategoryScreen from "../../screens/ghillies/settings/update-category";
 import UpdateGhillieTopicsScreen from "../../screens/ghillies/settings/update-topics";
+import {GhillieInviteScreen} from "../../screens/ghillies/invite";
 
 
 interface GhillieScreenProps {
@@ -189,6 +190,14 @@ export const ghilliesScreen: Array<GhillieScreenProps> = [
     name: "GhillieDetail",
     path: "detail/:ghillieId",
     component: GhillieDetailScreen,
+    options: {
+      headerShown: false,
+    },
+  },
+  {
+    name: "GhillieInvite",
+    path: "invite/:inviteCode",
+    component: GhillieInviteScreen,
     options: {
       headerShown: false,
     },

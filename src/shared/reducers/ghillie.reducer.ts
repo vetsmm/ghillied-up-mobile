@@ -54,6 +54,13 @@ export const getGhillie = createAsyncThunk(
   }
 );
 
+export const getGhillieByInviteCode = createAsyncThunk(
+    "ghillie/getGhillieByInviteCode",
+    async (inviteCode: string, thunkAPI) => {
+      return await GhillieService.getGhillieByInviteCode(inviteCode);
+    }
+);
+
 export const getMyGhillies = createAsyncThunk(
   "ghillie/getMyGhillies",
   async (_, thunkAPI) => {
@@ -89,6 +96,12 @@ export const GhillieSlice = createSlice({
       state.loading = false;
       state.ghillie = {} as GhillieDetailDto;
     });
+    builder.addCase(getGhillieByInviteCode.rejected, (state, action) => {
+      // @ts-ignore
+      state.errorMessage = action.payload.error.data.error.message;
+      state.loading = false;
+      state.ghillie = {} as GhillieDetailDto;
+    });
     builder.addCase(joinGhillie.rejected, (state, action) => {
       // @ts-ignore
       state.errorMessage = action.payload.error.message;
@@ -113,6 +126,10 @@ export const GhillieSlice = createSlice({
       state.ghillie = action.payload;
       state.loading = false
     });
+    builder.addCase(getGhillieByInviteCode.fulfilled, (state, action) => {
+      state.ghillie = action.payload;
+      state.loading = false
+    });
     builder.addCase(joinGhillie.fulfilled, (state, action) => {
       state.loading = false
     });
@@ -124,6 +141,9 @@ export const GhillieSlice = createSlice({
       state.loading = false
     });
     builder.addCase(getGhillies.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getGhillieByInviteCode.pending, (state, action) => {
       state.loading = true;
     });
     builder.addCase(getGhillie.pending, (state, action) => {

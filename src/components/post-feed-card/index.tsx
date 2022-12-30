@@ -300,6 +300,7 @@ export const PostFeedCard = ({
                     isAdmin={isAdmin}
                     isModerator={isModerator}
                     isOwner={isOwner}
+                    isGhillieMember={isGhillieMember}
                 />
 
                 <ReportMenuDialog
