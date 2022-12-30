@@ -10,15 +10,17 @@ import UpdateUserInformation from "../../screens/account/update-user-information
 
 interface AccountScreenProps {
     name: string;
-    route: string;
-    component: React.ComponentType<any>;
+    path: string;
+    parse?: any;
+    stringify?: any;
+    component: any;
     options?: any;
 }
 
 export const accountScreens: Array<AccountScreenProps> = [
     {
         name: "AccountHome",
-        route: "account-home",
+        path: "",
         component: AccountScreen,
         options: {
             title: "",
@@ -26,28 +28,8 @@ export const accountScreens: Array<AccountScreenProps> = [
         },
     },
     {
-        name: "AccountSettings",
-        route: "account-settings",
-        component: AccountSettings,
-        options: {
-            title: "Settings",
-            headerShown: true,
-            gestureEnabled: true,
-            // title bar color
-            headerStyle: {
-                backgroundColor: colorsVerifyCode.primary,
-            },
-            headerTitleAlign: 'center',
-            headerTitleStyle: {
-                fontWeight: 'bold',
-                color: colorsVerifyCode.white,
-            },
-            headerTintColor: colorsVerifyCode.white,
-        }
-    },
-    {
         name: "AccountPushNotificationSettings",
-        route: "account-push-notification-settings",
+        path: "settings/push-notification",
         component: PushNotificationSettings,
         options: {
             title: "Push Notifications",
@@ -67,7 +49,7 @@ export const accountScreens: Array<AccountScreenProps> = [
     },
     {
         name: "MyAccount",
-        route: "my-account",
+        path: "my-account",
         component: MyAccount,
         options: {
             title: "My Account",
@@ -87,7 +69,7 @@ export const accountScreens: Array<AccountScreenProps> = [
     },
     {
         name: "AccountUserInformation",
-        route: "account-update-user-information",
+        path: "update/user-information",
         component: UpdateUserInformation,
         options: {
             title: "Update User Information",
@@ -107,10 +89,30 @@ export const accountScreens: Array<AccountScreenProps> = [
     },
     {
         name: "AccountChangePassword",
-        route: "account-change-password",
+        path: "update/password",
         component: ChangePassword,
         options: {
             title: "Change Password",
+            headerShown: true,
+            gestureEnabled: true,
+            // title bar color
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+        }
+    },
+    {
+        name: "AccountSettings",
+        path: "settings",
+        component: AccountSettings,
+        options: {
+            title: "Settings",
             headerShown: true,
             gestureEnabled: true,
             // title bar color
@@ -130,7 +132,7 @@ export const accountScreens: Array<AccountScreenProps> = [
 export const getAccountRoutes = () => {
     const routes: any = {};
     accountScreens.forEach((screen: any) => {
-        routes[screen.name] = screen.route;
+        routes[screen.name] = screen.path;
     });
     return routes;
 };
@@ -140,12 +142,12 @@ const AccountStack = createNativeStackNavigator();
 export default function AccountStackScreen() {
     return (
         <AccountStack.Navigator>
-            {accountScreens.map((screen, index) => {
+            {accountScreens.map((screen) => {
                 return (
                     <AccountStack.Screen
                         name={screen.name}
                         component={screen.component}
-                        key={index}
+                        key={screen.name}
                         options={screen.options}
                     />
                 );

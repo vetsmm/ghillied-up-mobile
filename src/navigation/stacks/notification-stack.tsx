@@ -4,15 +4,17 @@ import NotificationListingScreen from "../../screens/notifications/listing";
 
 interface NotificationScreenProps {
   name: string;
-  route: string;
-  component: React.ComponentType<any>;
+  path: string;
+  parse?: any;
+  stringify?: any;
+  component: any;
   options?: any;
 }
 
 export const notificationsScreen: Array<NotificationScreenProps> = [
   {
     name: "NotificationListing",
-    route: "notification-listing",
+    path: "",
     component: NotificationListingScreen,
     options: {
       headerShown: false,
@@ -23,7 +25,7 @@ export const notificationsScreen: Array<NotificationScreenProps> = [
 export const getNotificationScreenRoutes = () => {
   const routes: any = {};
   notificationsScreen.forEach((screen: any) => {
-    routes[screen.name] = screen.route;
+    routes[screen.name] = screen.path;
   });
   return routes;
 };

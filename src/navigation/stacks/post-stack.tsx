@@ -11,16 +11,17 @@ import CommentThreadScreen from '../../screens/comments/thread';
 
 interface PostScreenProps {
   name: string;
-  route: string;
-  component: React.ComponentType<any>;
+  path: string;
+  parse?: any;
+  stringify?: any;
+  component: any;
   options?: any;
-  screenOptions?: any;
 }
 
 export const postScreens: Array<PostScreenProps> = [
   {
     name: "CreatePost",
-    route: "create-post",
+    path: "create",
     component: CreatePostScreen,
     options: {
       title: "",
@@ -29,13 +30,11 @@ export const postScreens: Array<PostScreenProps> = [
   },
   {
     name: "PostDetail",
-    route: "post-detail/:postId",
-    screenOptions: {
-        parse: {
-            postId: postId => postId,
-        }
-    },
+    path: "detail/:postId",
     component: PostDetailScreen,
+    parse: {
+      postId: postId => postId,
+    },
     options: {
       title: "",
       headerShown: false,
@@ -44,7 +43,7 @@ export const postScreens: Array<PostScreenProps> = [
   },
   {
     name: "UpdatePost",
-    route: "update-post/:postId",
+    path: "update/:postId",
     component: UpdatePostScreen,
     options: {
       title: "",
@@ -53,7 +52,7 @@ export const postScreens: Array<PostScreenProps> = [
   },
   {
     name: "CreatePostComment",
-    route: "create-post-comment/:postId",
+    path: "create-post-comment/:postId",
     component: PostCommentCreateScreen,
     options: {
       title: "",
@@ -63,7 +62,7 @@ export const postScreens: Array<PostScreenProps> = [
   },
   {
     name: "CreateChildComment",
-    route: "create-child-comment/:parentCommentId",
+    path: "create-child-comment/:parentCommentId",
     component: CreateChildCommentScreen,
     options: {
       title: "",
@@ -73,7 +72,7 @@ export const postScreens: Array<PostScreenProps> = [
   },
   {
     name: "UpdatePostComment",
-    route: "update-post-comment/:commentId",
+    path: "update-post-comment/:commentId",
     component: PostCommentUpdateScreen,
     options: {
       title: "",
@@ -83,7 +82,7 @@ export const postScreens: Array<PostScreenProps> = [
   },
   {
     name: "UpdateChildComment",
-    route: "update-child-comment/:childCommentId",
+    path: "update-child-comment/:childCommentId",
     component: ChildCommentUpdateScreen,
     options: {
       title: "",
@@ -93,7 +92,7 @@ export const postScreens: Array<PostScreenProps> = [
   },
   {
     name: "CommentThread",
-    route: "comment-thread/:parentCommentId",
+    path: "comment-thread/:parentCommentId",
     component: CommentThreadScreen,
     options: {
       title: "",
@@ -106,10 +105,7 @@ export const postScreens: Array<PostScreenProps> = [
 export const getPostScreenRoutes = () => {
   const routes: any = {};
   postScreens.forEach((screen: any) => {
-    routes[screen.name] = {
-      path: screen.path,
-      ...screen.screenOptions
-    };
+    routes[screen.name] = screen.path;
   });
   return routes;
 };

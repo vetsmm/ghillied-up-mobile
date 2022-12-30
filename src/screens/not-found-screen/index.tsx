@@ -5,8 +5,12 @@ import MainContainer from '../../components/containers/MainContainer';
 import {colorsVerifyCode} from '../../components/colors';
 import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
 import {Image} from 'native-base';
+import RegularButton from "../../components/buttons/regular-button";
+import {useNavigation} from "@react-navigation/native";
 
 export const NotFoundScreen = () => {
+  const navigation: any = useNavigation();
+
   return (
     <MainContainer style={[styles.container]}>
       <Image
@@ -17,6 +21,15 @@ export const NotFoundScreen = () => {
       />
       <RegularText style={styles.title}>Hmm..</RegularText>
       <RegularText style={styles.subtitle}>That screen doesn't seem to exist</RegularText>
+      <RegularButton
+          style={{
+            backgroundColor: colorsVerifyCode.secondary,
+            margin: "2%",
+          }}
+          onPress={() => navigation.navigate("Feed")}
+      >
+        Go Home
+      </RegularButton>
     </MainContainer>
   )
 }
