@@ -84,6 +84,10 @@ export const GhillieSettingsScreen: React.FC = () => {
             });
     }
 
+    const onSocialSharePress = () => {
+
+    }
+
     const copyCodeToClipboard = async () => {
         try {
             await Clipboard.setStringAsync(ghillie.inviteCode!);
@@ -177,13 +181,13 @@ export const GhillieSettingsScreen: React.FC = () => {
                         <Ionicons name="copy-outline" size={24} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
                     {/* TODO: Add this once deep linking is in: https://docs.expo.dev/guides/deep-linking/ */}
-                    {/*<TouchableOpacity*/}
-                    {/*    style={styles.sectionButton}*/}
-                    {/*    // onPress={button.onPress}*/}
-                    {/*>*/}
-                    {/*    <Text style={styles.sectionButtonText}>Share Ghillie</Text>*/}
-                    {/*    <Ionicons name="share-social" size={24} color={colorsVerifyCode.secondary}/>*/}
-                    {/*</TouchableOpacity>*/}
+                    <TouchableOpacity
+                        style={styles.sectionButton}
+                        // onPress={button.onPress}
+                    >
+                        <Text style={styles.sectionButtonText}>Share Ghillie</Text>
+                        <Ionicons name="share-social" size={24} color={colorsVerifyCode.secondary}/>
+                    </TouchableOpacity>
                 </>
             )
         } else if (isAdminOrModerator) {
@@ -199,7 +203,7 @@ export const GhillieSettingsScreen: React.FC = () => {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.sectionButton}
-                        // onPress={button.onPress}
+                        onPress={() => onSocialSharePress()}
                     >
                         <Text style={styles.sectionButtonText}>Share Ghillie</Text>
                         <Ionicons name="share-social" size={24} color={colorsVerifyCode.secondary}/>

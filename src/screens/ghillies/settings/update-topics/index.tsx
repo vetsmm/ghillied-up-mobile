@@ -29,10 +29,6 @@ const UpdateGhillieTopicsScreen = () => {
             setTopicNames(ghillie.topics.map(topic => topic.name));
         }, [ghillie]);
 
-        const onAddTopic = () => {
-
-        }
-
         const addTopic = (topicName: string) => {
             // Validate Topic Name
             if (topicName.length < 2) {
