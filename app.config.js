@@ -5,24 +5,28 @@ const getProperties = () => {
                 appName: `Ghillied Up (DEV)`,
                 icon: "./assets/app-icons/dev.png",
                 bundleIdentifier: 'com.ghilliedup.dev',
+                package: 'com.ghilliedup.dev',
             }
         case 'staging':
             return {
-                appName: `Ghillied Up (TEST)`,
-                icon: "./assets/app-icons/qa.png",
-                bundleIdentifier: 'com.ghilliedup.staging'
+                appName: `Ghillied Up (BETA)`,
+                icon: "./assets/app-icons/beta.png",
+                bundleIdentifier: 'com.ghilliedup.qa',
+                package: 'com.ghilliedup'
             }
         case 'production':
             return {
                 appName: `Ghillied Up`,
                 icon: "./assets/app-icons/prod.png",
-                bundleIdentifier: 'com.ghilliedup'
+                bundleIdentifier: 'com.ghilliedup',
+                package: 'com.ghilliedup'
             }
         default:
             return {
                 appName: `Ghillied Up`,
                 icon: "./assets/app-icons/prod.png",
-                bundleIdentifier: 'com.ghilliedup'
+                bundleIdentifier: 'com.ghilliedup',
+                package: 'com.ghilliedup'
             }
     }
 }
@@ -65,11 +69,14 @@ export default {
     assetBundlePatterns: ["**/*"],
     ios: {
         supportsTablet: true,
-        bundleIdentifier: "com.ghilliedup",
+        bundleIdentifier: getProperties().bundleIdentifier,
         associatedDomains: [
             "applinks:ghilliedup.com",
+            "applinks:ghilliedup.com.*",
             "webcredentials:ghilliedup.com",
-            "activitycontinuation:ghilliedup.com"
+            "webcredentials:ghilliedup.com.*",
+            "activitycontinuation:ghilliedup.com",
+            "activitycontinuation:ghilliedup.com.*"
         ],
     },
     android: {
@@ -77,7 +84,7 @@ export default {
             foregroundImage: "./assets/logos/ic_launcher.png",
             backgroundColor: "#1E4C69"
         },
-        package: "com.ghilliedup",
+        package: getProperties().package,
         intentFilters: [
             {
                 action: "MAIN",
