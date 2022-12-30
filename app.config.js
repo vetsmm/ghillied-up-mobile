@@ -1,10 +1,39 @@
+const getProperties = () => {
+    switch (process.env.APP_ENV) {
+        case 'development':
+            return {
+                appName: `Ghillied Up (DEV)`,
+                icon: "./assets/app-icons/dev.png",
+                bundleIdentifier: 'com.ghilliedup.dev',
+            }
+        case 'staging':
+            return {
+                appName: `Ghillied Up (TEST)`,
+                icon: "./assets/app-icons/qa.png",
+                bundleIdentifier: 'com.ghilliedup.staging'
+            }
+        case 'production':
+            return {
+                appName: `Ghillied Up`,
+                icon: "./assets/app-icons/prod.png",
+                bundleIdentifier: 'com.ghilliedup'
+            }
+        default:
+            return {
+                appName: `Ghillied Up`,
+                icon: "./assets/app-icons/prod.png",
+                bundleIdentifier: 'com.ghilliedup'
+            }
+    }
+}
+
 export default {
-    name: "Ghillied Up",
+    name: getProperties().appName,
     slug: "ghillied-up",
     owner: "ghilliedup",
     version: "1.1.2",
     orientation: "portrait",
-    icon: "./assets/logos/logo-square.png",
+    icon: "./assets/logos/prod.png",
     scheme: "ghilliedup",
     notification: {
         "icon": "./assets/logos/notification/Icon-1024.png"
