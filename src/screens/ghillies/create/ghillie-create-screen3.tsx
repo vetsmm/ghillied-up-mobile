@@ -91,9 +91,7 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
                 });
 
             if (!hasError && ghillieId) {
-                const imageAsset = formData.ghillieLogo as ImagePickerResult;
-
-                GhillieService.updateGhillieImage(ghillieId, imageAsset!.assets![0].uri)
+                GhillieService.updateGhillieImage(ghillieId, formData.ghillieLogo?.assets?.[0]?.uri)
                     .then((res) => {
                         setSubmitting(false);
                         setIsSuccessMessage(true);

@@ -4,6 +4,9 @@ import {Platform} from "react-native";
 import {Notification} from "expo-notifications/src/Notifications.types";
 import {ActivityType, ExpoPushMessageData} from "../models/types";
 import {navigate} from "../../navigation/nav-ref";
+import AppConfig from "../../config/app.config";
+import * as Sentry from 'sentry-expo';
+
 
 async function registerForPushNotificationsAsync() {
     let token;
@@ -18,7 +21,9 @@ async function registerForPushNotificationsAsync() {
             alert('Failed to get push token for push notification!');
             return;
         }
-        token = (await Notifications.getExpoPushTokenAsync()).data;
+        token = (await Notifications.getExpoPushTokenAsync({
+            experienceId: AppConfig.experienceId
+        })).data;
     } else {
         alert('Must use physical device for Push Notifications');
     }
@@ -52,10 +57,14 @@ function processPushNotification(notification: Notification) {
             });
             break;
         default:
-            console.log("Unhandled activity type", data?.activityType);
+            Sentry.Native.captureMessage(
+                `Unhandled activity type: ${ActivityType[data.activityType]}`,
+                "warning"
+            );
             break;
     }
 }
+
 
 export default {
     registerForPushNotificationsAsync,
