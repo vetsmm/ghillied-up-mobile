@@ -35,7 +35,7 @@ export default {
     name: getProperties().appName,
     slug: "ghillied-up",
     owner: "ghilliedup",
-    version: "1.1.2",
+    version: "1.1.3",
     orientation: "portrait",
     icon: getProperties().icon,
     scheme: "ghilliedup",
