@@ -155,7 +155,8 @@ export default {
     },
     extra: {
         eas: {
-            projectId: "975262d5-696e-4258-a256-1b9cbd12ff53"
+            projectId: "975262d5-696e-4258-a256-1b9cbd12ff53",
+            experienceId: "@ghilliedup/ghillied-up",
         },
         amplitudeApiKey: process.env.AMPLITUDE_API_KEY,
         sentry: {

@@ -2,6 +2,7 @@ import { axiosInstance as axios } from './api'
 import AppConfig from "../../config/app.config";
 import {Platform} from "react-native";
 import {FlashMessageRef} from "../../app/App";
+import * as Sentry from 'sentry-expo';
 
 const addPushTokenToAccount = async (token): Promise<void> => {
   axios.post(`${AppConfig.apiUrl}/settings/device-token`, {
@@ -17,8 +18,7 @@ const addPushTokenToAccount = async (token): Promise<void> => {
           alignItems: 'center',
         }
       });
-      console.log("Error adding push token to account", error.data.error.context);
-      // Sentry.Native.captureException(new Error(error));
+      Sentry.Native.captureException(new Error(error));
     })
 }
 

@@ -79,6 +79,14 @@ export const GhillieUpdateScreen: React.FC = () => {
             setModalVisible(true);
         };
 
+        const hasGhillieBeenUpdated = (form) => {
+            return form.name !== ghillie.name ||
+                form.about !== ghillie.about ||
+                form.readOnly !== ghillie.readOnly ||
+                form.isPrivate !== ghillie.isPrivate ||
+                form.adminInviteOnly !== ghillie.adminInviteOnly;
+        }
+
         const handleUpdate = async (form, setSubmitting) => {
             setMessage(null);
 
@@ -92,22 +100,24 @@ export const GhillieUpdateScreen: React.FC = () => {
 
             let hasError = false;
 
-            await GhillieService.updateGhillie(ghillie.id, nonFormData)
-                .then((res) => {
-                    dispatch(updateGhillie(res.data));
-                })
-                .catch(error => {
-                    hasError = true;
-                    setIsSuccessMessage(false);
-                    setMessage(error?.data?.error?.message || 'Something went wrong while updating ghillie, please try again later.');
-                    if (error?.data?.error) {
-                        const errorContext = ghillieErrorHandler.handleCreateGhillieError(error.data.error);
-                        setFormErrors(errorContext);
-                    }
-                });
+            if (hasGhillieBeenUpdated(form)) {
+                await GhillieService.updateGhillie(ghillie.id, nonFormData)
+                    .then((res) => {
+                        dispatch(updateGhillie(res.data));
+                    })
+                    .catch(error => {
+                        hasError = true;
+                        setIsSuccessMessage(false);
+                        setMessage(error?.data?.error?.message || 'Something went wrong while updating ghillie, please try again later.');
+                        if (error?.data?.error) {
+                            const errorContext = ghillieErrorHandler.handleCreateGhillieError(error.data.error);
+                            setFormErrors(errorContext);
+                        }
+                    });
+            }
 
             if (form.ghillieLogo) {
-                GhillieService.updateGhillieImage(ghillie.id, form.ghillieLogo)
+                GhillieService.updateGhillieImage(ghillie.id, form.ghillieLogo?.assets?.[0]?.uri)
                     .then((res) => {
                         setIsSuccessMessage(true);
                         dispatch(updateGhillie(res));

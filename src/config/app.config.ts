@@ -85,7 +85,7 @@ export default {
     apiUrl: apiUrl,
     appUrls: appUrls,
     nativeClientId: "",
-    // debug mode
+    experienceId: extra.eas.experienceId,
     debugMode: __DEV__,
     extra,
     AuthObject: "GhilliedUpAuthObject",

@@ -238,7 +238,7 @@ function NavContainer() {
         const addTokenToUser = async (token: any) => {
             await settingsService.addPushTokenToAccount(token);
         }
-        if (isAuthenticated) {
+        if (isAuthenticated && expoPushToken) {
             addTokenToUser(expoPushToken)
         }
     }, [isAuthenticated, expoPushToken]);
@@ -248,7 +248,7 @@ function NavContainer() {
 
         // This listener is fired whenever a notification is received while the app is foregrounded
         // notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-        //   notificationService.processPushNotification(notification);
+        //   notificationService.processPushNotificationInApp(notification);
         // });
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
