@@ -40,7 +40,6 @@ const {primary, secondary} = colorsVerifyCode;
 interface Route {
     params: {
         ghillieId: string;
-        ghillieIndex: number;
     };
 }
 
@@ -517,6 +516,5 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
 };
 
 (GhillieDetailScreen as any).sharedElements = (route: any) => {
-    const {ghillieIndex} = route.params;
-    return [`ghillie#${ghillieIndex}-Image`];
+    return [`ghillie#-Image`];
 };

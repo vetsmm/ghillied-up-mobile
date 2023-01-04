@@ -39,9 +39,9 @@ export const LinkPreview = React.memo(
      touchableWithoutFeedbackProps
    }: LinkPreviewProps) => {
     const [containerWidth, setContainerWidth] = React.useState(0)
-    
+
     const [aspectRatio, setAspectRatio] = React.useState<number | undefined>(undefined)
-    
+
     useEffect(() => {
       if (linkMeta?.image) {
         getImageSize(linkMeta.image).then((size) => {
@@ -49,16 +49,16 @@ export const LinkPreview = React.memo(
         })
       }
     }, [linkMeta])
-    
+
     const handleContainerLayout = React.useCallback(
       (event: LayoutChangeEvent) => {
         setContainerWidth(event.nativeEvent.layout.width)
       },
       []
     )
-    
+
     const handlePress = () => linkMeta?.url && WebBrowser.openBrowserAsync(linkMeta.url)
-    
+
     const renderDescriptionNode = (description: string) => {
       return (
         <Text numberOfLines={3} style={styles.description}>
@@ -66,7 +66,7 @@ export const LinkPreview = React.memo(
         </Text>
       )
     }
-    
+
     const renderHeaderNode = () => {
       return (
         <Text numberOfLines={1} style={styles.header}>
@@ -74,12 +74,12 @@ export const LinkPreview = React.memo(
         </Text>
       )
     }
-    
+
     const renderImageNode = (image: string) => {
       // aspectRatio shouldn't be undefined, just an additional check
       /* istanbul ignore next */
       const ar = aspectRatio ?? 1
-      
+
       return <Image
         accessibilityRole="image"
         resizeMode="contain"
@@ -93,14 +93,14 @@ export const LinkPreview = React.memo(
               width: containerWidth * ar
             }
             : {
-              height: containerWidth / ar,
+              height: ar > 1 ? containerWidth / ar : 1,
               maxHeight: containerWidth,
               width: containerWidth
             }
         ])}
       />
     }
-    
+
     const renderLinkPreviewNode = () => {
       return <>
         <View
@@ -160,7 +160,7 @@ export const LinkPreview = React.memo(
           )}
       </>
     }
-    
+
     const renderVideoNode = (video: string) => {
       return (
         <VideoPlayer
@@ -173,7 +173,7 @@ export const LinkPreview = React.memo(
         />
       )
     }
-    
+
     const renderMinimizedImageNode = (image: string) => {
       return <Image
         accessibilityRole="image"
@@ -181,13 +181,13 @@ export const LinkPreview = React.memo(
         style={styles.minimizedImage}
       />
     }
-    
+
     const renderTitleNode = (title: string) => {
       return <Text numberOfLines={2} style={styles.title}>
         {title}
       </Text>
     }
-    
+
     return (
       <View onLayout={handleContainerLayout} style={containerStyle}>
         {renderLinkPreviewNode()}
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     width: 48
   },
-  
+
   title: {
     color: colorsVerifyCode.white,
     fontWeight: 'bold'
