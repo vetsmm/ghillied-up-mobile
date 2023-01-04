@@ -14,9 +14,13 @@ const StyledPressable = styled.Pressable`
   align-self: center;
 `;
 
-const PressableText: FunctionComponent<TextProps> = (props) =>  {
+interface PressableTextProps extends TextProps {
+    disabled?: boolean;
+}
+
+const PressableText: FunctionComponent<PressableTextProps> = (props) =>  {
   return (
-    <StyledPressable onPress={props.onPress} {...props}>
+    <StyledPressable onPress={props.onPress} {...props} disabled={props?.disabled}>
       <RegularText style={{ color: accent }}>{props.children}</RegularText>
     </StyledPressable>
   );

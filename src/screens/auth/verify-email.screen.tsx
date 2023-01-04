@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {ActivityIndicator, Dimensions} from 'react-native';
+import {ActivityIndicator, AppState, Dimensions} from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 
 import {colorsVerifyCode} from '../../components/colors';
 
@@ -12,12 +13,15 @@ import IconHeader from "../../components/icons/icon-header";
 import StyledCodeInput from "../../components/inputs/styled-code-input";
 import ResendTimer from '../../components/timers/resend-timer';
 import MessageModal from "../../components/modals/message-modal";
-import {VStack} from "native-base";
+import {View, VStack} from "native-base";
 import {verifyEmail} from "../../shared/reducers/authentication.reducer";
 import AuthService from "../../shared/services/auth.service";
 import {useAppDispatch} from "../../store";
 import * as Sentry from "sentry-expo";
 import {FlashMessageRef} from "../../app/App";
+import PressableText from "../../components/texts/pressable-text";
+import BigText from "../../components/texts/big-text";
+import {StringFormat} from "expo-clipboard/src/Clipboard.types";
 
 const {primary, secondary, lightGray} = colorsVerifyCode;
 
@@ -30,6 +34,7 @@ const EmailVerification = ({route}: any) => {
     const MAX_CODE_LENGTH = 6;
     const [code, setCode] = useState('');
     const [pinReady, setPinReady] = useState(false);
+    const [hasPastableCode, setHasPastableCode] = useState(false);
 
     // resending email
     const [activeResend, setActiveResend] = useState(false);
@@ -55,6 +60,34 @@ const EmailVerification = ({route}: any) => {
         setButtonText(buttonText);
         setModalVisible(true);
     };
+
+    React.useEffect(() => {
+        // Listen for when app is in the foreground
+        const _handleAppStateChange = (nextAppState: any) => {
+            if (nextAppState === 'active') {
+                checkForPastableCode();
+            }
+        }
+
+        // Check for pastable code when app is in the foreground
+        const checkForPastableCode = async () => {
+            const pastableCode = await Clipboard.getStringAsync({
+                preferredFormat: StringFormat.PLAIN_TEXT,
+            });
+            // Check if pastable code is a valid code based on length and is it characters and numbers only
+            if (pastableCode.length === MAX_CODE_LENGTH && /^[a-zA-Z0-9]+$/.test(pastableCode)) {
+                setHasPastableCode(true);
+            } else {
+                console.log('no pastable code');
+            }
+        }
+
+        // Listen for when app is in the foreground
+        const subscription = AppState.addEventListener('change', _handleAppStateChange);
+
+        // Remove listener when component unmounts
+        return () => subscription.remove();
+    }, []);
 
     const resendEmail = async (triggerTimer: any) => {
         try {
@@ -112,7 +145,14 @@ const EmailVerification = ({route}: any) => {
             .then((res) => {
                 dispatch(verifyEmail(res.data));
                 setVerifying(false);
-                showModal('success', 'Success', 'Your account has been activated!', 'OK');
+                FlashMessageRef.current?.showMessage({
+                    message: 'Your account has been activated!',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             })
             .catch((err) => {
                 setVerifying(false);
@@ -122,6 +162,16 @@ const EmailVerification = ({route}: any) => {
                 setVerifying(false);
             });
     };
+
+    const insertPastableCode = async () => {
+        const pastedCode = await Clipboard.getStringAsync();
+        if (pastedCode.length === MAX_CODE_LENGTH) {
+            setCode(pastedCode);
+            setPinReady(true);
+        } else {
+            setHasPastableCode(false);
+        }
+    }
 
     return (
         <MainContainer>
@@ -141,8 +191,22 @@ const EmailVerification = ({route}: any) => {
                     >
                         Enter the 6-digit code sent to your email
                     </RegularText>
-                    <StyledCodeInput code={code} setCode={setCode} maxLength={MAX_CODE_LENGTH}
-                                     setPinReady={setPinReady}/>
+                    {hasPastableCode && (
+                        <View mt='5%'>
+                            <PressableText
+                                onPress={() => insertPastableCode()}
+                                style={{ opacity: !activeResend ? 0.65 : 1 }}
+                            >
+                                Paste Code
+                            </PressableText>
+                        </View>
+                    )}
+                    <StyledCodeInput
+                        code={code}
+                        setCode={setCode}
+                        maxLength={MAX_CODE_LENGTH}
+                        setPinReady={setPinReady}
+                    />
                     {!verifying && pinReady && <RegularButton
                         onPress={handleEmailVerification}
                         accessibilityLabel={`Verify`}
