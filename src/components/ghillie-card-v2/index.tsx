@@ -16,9 +16,9 @@ interface GhillieCardV2Props {
 }
 
 export const GhillieCardV2: React.FC<GhillieCardV2Props> = ({ghillie, onJoinPress, isVerifiedMilitary, isMember= false}) => {
-  
+
   const navigation: any = useNavigation();
-  
+
   const handleNavigate = useCallback(() => {
     navigation.navigate('GhillieDetail', {ghillieId: ghillie.id});
   }, [navigation, ghillie]);
@@ -87,7 +87,7 @@ export const GhillieCardV2: React.FC<GhillieCardV2Props> = ({ghillie, onJoinPres
 
     return _previewButton();
   }
-  
+
   return (
     <TouchableOpacity onPress={() => handleNavigate()}>
       <Box alignItems="center">
@@ -107,9 +107,9 @@ export const GhillieCardV2: React.FC<GhillieCardV2Props> = ({ghillie, onJoinPres
                 source={
                   ghillie?.imageUrl
                     ? {uri: ghillie?.imageUrl}
-                    : require("../../../assets/logos/icon.png")
+                    : require("../../../assets/logos/logo-square.png")
                 }
-                alt="image"
+                alt={`${ghillie?.name} logo`}
               />
             </AspectRatio>
           </Box>
