@@ -48,7 +48,7 @@ export const MyAccount = () => {
                 showModal('fail', 'Military Status Verification Failed', response.message, 'Ok');
             }
         } catch (error: any) {
-            showModal('fail', 'Military Status Verification Failed', error.data.error.message, 'Ok');
+            showModal('fail', 'Military Status Verification Failed', error?.data?.error?.message ?? "An error occured", 'Ok');
         }
     }
 
