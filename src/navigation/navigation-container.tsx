@@ -1,18 +1,12 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {useSelector} from "react-redux";
 import {IRootState, useAppDispatch} from "../store";
-import LoginScreen from "../screens/auth/login.screen";
 import React from "react";
 import {getAccount} from "../shared/reducers/authentication.reducer";
 import {ActivityIndicator, AppState} from "react-native";
 import {NavigationContainer} from "@react-navigation/native";
 import {isReadyRef, navigationRef} from "./nav-ref";
 import ApplicationTabBar from "../components/tab-bar/application-tab-bar";
-import RegisterScreen from "../screens/auth/register.screen";
-import SplashScreen from "../screens/auth/splash.screen";
-import VerifyEmailScreen from "../screens/auth/verify-email.screen";
-import PasswordResetInitScreen from "../screens/auth/password-reset-init.screen";
-import PasswordResetFinishScreen from "../screens/auth/password-reset-finish.screen";
 import notificationService from "../shared/services/push-notification.service";
 import * as Notifications from "expo-notifications";
 import settingsService from "../shared/services/settings.service";
@@ -28,6 +22,7 @@ import {getPostScreenRoutes} from "./stacks/post-stack";
 import {getNotificationScreenRoutes} from "./stacks/notification-stack";
 import {getAccountRoutes} from "./stacks/account-stack";
 import {getGhillieScreenRoutes} from "./stacks/ghillie-stack";
+import NoAuthStackNavigator, {getNoAuthScreenRoutes} from "./stacks/no-auth-stack";
 
 export const linkingConfig: LinkingOptions<any> | undefined = {
     enabled: true,
@@ -50,6 +45,7 @@ export const linkingConfig: LinkingOptions<any> | undefined = {
         screens: {
             Home: {
                 screens: {
+                    ...getNoAuthScreenRoutes(),
                     Feed: {
                         path: "feed",
                         screens: {
@@ -82,26 +78,6 @@ export const linkingConfig: LinkingOptions<any> | undefined = {
                     },
                 }
             },
-            Auth: {
-                path: 'auth',
-                screens: {
-                    Login: {
-                        path: 'login',
-                    },
-                    Register: {
-                        path: 'register',
-                    },
-                    VerifyEmail: {
-                        path: 'verify-email',
-                    },
-                    PasswordResetInit: {
-                        path: 'password-reset-init',
-                    },
-                    Splash: {
-                        path: 'splash',
-                    }
-                }
-            },
             NotFound: '*'
         },
     },
@@ -109,87 +85,6 @@ export const linkingConfig: LinkingOptions<any> | undefined = {
 
 // https://reactnavigation.org/docs/tab-based-navigation/
 const Stack = createNativeStackNavigator();
-const AuthStack = createNativeStackNavigator();
-
-const _renderAuthNavigation = () => {
-    const isAuthenticated = useSelector(
-        (state: IRootState) => state.authentication.isAuthenticated
-    );
-    return (
-        <AuthStack.Navigator
-            initialRouteName="Splash"
-        >
-            <AuthStack.Screen
-                name="Splash"
-                component={SplashScreen}
-                options={{
-                    headerShown: false,
-                    // When logging out, a pop animation feels intuitive
-                    // You can remove this if you want the default 'push' animation
-                    animationTypeForReplace: isAuthenticated ? "push" : "pop"
-                    // headerRight: () => <ThemeController />,
-                }}
-            />
-            <AuthStack.Screen
-                name="VerifyEmail"
-                component={VerifyEmailScreen}
-                options={{
-                    gestureEnabled: false,
-                    headerShown: false,
-                    // When logging out, a pop animation feels intuitive
-                    // You can remove this if you want the default 'push' animation
-                    animationTypeForReplace: isAuthenticated ? "push" : "pop"
-                    // headerRight: () => <ThemeController />,
-                }}
-            />
-            <AuthStack.Screen
-                name="Login"
-                component={LoginScreen}
-                options={{
-                    headerShown: false,
-                    // When logging out, a pop animation feels intuitive
-                    // You can remove this if you want the default 'push' animation
-                    animationTypeForReplace: isAuthenticated ? "push" : "pop"
-                    // headerRight: () => <ThemeController />,
-                }}
-            />
-            <AuthStack.Screen
-                name="Register"
-                component={RegisterScreen}
-                options={{
-                    headerShown: false,
-                    // When logging out, a pop animation feels intuitive
-                    // You can remove this if you want the default 'push' animation
-                    animationTypeForReplace: isAuthenticated ? "push" : "pop"
-                    // headerRight: () => <ThemeController />,
-                }}
-            />
-            <AuthStack.Screen
-                name="PasswordResetInit"
-                component={PasswordResetInitScreen}
-                options={{
-                    headerShown: false,
-                    // When logging out, a pop animation feels intuitive
-                    // You can remove this if you want the default 'push' animation
-                    animationTypeForReplace: isAuthenticated ? "push" : "pop"
-                    // headerRight: () => <ThemeController />,
-                }}
-            />
-            <AuthStack.Screen
-                name="PasswordResetFinish"
-                component={PasswordResetFinishScreen}
-                options={{
-                    headerShown: false,
-                    // When logging out, a pop animation feels intuitive
-                    // You can remove this if you want the default 'push' animation
-                    animationTypeForReplace: isAuthenticated ? "push" : "pop"
-                    // headerRight: () => <ThemeController />,
-                }}
-            />
-        </AuthStack.Navigator>
-    );
-};
-
 
 function NavContainer() {
     const [expoPushToken, setExpoPushToken] = React.useState<any>('');
@@ -264,6 +159,7 @@ function NavContainer() {
 
     return (
         <NavigationContainer
+            key={isAuthenticated ? "authed" : "no-authed"}
             linking={linkingConfig}
             ref={navigationRef}
             onReady={() => {
@@ -272,20 +168,15 @@ function NavContainer() {
             fallback={<ActivityIndicator color={colorsVerifyCode.secondary} size="large"/>}
         >
             <Stack.Navigator screenOptions={{headerShown: false}}>
-                {isAuthenticated ? (
-                    <Stack.Screen name="Home" component={ApplicationTabBar}/>
-                ) : (
-                    <Stack.Screen
-                        name="NoAuth"
-                        component={_renderAuthNavigation}
-                        options={{
-                            animationTypeForReplace: isAuthenticated ? "push" : "pop"
-                        }}
-                    />
-                )}
+                <Stack.Screen name="Home" options={{headerShown: false}}>
+                    {isAuthenticated
+                        ? ApplicationTabBar
+                        : NoAuthStackNavigator
+                    }
+
+                </Stack.Screen>
                 <Stack.Screen name="NotFound" component={NotFoundScreen}/>
             </Stack.Navigator>
-            {/*{isAuthenticated ? _renderTabNavigation() : _renderAuthNavigation()}*/}
         </NavigationContainer>
     );
 }

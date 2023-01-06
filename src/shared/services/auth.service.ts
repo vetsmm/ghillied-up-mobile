@@ -79,12 +79,9 @@ const isUsernameAvailable = async (username: string): Promise<{ available: boole
 }
 
 const activateAccount = async (emailVerification: AuthVerifyEmailInputDto)
-  : Promise<BaseApiResponse<AuthTokenOutput, never>> => {
-  if (!emailVerification.email && !emailVerification.username) {
-    throw new Error("Email or username is required");
-  }
+  : Promise<AuthTokenOutput> => {
   return await axiosInstance
-    .post(`${AppConfig.apiUrl}/auth/activate`, emailVerification)
+    .post(`${AppConfig.apiUrl}/auth/activate/code`, emailVerification)
     .then(res => {
       return res.data;
     });

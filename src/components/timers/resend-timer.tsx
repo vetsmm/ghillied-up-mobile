@@ -26,7 +26,7 @@ const ResendText = styled(SmallText)`
 }}
 `;
 
-const ResendTimer = ({ activeResend, setActiveResend, targetTimeInSeconds, resendEmail, resendStatus, ...props }: any) => {
+const ResendTimer = ({ activeResend, setActiveResend, targetTimeInSeconds, resendEmail, resendStatus, resendingEmail, ...props }: any) => {
   const [timeLeft, setTimeLeft] = useState<any>(null);
   const [targetTime, setTargetTime] = useState<any>(null);
 
@@ -64,7 +64,7 @@ const ResendTimer = ({ activeResend, setActiveResend, targetTimeInSeconds, resen
         <SmallText>Didn't receive the email? </SmallText>
         <PressableText
           onPress={() => resendEmail(triggerTimer)}
-          disabled={!activeResend}
+          disabled={!activeResend || resendingEmail}
           style={{ opacity: !activeResend ? 0.65 : 1 }}
         >
           <ResendText resendStatus={resendStatus}>{resendStatus}</ResendText>
