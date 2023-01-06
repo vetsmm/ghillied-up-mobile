@@ -20,19 +20,19 @@ import {useAppDispatch} from "../../store";
 import * as Sentry from "sentry-expo";
 import {FlashMessageRef} from "../../app/App";
 import PressableText from "../../components/texts/pressable-text";
-import BigText from "../../components/texts/big-text";
 import {StringFormat} from "expo-clipboard/src/Clipboard.types";
+import {useStateWithCallback} from "../../shared/hooks";
 
 const {primary, secondary, lightGray} = colorsVerifyCode;
 
-const EmailVerification = ({route}: any) => {
-    const {email, username} = route.params;
+const EmailVerification = ({navigation, route}: any) => {
+    const {email, username, activationCode} = route.params;
 
     const dispatch = useAppDispatch()
 
     // code input
     const MAX_CODE_LENGTH = 6;
-    const [code, setCode] = useState('');
+    const [code, setCode] = useStateWithCallback('');
     const [pinReady, setPinReady] = useState(false);
     const [hasPastableCode, setHasPastableCode] = useState(false);
 
@@ -89,6 +89,26 @@ const EmailVerification = ({route}: any) => {
         return () => subscription.remove();
     }, []);
 
+    React.useEffect(() => {
+        // If there is an activation code and it is the correct length and is numbers only process it
+        if (activationCode) {
+            if (activationCode.length === MAX_CODE_LENGTH && /^[0-9]+$/.test(activationCode)) {
+                setCode(activationCode);
+                handleEmailVerification(activationCode, true);
+            } else {
+                FlashMessageRef.current?.showMessage({
+                    message: `Invalid code, code must be ${MAX_CODE_LENGTH} digits`,
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+                navigation.navigate('Login', {});
+            }
+        }
+    }, [activationCode])
+
     const resendEmail = async (triggerTimer: any) => {
         try {
             setResendingEmail(true);
@@ -134,16 +154,14 @@ const EmailVerification = ({route}: any) => {
         }
     };
 
-    const handleEmailVerification = async () => {
+    const handleEmailVerification = async (actCode, fromLink = false) => {
         setVerifying(true);
 
-        const obj = email ? {email} : {username};
         AuthService.activateAccount({
-            activationCode: Number.parseInt(code),
-            ...obj
+            activationCode: Number.parseInt(actCode),
         })
             .then((res) => {
-                dispatch(verifyEmail(res.data));
+                dispatch(verifyEmail(res));
                 setVerifying(false);
                 FlashMessageRef.current?.showMessage({
                     message: 'Your account has been activated!',
@@ -154,9 +172,21 @@ const EmailVerification = ({route}: any) => {
                     }
                 });
             })
-            .catch((err) => {
+            .catch(() => {
                 setVerifying(false);
-                showModal('error', 'Error', "Invalid activation code or activation code has expired. Please click 'resend' to receive a new code.", 'OK');
+                if (fromLink) {
+                    FlashMessageRef.current?.showMessage({
+                        message: 'Invalid activation code or activation code has expired!',
+                        type: 'danger',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
+                    navigation.navigate('Login', {});
+                } else {
+                    showModal('error', 'Error', "Invalid activation code or activation code has expired. Please click 'resend' to receive a new code.", 'OK');
+                }
             })
             .finally(() => {
                 setVerifying(false);
@@ -195,7 +225,7 @@ const EmailVerification = ({route}: any) => {
                         <View mt='5%'>
                             <PressableText
                                 onPress={() => insertPastableCode()}
-                                style={{ opacity: !activeResend ? 0.65 : 1 }}
+                                style={{opacity: !activeResend ? 0.65 : 1}}
                             >
                                 Paste Code
                             </PressableText>
@@ -208,7 +238,7 @@ const EmailVerification = ({route}: any) => {
                         setPinReady={setPinReady}
                     />
                     {!verifying && pinReady && <RegularButton
-                        onPress={handleEmailVerification}
+                        onPress={() => handleEmailVerification(code)}
                         accessibilityLabel={`Verify`}
                     >Verify</RegularButton>}
                     {!verifying && !pinReady && (

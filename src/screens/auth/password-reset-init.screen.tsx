@@ -54,13 +54,13 @@ const PasswordResetInitScreen = ({navigation}) => {
 
         AuthService.resetPasswordInit({email: credentials.email})
             .then((response) => {
-                moveTo('PasswordResetFinish', {email: credentials.email, isBadEmail: false});
+                moveTo('PasswordResetCode', {});
             })
             .catch(err => {
                 if (JSON.parse(JSON.stringify(err)).status === 404) {
                     // Email not found, but we don't want to let a potential attacker know that
                     // the email is not in the system.
-                    moveTo('PasswordResetFinish', {email: credentials.email, isBadEmail: true});
+                    moveTo('PasswordResetCode', {});
                 } else {
                     // Everything else is a real error and should inform the user.
                     setMessage("Unable to reset password. Please try again.");

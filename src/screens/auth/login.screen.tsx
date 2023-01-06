@@ -17,7 +17,7 @@ import {login} from "../../shared/reducers/authentication.reducer";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import {useSelector} from "react-redux";
 
-const {primary} = colorsVerifyCode;
+const {white} = colorsVerifyCode;
 
 // custom components
 export interface LoginScreenProps {
@@ -141,7 +141,7 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
                                                                                  accessibilityLabel={"Login"}>Login</RegularButton>}
                                 {(isSubmitting || isLoading) && (
                                     <RegularButton disabled={true}>
-                                        <ActivityIndicator size="small" color={primary}/>
+                                        <ActivityIndicator size="small" color={white}/>
                                     </RegularButton>
                                 )}
 

@@ -5,7 +5,7 @@ const extra = Constants.manifest?.extra ?? {};
 
 const ENV = {
     dev: {
-        appUrls: ['exp://127.0.0.1:19000/--/', "https://ghilliedup.com", 'ghilliedup://'],
+        appUrls: ['exp://127.0.0.1:19000/--/', "https://ghilliedup.com", 'ghilliedup://', 'exp://192.168.0.210:8081/--/',],
         apiUrl: 'http://192.168.0.210:3333',
         amplitudeApiKey: null,
         idme: {
