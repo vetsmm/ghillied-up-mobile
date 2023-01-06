@@ -136,7 +136,33 @@ export default {
                     "BROWSABLE",
                     "DEFAULT"
                 ]
-            }
+            },
+            {
+                action: "VIEW",
+                autoVerify: true,
+                data: {
+                    scheme: "https",
+                    host: "*.ghilliedup.com",
+                    pathPrefix: "/auth/activate/*"
+                },
+                category: [
+                    "BROWSABLE",
+                    "DEFAULT"
+                ]
+            },
+            {
+                action: "VIEW",
+                autoVerify: true,
+                data: {
+                    scheme: "https",
+                    host: "*.ghilliedup.com",
+                    pathPrefix: "/auth/password-reset/*"
+                },
+                category: [
+                    "BROWSABLE",
+                    "DEFAULT"
+                ]
+            },
         ]
     },
     web: {
