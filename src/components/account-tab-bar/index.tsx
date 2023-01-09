@@ -8,26 +8,38 @@ import {colorsVerifyCode} from "../colors";
 export const AccountTabBar = ({ setSelection, selection}) => {
     return (
         <Row mt={3}>
-            <Column width="33%" alignItems="center">
-                <TouchableOpacity onPress={() => setSelection(0)}>
+            <Column width="33%">
+                <TouchableOpacity
+                    onPress={() => setSelection(0)}
+                    style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
                     <MaterialCommunityIcons
                         name={selection === 0 ? "account-group" : "account-group-outline"}
-                        size={40}
+                        size={35}
                         color={colorsVerifyCode.secondary}
                     />
                     <Text style={{
-                        color: colorsVerifyCode.secondary
+                        color: colorsVerifyCode.secondary,
                     }}
                     >
-                        Ghillies
+                        My Ghillies
                     </Text>
                 </TouchableOpacity>
             </Column>
-            <Column width="33%" alignItems="center">
-                <TouchableOpacity onPress={() => setSelection(1)}>
+            <Column width="33%">
+                <TouchableOpacity
+                    onPress={() => setSelection(1)}
+                    style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
                     <FontAwesome
                         name={selection === 1 ? "question-circle" : "question-circle-o"}
-                        size={40}
+                        size={35}
                         color={colorsVerifyCode.secondary}
                     />
                     <Text style={{
@@ -38,11 +50,17 @@ export const AccountTabBar = ({ setSelection, selection}) => {
                     </Text>
                 </TouchableOpacity>
             </Column>
-            <Column width="33%" alignItems="center">
-                <TouchableOpacity onPress={() => setSelection(2)}>
+            <Column width="33%">
+                <TouchableOpacity
+                    onPress={() => setSelection(2)}
+                    style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
                     <FontAwesome
                         name={selection === 2 ? "bookmark" : "bookmark-o"}
-                        size={40}
+                        size={35}
                         color={colorsVerifyCode.secondary}
                     />
                     <Text style={{
