@@ -61,13 +61,13 @@ export const AccountOverviewCard = ({account, onVerifyClick,}: AccountOverviewCa
         >
             <VStack alignSelf="center" mt={3} mb={3} alignItems="center">
                 <Avatar
-                    width="40"
-                    height="40"
+                    width="70"
+                    height="70"
                     source={getServiceSeal()}
                 />
                 <RegularText style={{
                     fontWeight: "bold",
-                    fontSize: 25,
+                    fontSize: 20,
                 }}
                 >
                     {account.username}
@@ -89,7 +89,7 @@ export const AccountOverviewCard = ({account, onVerifyClick,}: AccountOverviewCa
                     </RegularText>
                 </View>
 
-                <VStack mt={5} justifyContent="center">
+                <VStack justifyContent="center">
                     {isVerifiedMilitary ? (
                         <>
                             <SvgXml

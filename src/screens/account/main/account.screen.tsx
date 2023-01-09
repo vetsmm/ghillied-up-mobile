@@ -14,7 +14,6 @@ import {Ionicons} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../../../components/colors";
 import AccountTabBar from "../../../components/account-tab-bar";
 import {Colors} from "../../../shared/styles";
-import BigText from "../../../components/texts/big-text";
 import UserPostCard from "../../../components/user-post-card";
 import postFeedService from "../../../shared/services/post-feed.service";
 import {PostFeedDto} from "../../../shared/models/feed/post-feed.dto";
@@ -61,11 +60,11 @@ const RenderGhillies: React.FC<{
                 numColumns={2}
                 columnWrapperStyle={{
                     justifyContent: "space-around",
+                    marginBottom: "3%",
                 }}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item: any) => item.id}
                 data={userGhillies}
-                // estimatedItemSize={50}
                 renderItem={({item, index}: any) => (
                     <GhillieCircle
                         key={index}
@@ -93,15 +92,6 @@ const RenderGhillies: React.FC<{
                         tintColor={Colors.secondary}
                     />
                 }
-                ListHeaderComponent={
-                    <View mt={5} mb={5}>
-                        <BigText style={{
-                            marginLeft: 15
-                        }}>
-                            My Ghillies
-                        </BigText>
-                    </View>
-                }
                 ListEmptyComponent={
                     <Center>
                         <Text style={{
@@ -110,7 +100,11 @@ const RenderGhillies: React.FC<{
                     </Center>
                 }
                 ListFooterComponent={isVerifiedMilitary
-                    ? <GhillieCreateOrJoin/>
+                    ? (
+                        <View mb="25%">
+                            <GhillieCreateOrJoin/>
+                        </View>
+                    )
                     : null}
             />
         </View>
@@ -159,6 +153,9 @@ const RenderPosts: React.FC<{ posts: PostFeedDto[], loadNextPage: () => void, is
                                 No Posts Found
                             </Text>
                         </Center>
+                    }
+                    ListFooterComponent={
+                        <View mb="25%"/>
                     }
                 />
             </View>
@@ -223,6 +220,9 @@ const RenderSaved: React.FC<{ bookmarkedPosts: BookmarkPostFeedDto[], loadNextPa
                                 No Posts Found
                             </Text>
                         </Center>
+                    }
+                    ListFooterComponent={
+                        <View mb="25%"/>
                     }
                 />
             </View>
@@ -461,7 +461,7 @@ function AccountScreen() {
                 onVerifyClick={verifyMilitaryStatus}
             />
             <AccountTabBar selection={tabSelection} setSelection={onTabSelection}/>
-            <View mt={5} flex={1}>
+            <View flex={1}>
                 {tabSelection === 0 && (
                     <RenderGhillies
                         isLoadingGhillies={isLoadingUserGhillies}
