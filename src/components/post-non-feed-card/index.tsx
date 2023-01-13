@@ -22,44 +22,45 @@ import {numberToReadableFormat} from "../../shared/utils/number-utils";
 import {ReactionType} from "../../shared/models/reactions/reaction-type";
 import {FlagCategory} from "../../shared/models/flags/flag-category";
 import flagService from "../../shared/services/flag.service";
-import {PostFeedDto} from "../../shared/models/feed/post-feed.dto";
 import {colorsVerifyCode} from "../colors";
 import {TouchableOpacity} from "react-native";
 import PostService from "../../shared/services/post.service";
 import {PostContent} from '../post-content';
 import {FlashMessageRef} from "../../app/App";
 import ShareUtils from "../../shared/utils/share-utils";
-import postService from "../../shared/services/post.service";
+import {PostNonFeedDto} from "../../shared/models/posts/post-listing-non-feed.dto";
 
 export interface IPostCardProps {
-    isPinnable?: boolean;
-    post: PostFeedDto;
+    post: PostNonFeedDto;
     isOwner?: boolean;
     isAdmin?: boolean;
     isModerator?: boolean;
     isLoadingReactionUpdate?: boolean;
-    onOwnerDelete: (post: PostFeedDto) => void;
-    onModeratorRemoval: (post: PostFeedDto) => void;
+    onOwnerDelete: (post: PostNonFeedDto) => void;
+    onModeratorRemoval: (post: PostNonFeedDto) => void;
     onHandleReaction: (postId: string, reaction: ReactionType | null) => void;
     isGhillieMember?: boolean;
     shouldTruncate?: boolean;
     isVerified?: boolean;
+    onPinPost: (postId: string) => void;
+    onUnpinPost: (postId: string) => void;
 }
 
-export const PostFeedCard = ({
-                                 post,
-                                 onModeratorRemoval,
-                                 onOwnerDelete,
-                                 onHandleReaction,
-                                 isLoadingReactionUpdate,
-                                 isAdmin,
-                                 isOwner,
-                                 isModerator,
-                                 isPinnable = false,
-                                 isGhillieMember = true,
-                                 shouldTruncate = true,
-                                 isVerified = true,
-                             }: IPostCardProps) => {
+export const PostNonFeedCard = ({
+                                    post,
+                                    onModeratorRemoval,
+                                    onOwnerDelete,
+                                    onHandleReaction,
+                                    onPinPost,
+                                    onUnpinPost,
+                                    isLoadingReactionUpdate,
+                                    isAdmin,
+                                    isOwner,
+                                    isModerator,
+                                    isGhillieMember = true,
+                                    shouldTruncate = true,
+                                    isVerified = true,
+                                }: IPostCardProps) => {
     const [isOpen, setIsOpen] = React.useState(false);
     const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
 
@@ -94,54 +95,6 @@ export const PostFeedCard = ({
             });
     }
 
-    const onPinPost = (postId) => {
-        postService.pinPost(postId)
-            .then(() => {
-                FlashMessageRef.current?.showMessage({
-                    message: 'Post pinned to Ghillie',
-                    type: 'success',
-                    style: {
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                });
-            })
-            .catch(err => {
-                FlashMessageRef.current?.showMessage({
-                    message: 'An error occurred while pinning the post',
-                    type: 'danger',
-                    style: {
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                });
-            });
-    }
-
-    const onUnpinPost = (postId) => {
-        postService.unpinPost(postId)
-            .then(() => {
-                FlashMessageRef.current?.showMessage({
-                    message: 'Post unpinned from Ghillie',
-                    type: 'success',
-                    style: {
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                });
-            })
-            .catch(err => {
-                FlashMessageRef.current?.showMessage({
-                    message: 'An error occurred while unpinning the post',
-                    type: 'danger',
-                    style: {
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                });
-            });
-    }
-
     const reportPost = (category: FlagCategory, details: string) => {
         flagService.flagPost({
             postId: post.id,
@@ -159,7 +112,7 @@ export const PostFeedCard = ({
             });
         }).catch(err => {
             FlashMessageRef.current?.showMessage({
-                message: 'An error occurred while reporting this post. Please try again later.',
+                message: 'An error occurred while reporting this post.',
                 type: 'danger',
                 style: {
                     justifyContent: 'center',
@@ -190,7 +143,7 @@ export const PostFeedCard = ({
     return (
         <TouchableOpacity
             onPress={() => moveTo("Posts", {params: {postId: post.id}, screen: "PostDetail"})}
-            disabled={!!post.linkMeta?.video || !isGhillieMember}
+            disabled={!isGhillieMember}
         >
             <Box
                 flexDirection="column"
@@ -277,7 +230,6 @@ export const PostFeedCard = ({
                     <PostContent
                         shouldTruncate={shouldTruncate}
                         content={post.content}
-                        linkMeta={post.linkMeta}
                     />
 
                     <SmallText style={{marginTop: 5}}>
@@ -310,7 +262,7 @@ export const PostFeedCard = ({
 
                 <PostActionSheet
                     isOpen={isOpen}
-                    isPinnable={isPinnable}
+                    isPinnable={true}
                     isPinned={post.isPinned}
                     onClose={() => setIsOpen(false)}
                     onPinPost={() => {
@@ -372,4 +324,4 @@ export const PostFeedCard = ({
     );
 };
 
-export default PostFeedCard;
+export default PostNonFeedCard;

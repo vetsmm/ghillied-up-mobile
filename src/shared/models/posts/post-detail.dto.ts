@@ -32,4 +32,5 @@ export interface PostDetailDto {
   currentUserReaction: ReactionType;
   edited: boolean;
   linkMeta?: LinkMeta | undefined;
+  isPinned: boolean;
 }
