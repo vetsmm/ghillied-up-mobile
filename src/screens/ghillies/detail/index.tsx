@@ -1,6 +1,7 @@
 import {useNavigation} from "@react-navigation/native";
 import React, {useCallback, useEffect} from "react";
 import {
+    ActivityIndicator,
     Image,
     Text,
     TouchableOpacity,
@@ -33,6 +34,9 @@ import {GhillieStatus} from "../../../shared/models/ghillies/ghillie-status";
 import GhillieService from "../../../shared/services/ghillie.service";
 import {FlashMessageRef} from "../../../app/App";
 import {Autolink} from "../../../components/autolink";
+import {PostNonFeedDto} from "../../../shared/models/posts/post-listing-non-feed.dto";
+import PostNonFeedCard from "../../../components/post-non-feed-card";
+import postService from "../../../shared/services/post.service";
 
 const {primary, secondary} = colorsVerifyCode;
 
@@ -46,8 +50,10 @@ interface Route {
 export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const [selection, setSelection] = React.useState(0);
     const [postCurrentPage, setPostCurrentPage] = React.useState(1);
-    const [isLoadingGhillies, setIsLoadingGhillies] = React.useState(false);
+    const [isLoadingFeed, setIsLoadingFeed] = React.useState(false);
+    const [isLoadingPinned, setIsLoadingPinned] = React.useState(false);
     const [postList, setPostList] = React.useState<PostFeedDto[]>([]);
+    const [pinnedPostList, setPinnedPostList] = React.useState<PostNonFeedDto[]>([]);
     const [submittingReaction, setSubmittingReaction] = React.useState(false);
     const [isLoadingOrLeaving, setIsLoadingOrLeaving] = React.useState(false);
 
@@ -67,10 +73,6 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
 
     const isAdmin = useSelector(
         (state: IRootState) => state.authentication.isAdmin
-    );
-
-    const isGhillieOwner = useSelector(
-        (state: IRootState) => state.ghillie.ghillie.memberMeta?.role === GhillieRole.OWNER
     );
 
     const isBanned = useSelector(
@@ -107,6 +109,12 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
 
         return initialLoad;
     }, [ghillieId]);
+
+    useEffect(() => {
+        if (selection === 2) {
+            getPinnedPosts();
+        }
+    }, [selection]);
 
     const goBack = useCallback(() => {
         navigation.goBack();
@@ -196,9 +204,8 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             });
     }
 
-
     const getFeed = (page: number) => {
-        setIsLoadingGhillies(true);
+        setIsLoadingFeed(true);
         postFeedService.getGhillieFeed(ghillieId, page, 25)
             .then(res => {
                 if (page > 1) {
@@ -231,15 +238,98 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                     setPostCurrentPage(page - 1);
                 }
             })
-            .finally(() => setIsLoadingGhillies(false));
+            .finally(() => setIsLoadingFeed(false));
     };
 
     const loadNextPage = () => {
         getFeed(postCurrentPage)
     }
 
+    const getPinnedPosts = () => {
+        setIsLoadingPinned(true);
+        postService.getPinnedPostsForGhillie(ghillieId).then((res) => {
+            setPinnedPostList(res);
+        }).catch((err) => {
+            FlashMessageRef.current?.showMessage({
+                message: 'An error occurred while loading pinned posts',
+                type: 'danger',
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
+            });
+        }).finally(() => setIsLoadingPinned(false));
+    }
+    const onPinPost = (postId: string) => {
+        postService.pinPost(postId)
+            .then(() => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'Post pinned to Ghillie',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+                getPinnedPosts();
+            })
+            .catch(err => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while pinning the post',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            });
+    }
+
+    const onUnpinPost = (postId: string) => {
+        postService.unpinPost(postId)
+            .then(() => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'Post unpinned from Ghillie',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+                getPinnedPosts();
+            })
+            .catch(err => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while unpinning the post',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            });
+    }
+
     const _renderPost = ({item}) => (
         <PostFeedCard
+            isPinnable={true}
+            isGhillieMember={ghillie.memberMeta !== null}
+            isVerified={isVerifiedMilitary}
+            post={item}
+            isModerator={isModerator}
+            isAdmin={isAdmin}
+            isOwner={currentUser.username === item.ownerUsername}
+            onModeratorRemoval={moderatorRemovePost}
+            onOwnerDelete={ownerDeletePost}
+            onHandleReaction={onHandleReaction}
+            isLoadingReactionUpdate={submittingReaction}
+        />
+    );
+
+    const _renderPinnedPost = ({item}: {item: PostNonFeedDto}) => (
+        <PostNonFeedCard
+            onPinPost={onPinPost}
+            onUnpinPost={onUnpinPost}
             isGhillieMember={ghillie.memberMeta !== null}
             isVerified={isVerifiedMilitary}
             post={item}
@@ -332,9 +422,9 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 showsVerticalScrollIndicator={false}
                 style={[styles.container, {backgroundColor: primary}]}
                 contentContainerStyle={styles.contentContainer}
-                renderItem={_renderPost}
+                renderItem={selection === 0 ? _renderPost : _renderPinnedPost}
                 hideData={selection === 1}
-                data={postList}
+                data={selection === 0 ? postList : pinnedPostList}
                 keyExtractor={(item) => item.id}
                 pagingEnabled={false}
                 onEndReached={loadNextPage}
@@ -421,7 +511,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
 
                     </Center>
                     <Row>
-                        <Column width="50%" alignItems="center">
+                        <Column width="33%" alignItems="center">
                             <TouchableOpacity onPress={() => setSelection(0)}>
                                 <FontAwesome
                                     name={selection === 0 ? "comments" : "comments-o"}
@@ -436,7 +526,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                 </Text>
                             </TouchableOpacity>
                         </Column>
-                        <Column width="50%" alignItems="center">
+                        <Column width="33%" alignItems="center">
                             <TouchableOpacity onPress={() => setSelection(1)}>
                                 <FontAwesome
                                     name={selection === 1 ? "question-circle" : "question-circle-o"}
@@ -448,6 +538,21 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                 }}
                                 >
                                     About
+                                </Text>
+                            </TouchableOpacity>
+                        </Column>
+                        <Column width="33%" alignItems="center">
+                            <TouchableOpacity onPress={() => setSelection(2)}>
+                                <Ionicons
+                                    name={selection === 1 ? "pin-outline" : "pin"}
+                                    size={40}
+                                    color={secondary}
+                                />
+                                <Text style={{
+                                    color: secondary
+                                }}
+                                >
+                                    Pinned
                                 </Text>
                             </TouchableOpacity>
                         </Column>
@@ -476,7 +581,11 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                         Recent Posts
                                     </BigText>
                                     {_renderPostButton()}
-                                    {/* TODO: Add pinned posts, ** REQUIRES DATA CHANGE ** */}
+                                    <ActivityIndicator
+                                        size="large"
+                                        color={colorsVerifyCode.secondary}
+                                        animating={isLoadingFeed}
+                                    />
                                 </View>
                             )}
                     </View>
@@ -508,6 +617,36 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                         </View>
 
                     </>
+                )}
+                {selection === 2 && (
+                    <View>
+                        {isBanned
+                            ? (
+                                <Center>
+                                    <Text style={{
+                                        color: "white"
+                                    }}
+                                    >
+                                        You are banned from this ghillie.
+                                    </Text>
+                                </Center>
+                            )
+                            : (
+                                <View flex={1}>
+                                    <BigText style={{
+                                        marginLeft: 15,
+                                        marginBottom: 10
+                                    }}>
+                                        Pinned Posts
+                                    </BigText>
+                                    <ActivityIndicator
+                                        size="large"
+                                        color={colorsVerifyCode.secondary}
+                                        animating={isLoadingPinned}
+                                    />
+                                </View>
+                            )}
+                    </View>
                 )}
 
             </VirtualizedView>

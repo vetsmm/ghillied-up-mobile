@@ -27,6 +27,8 @@ import flagService from "../../shared/services/flag.service";
 import {SuccessAlert} from "../alerts/success-alert";
 import {FlashMessageRef} from "../../app/App";
 import ShareUtils from "../../shared/utils/share-utils";
+import postService from "../../shared/services/post.service";
+import PostService from "../../shared/services/post.service";
 
 export interface IPostCardProps {
     post: PostListingDto | PostDetailDto;
@@ -79,6 +81,71 @@ export const PostCard = ({
                 });
             });
     };
+
+    const onBookmarkPost = (postId) => {
+        PostService.bookmarkPost(postId)
+            .then(() => {
+                setShowBookmarkAlert(true);
+            })
+            .catch(err => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while bookmarking the post',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            });
+    }
+
+    const onPinPost = (postId) => {
+        postService.pinPost(postId)
+            .then(() => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'Post pinned to Ghillie',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            })
+            .catch(err => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while pinning the post',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            });
+    }
+
+    const onUnpinPost = (postId) => {
+        postService.unpinPost(postId)
+            .then(() => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'Post unpinned from Ghillie',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            })
+            .catch(err => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while unpinning the post',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            });
+    }
 
     return (
         <Box
@@ -211,9 +278,19 @@ export const PostCard = ({
             )}
 
             <PostActionSheet
+                isPinned={post.isPinned}
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
+                onPinPost={() => {
+                    onPinPost(post.id)
+                    setIsOpen(false);
+                }}
+                onUnpinPost={() => {
+                    onUnpinPost(post.id)
+                    setIsOpen(false);
+                }}
                 onBookmark={() => {
+                    onBookmarkPost(post.id)
                     setIsOpen(false);
                 }}
                 onDelete={() => {

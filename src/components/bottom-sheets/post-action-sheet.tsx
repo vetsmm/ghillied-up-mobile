@@ -17,6 +17,10 @@ export interface PostActionSheetProps {
     isAdmin?: boolean;
     isGhillieMember: boolean;
     onShare: () => void;
+    isPinned: boolean;
+    isPinnable?: boolean;
+    onPinPost: () => void;
+    onUnpinPost: () => void;
 }
 
 export const PostActionSheet = ({
@@ -29,6 +33,10 @@ export const PostActionSheet = ({
                                     onEdit,
                                     onBookmark,
                                     onShare,
+                                    onPinPost,
+                                    onUnpinPost,
+                                    isPinnable = false,
+                                    isPinned = false,
                                     isOwner = false,
                                     isModerator = false,
                                     isAdmin = false,
@@ -85,6 +93,29 @@ export const PostActionSheet = ({
                         >
                             Share
                         </Actionsheet.Item>
+                        {(isPinnable && (isAdmin || isModerator)) && (
+                            <Actionsheet.Item
+                                onPress={() => {
+                                    if (isPinned) {
+                                        onUnpinPost();
+                                    } else {
+                                        onPinPost();
+                                    }
+                                }}
+                                mr={3}
+                                startIcon={
+                                    <Icon
+                                        as={<Ionicons name="pin"/>}
+                                        size={30}
+                                    />
+                                }
+                                _text={{
+                                    fontSize: 20
+                                }}
+                            >
+                                {isPinned ? "Unpin from Ghillie" : "Pin to Ghillie"}
+                            </Actionsheet.Item>
+                        )}
                         <Divider borderColor="gray.300"/>
                     </>
                 )}

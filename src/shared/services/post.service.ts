@@ -6,6 +6,7 @@ import {BaseApiResponse} from "../models/base-api-response";
 import {PostDetailDto} from "../models/posts/post-detail.dto";
 import {PostListingDto} from "../models/posts/post-listing.dto";
 import {PageInfo} from "../models/pagination/types";
+import {PostNonFeedDto} from "../models/posts/post-listing-non-feed.dto";
 
 const createPost = async (post: CreatePostInputDto): Promise<BaseApiResponse<PostDetailDto, any>> => {
     return axios.post(`${AppConfig.apiUrl}/posts`, post)
@@ -63,6 +64,27 @@ const deletePost = async (id: string): Promise<BaseApiResponse<void, any>> => {
         });
 }
 
+const pinPost = async (id: string): Promise<void> => {
+    return axios.put(`${AppConfig.apiUrl}/posts/${id}/pin`)
+        .then(response => {
+            return response.data;
+        });
+}
+
+const unpinPost = async (id: string): Promise<void> => {
+    return axios.put(`${AppConfig.apiUrl}/posts/${id}/unpin`)
+        .then(response => {
+            return response.data;
+        });
+}
+
+const getPinnedPostsForGhillie = async (ghillieId: string): Promise<PostNonFeedDto[]> => {
+    return axios.get(`${AppConfig.apiUrl}/posts/pinned/${ghillieId}`)
+        .then(response => {
+            return response.data;
+        });
+}
+
 const postService = {
     createPost,
     getPost,
@@ -71,7 +93,10 @@ const postService = {
     getPostsForGhillie,
     getPostsForCurrentUser,
     bookmarkPost,
-    unBookmarkPost
+    unBookmarkPost,
+    pinPost,
+    unpinPost,
+    getPinnedPostsForGhillie
 }
 
 export default postService;

@@ -21,4 +21,5 @@ export interface PostListingDto {
   currentUserReaction: ReactionType | null;
   edited: boolean;
   linkMeta?: LinkMeta;
+  isPinned: boolean;
 }
