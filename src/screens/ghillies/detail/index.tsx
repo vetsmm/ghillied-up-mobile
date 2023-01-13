@@ -1,8 +1,7 @@
 import {useNavigation} from "@react-navigation/native";
 import React, {useCallback, useEffect} from "react";
 import {
-    ActivityIndicator,
-    Image,
+    Image, RefreshControl,
     Text,
     TouchableOpacity,
     useColorScheme
@@ -37,6 +36,7 @@ import {Autolink} from "../../../components/autolink";
 import {PostNonFeedDto} from "../../../shared/models/posts/post-listing-non-feed.dto";
 import PostNonFeedCard from "../../../components/post-non-feed-card";
 import postService from "../../../shared/services/post.service";
+import {Colors} from "../../../shared/styles";
 
 const {primary, secondary} = colorsVerifyCode;
 
@@ -245,6 +245,14 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         getFeed(postCurrentPage)
     }
 
+    const handleRefresh = () => {
+        if (selection === 0) {
+            getFeed(1);
+        } else {
+            getPinnedPosts();
+        }
+    };
+
     const getPinnedPosts = () => {
         setIsLoadingPinned(true);
         postService.getPinnedPostsForGhillie(ghillieId).then((res) => {
@@ -427,10 +435,18 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                 data={selection === 0 ? postList : pinnedPostList}
                 keyExtractor={(item) => item.id}
                 pagingEnabled={false}
-                onEndReached={loadNextPage}
+                onEndReached={selection === 0 ? loadNextPage : undefined}
                 maxToRenderPerBatch={30}
                 onEndReachedThreshold={0.8}
                 snapToInterval={300}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={selection === 0 ? isLoadingFeed : isLoadingPinned}
+                        onRefresh={handleRefresh}
+                        progressBackgroundColor={Colors.secondary}
+                        tintColor={Colors.secondary}
+                    />
+                }
             >
                 <SharedElement id={`ghillie#${ghillie}-Image`}>
                     <Image
@@ -581,11 +597,6 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                         Recent Posts
                                     </BigText>
                                     {_renderPostButton()}
-                                    <ActivityIndicator
-                                        size="large"
-                                        color={colorsVerifyCode.secondary}
-                                        animating={isLoadingFeed}
-                                    />
                                 </View>
                             )}
                     </View>
@@ -639,11 +650,6 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                     }}>
                                         Pinned Posts
                                     </BigText>
-                                    <ActivityIndicator
-                                        size="large"
-                                        color={colorsVerifyCode.secondary}
-                                        animating={isLoadingPinned}
-                                    />
                                 </View>
                             )}
                     </View>
