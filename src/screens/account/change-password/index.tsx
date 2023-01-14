@@ -7,11 +7,11 @@ import {Formik} from "formik";
 import StyledTextInput from "../../../components/inputs/styled-text-input";
 import MsgBox from "../../../components/texts/message-box";
 import RegularButton from "../../../components/buttons/regular-button";
-import MessageModal from "../../../components/modals/message-modal";
 import KeyboardAvoidingContainer from "../../../components/containers/KeyboardAvoidingContainer";
-import {validatePasswords} from "../../../shared/validators/auth/validators";
 import AuthService from "../../../shared/services/auth.service";
 import {colorsVerifyCode} from "../../../components/colors";
+import {ValidationSchemas} from "../../../shared/validators/schemas";
+import {FlashMessageRef} from "../../../app/App";
 
 const {primary} = colorsVerifyCode;
 
@@ -19,42 +19,53 @@ export const ChangePassword = () => {
     const [message, setMessage] = useState<string | null>('');
     const [isSuccessMessage, setIsSuccessMessage] = useState(false);
 
-    // modal
-    const [modalVisible, setModalVisible] = useState(false);
-    const [modalMessageType, setModalMessageType] = useState('');
-    const [headerText, setHeaderText] = useState('');
-    const [modalMessage, setModalMessage] = useState('');
-    const [buttonText, setButtonText] = useState('');
-
-    const showModal = (type, headerText, message, buttonText) => {
-        setModalMessageType(type);
-        setHeaderText(headerText);
-        setModalMessage(message);
-        setButtonText(buttonText);
-        setModalVisible(true);
-    };
-
     const handleOnSubmit = async (credentials, setSubmitting): Promise<boolean> => {
         setMessage(null);
-
-        if (validatePasswords(credentials.newPassword, credentials.confirmNewPassword)) {
-            setMessage('Passwords do not match.');
-            setSubmitting(false);
-            return false;
-        }
 
         try {
             await AuthService.changePassword({
                 oldPassword: credentials.oldPassword,
                 newPassword: credentials.newPassword,
             })
-            showModal('success', 'All Good!', 'Your password has been reset.', 'Ok');
             setSubmitting(false);
+            FlashMessageRef.current?.showMessage({
+                message: 'Password changed successfully',
+                type: "success",
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
+            });
             return true;
         } catch (e) {
             setMessage("Something went wrong. Please try again.");
             setSubmitting(false);
+            FlashMessageRef.current?.showMessage({
+                message: 'Something went wrong. Please try again.',
+                type: "danger",
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
+            });
             return false;
+        }
+    }
+
+    const _validateForm = (formData) => {
+        try {
+            ValidationSchemas.PasswordChangeFormSchema
+                .validateSync(formData, {abortEarly: false});
+            return {};
+        } catch (e: any) {
+            let errors = {};
+            e.inner.reduce((acc, curr) => {
+                if (curr.message) {
+                    errors[curr.path] = curr.message;
+                }
+            }, {});
+
+            return errors;
         }
     }
 
@@ -68,20 +79,22 @@ export const ChangePassword = () => {
                 }}>
                     <Formik
                         initialValues={{newPassword: '', confirmNewPassword: '', oldPassword: ''}}
+                        validate={_validateForm}
+                        validateOnChange={false}
+                        validateOnBlur={false}
                         onSubmit={async (values, {setSubmitting, resetForm}) => {
-                            if (values.oldPassword == '' || values.newPassword == '' || values.confirmNewPassword == '') {
-                                setMessage('Please fill in all fields');
-                                setSubmitting(false);
-                            } else if (values.newPassword !== values.confirmNewPassword) {
-                                setMessage('Passwords do not match');
-                                setSubmitting(false);
-                            } else {
-                                const wasSuccess = handleOnSubmit(values, setSubmitting);
-                                await wasSuccess && resetForm();
-                            }
+                            const wasSuccess = handleOnSubmit(values, setSubmitting);
+                            await wasSuccess && resetForm();
                         }}
                     >
-                        {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+                        {({
+                              handleChange,
+                              handleBlur,
+                              handleSubmit,
+                              values,
+                              isSubmitting,
+                              errors
+                          }) => (
                             <>
                                 <StyledTextInput
                                     label="Old Password"
@@ -94,6 +107,14 @@ export const ChangePassword = () => {
                                     style={{marginBottom: 25}}
                                 />
 
+                                {errors.oldPassword && (
+                                    <MsgBox
+                                        success={false}
+                                        style={{marginBottom: 5}}>
+                                        {errors.oldPassword}
+                                    </MsgBox>
+                                )}
+
                                 <StyledTextInput
                                     label="New Password"
                                     icon="lock-open-variant"
@@ -104,6 +125,14 @@ export const ChangePassword = () => {
                                     isPassword={true}
                                     style={{marginBottom: 25}}
                                 />
+
+                                {errors.newPassword && (
+                                    <MsgBox
+                                        success={false}
+                                        style={{marginBottom: 5}}>
+                                        {errors.newPassword}
+                                    </MsgBox>
+                                )}
 
                                 <StyledTextInput
                                     label="Confirm New Password"
@@ -116,9 +145,18 @@ export const ChangePassword = () => {
                                     style={{marginBottom: 25}}
                                 />
 
+                                {errors.confirmNewPassword && (
+                                    <MsgBox
+                                        success={false}
+                                        style={{marginBottom: 5}}>
+                                        {errors.confirmNewPassword}
+                                    </MsgBox>
+                                )}
+
                                 <MsgBox style={{marginBottom: 25}} success={isSuccessMessage}>
                                     {message || ' '}
                                 </MsgBox>
+
                                 {!isSubmitting && (
                                     <RegularButton onPress={handleSubmit}>
                                         Submit
@@ -132,15 +170,6 @@ export const ChangePassword = () => {
                             </>
                         )}
                     </Formik>
-
-                    <MessageModal
-                        modalVisible={modalVisible}
-                        buttonHandler={() => setModalVisible(false)}
-                        type={modalMessageType}
-                        headerText={headerText}
-                        message={modalMessage}
-                        buttonText={buttonText}
-                    />
                 </VStack>
             </KeyboardAvoidingContainer>
         </MainContainer>

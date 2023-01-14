@@ -10,32 +10,23 @@ import stringUtils from "../../../shared/utils/string.utils";
 import RegularButton from "../../../components/buttons/regular-button";
 import {ActivityIndicator} from "react-native";
 import KeyboardAvoidingContainer from "../../../components/containers/KeyboardAvoidingContainer";
-import validators from "../../../shared/validators/auth";
 import UserService from "../../../shared/services/user.service";
 import {colorsVerifyCode} from "../../../components/colors";
 import StyledDateTimeInput from "../../../components/inputs/styled-date-time.input";
 import {UserOutput} from "../../../shared/models/users/user-output.dto";
 import {useSelector} from "react-redux";
 import {IRootState, useAppDispatch} from "../../../store";
-import {
-    UpdateFormValidationResponse
-} from "../../../shared/validators/auth/update-form.validator";
 import {UpdateUserInput} from "../../../shared/models/users/update-user.input";
 import userErrorHandler, {UpdateUserFormErrors} from "../../../shared/handlers/errors/user-error.handler";
 import {useNavigation} from "@react-navigation/native";
 import {getAccount} from "../../../shared/reducers/authentication.reducer";
-import MessageModal from "../../../components/modals/message-modal";
+import {ValidationSchemas} from "../../../shared/validators/schemas";
+import {FlashMessageRef} from "../../../app/App";
 
 
 export const UpdateUserInformation = () => {
     const [message, setMessage] = useState<string | null>('');
     const [isSuccessMessage, setIsSuccessMessage] = useState(false);
-
-    const [modalVisible, setModalVisible] = useState(false);
-    const [modalMessageType, setModalMessageType] = useState('');
-    const [headerText, setHeaderText] = useState('');
-    const [modalMessage, setModalMessage] = useState('');
-    const [buttonText, setButtonText] = useState('');
 
     const dispatch = useAppDispatch();
     const navigation: any = useNavigation();
@@ -51,14 +42,6 @@ export const UpdateUserInformation = () => {
 
         return initialLoad;
     }, [navigation]);
-
-    const showModal = (type, headerText, message, buttonText) => {
-        setModalMessageType(type);
-        setHeaderText(headerText);
-        setModalMessage(message);
-        setButtonText(buttonText);
-        setModalVisible(true);
-    };
 
     const [formErrors, setFormErrors] = useState<UpdateUserFormErrors>({
         firstName: null,
@@ -76,30 +59,45 @@ export const UpdateUserInformation = () => {
 
         UserService.updateUser(updateUserInput).then(() => {
             setSubmitting(false);
-            showModal('success', 'All Good!', 'Your information has been updated.', 'Ok');
+            FlashMessageRef.current?.showMessage({
+                message: 'Your information has been updated successfully',
+                type: "success",
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
+            });
         }).catch(error => {
             setSubmitting(false);
             const errorContext = userErrorHandler.handleUpdateError(error.data.error);
             setFormErrors(errorContext);
             setMessage(error.data.error.message);
+            FlashMessageRef.current?.showMessage({
+                message: 'There was an error updating your information',
+                type: "danger",
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
+            });
         });
     }
 
-    const _isFormInvalid = (formData): boolean => {
-        setMessage(null);
+    const _isFormValid = (formData) => {
+        try {
+            ValidationSchemas.UpdateUserInfoFormSchema
+                .validateSync(formData, {abortEarly: false});
+            return {};
+        } catch (e: any) {
+            let errors = {};
+            e.inner.reduce((acc, curr) => {
+                if (curr.message) {
+                    errors[curr.path] = curr.message;
+                }
+            }, {});
 
-        const errors: UpdateFormValidationResponse = validators.updateFormValidator(formData);
-
-        setFormErrors({
-            firstName: errors.firstName,
-            lastName: errors.lastName,
-            branch: errors.branch,
-            serviceStatus: errors.serviceStatus,
-            serviceEntryDate: errors.serviceEntryDate,
-            serviceExitDate: errors.serviceExitDate,
-        });
-
-        return Object.values(errors).some(error => error !== null);
+            return errors;
+        }
     }
 
     return (
@@ -116,12 +114,11 @@ export const UpdateUserInformation = () => {
                             serviceEntryDate: new Date(myAccount.serviceEntryDate),
                             serviceExitDate: new Date(myAccount.serviceExitDate)
                         }}
+                        validate={_isFormValid}
+                        validateOnChange={false}
+                        validateOnBlur={false}
                         onSubmit={(values, {setSubmitting}) => {
-                            if (_isFormInvalid(values)) {
-                                setSubmitting(false);
-                            } else {
-                                handleUpdate(values, setSubmitting);
-                            }
+                            handleUpdate(values, setSubmitting)
                         }}
                     >
                         {({
@@ -130,7 +127,8 @@ export const UpdateUserInformation = () => {
                               handleBlur,
                               handleSubmit,
                               values,
-                              isSubmitting
+                              isSubmitting,
+                              errors
                           }) => (
                             <>
                                 <StyledTextInput
@@ -144,10 +142,17 @@ export const UpdateUserInformation = () => {
                                     style={{marginBottom: 25}}
                                     isError={formErrors.firstName !== null}
                                 />
+                                {formErrors.firstName && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {formErrors.firstName}
+                                    </MsgBox>
+                                )}
+                                {errors.firstName && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {errors.firstName}
+                                    </MsgBox>
+                                )}
 
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.firstName && formErrors.firstName}
-                                </MsgBox>
 
                                 <StyledTextInput
                                     label="Last Name"
@@ -161,9 +166,16 @@ export const UpdateUserInformation = () => {
                                     isError={formErrors.lastName !== null}
                                 />
 
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.lastName && formErrors.lastName}
-                                </MsgBox>
+                                {formErrors.lastName && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {formErrors.lastName}
+                                    </MsgBox>
+                                )}
+                                {errors.lastName && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {errors.lastName}
+                                    </MsgBox>
+                                )}
 
                                 <StyledSelect
                                     label={'Branch of Service'}
@@ -185,10 +197,16 @@ export const UpdateUserInformation = () => {
                                     onSelect={handleChange("branch")}
                                     isError={formErrors.branch !== null}
                                 />
-
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.branch || ' '}
-                                </MsgBox>
+                                {formErrors.branch && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {formErrors.branch}
+                                    </MsgBox>
+                                )}
+                                {errors.branch && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {errors.branch}
+                                    </MsgBox>
+                                )}
 
                                 <StyledSelect
                                     label={'Service Status'}
@@ -210,10 +228,16 @@ export const UpdateUserInformation = () => {
                                     onSelect={handleChange("serviceStatus")}
                                     isError={formErrors.serviceStatus !== null}
                                 />
-
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.serviceStatus || ' '}
-                                </MsgBox>
+                                {formErrors.serviceStatus && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {formErrors.serviceStatus}
+                                    </MsgBox>
+                                )}
+                                {errors.serviceStatus && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {errors.serviceStatus}
+                                    </MsgBox>
+                                )}
 
                                 <StyledDateTimeInput
                                     pickerLabel="Service Entry Date"
@@ -224,9 +248,11 @@ export const UpdateUserInformation = () => {
                                     onChange={(event, date) => setFieldValue("serviceEntryDate", date)}
                                 />
 
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.serviceEntryDate || ' '}
-                                </MsgBox>
+                                {formErrors.serviceEntryDate && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {formErrors.serviceEntryDate}
+                                    </MsgBox>
+                                )}
 
                                 <StyledDateTimeInput
                                     pickerLabel="Service Exit Date"
@@ -237,10 +263,11 @@ export const UpdateUserInformation = () => {
                                     onChange={(event, date) => setFieldValue("serviceExitDate", date)}
                                 />
 
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.serviceExitDate || ' '}
-                                </MsgBox>
-
+                                {formErrors.serviceExitDate && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {formErrors.serviceExitDate}
+                                    </MsgBox>
+                                )}
 
                                 {message && (
                                     <MsgBox
@@ -261,14 +288,6 @@ export const UpdateUserInformation = () => {
                     </Formik>
                 </VStack>
             </KeyboardAvoidingContainer>
-            <MessageModal
-                modalVisible={modalVisible}
-                buttonHandler={() => setModalVisible(false)}
-                type={modalMessageType}
-                headerText={headerText}
-                message={modalMessage}
-                buttonText={buttonText}
-            />
         </ScrollView>
     )
 }

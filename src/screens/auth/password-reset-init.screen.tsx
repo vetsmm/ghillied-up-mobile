@@ -10,8 +10,8 @@ import MsgBox from '../../components/texts/message-box';
 import StyledTextInput from "../../components/inputs/styled-text-input";
 import RegularButton from "../../components/buttons/regular-button";
 import AuthService from "../../shared/services/auth.service";
-import {validateEmail} from "../../shared/validators/auth/validators";
 import {Center, Image, useColorModeValue, VStack} from "native-base";
+import {ValidationSchemas} from "../../shared/validators/schemas";
 
 const {primary} = colorsVerifyCode;
 
@@ -49,7 +49,7 @@ const PasswordResetInitScreen = ({navigation}) => {
     };
 
 
-    const handleOnSubmit = async (credentials, setSubmitting) => {
+    const handleOnSubmit = (credentials, setSubmitting) => {
         setMessage(null);
 
         AuthService.resetPasswordInit({email: credentials.email})
@@ -71,6 +71,23 @@ const PasswordResetInitScreen = ({navigation}) => {
             });
     };
 
+    const _validateForm = (formData) => {
+        try {
+            ValidationSchemas.PasswordResetInitFormSchema
+                .validateSync(formData, {abortEarly: false});
+            return {};
+        } catch (e: any) {
+            let errors = {};
+            e.inner.reduce((acc, curr) => {
+                if (curr.message) {
+                    errors[curr.path] = curr.message;
+                }
+            }, {});
+
+            return errors;
+        }
+    }
+
     return (
         <MainContainer>
             <KeyboardAvoidingContainer>
@@ -84,16 +101,21 @@ const PasswordResetInitScreen = ({navigation}) => {
 
                     <Formik
                         initialValues={{email: ''}}
+                        validate={_validateForm}
+                        validateOnChange={false}
+                        validateOnBlur={false}
                         onSubmit={(values, {setSubmitting}) => {
-                            if (validateEmail(values.email)) {
-                                setMessage('Please enter a valid email');
-                                setSubmitting(false);
-                            } else {
-                                handleOnSubmit(values, setSubmitting);
-                            }
+                            handleOnSubmit(values, setSubmitting);
                         }}
                     >
-                        {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+                        {({
+                              handleChange,
+                              handleBlur,
+                              handleSubmit,
+                              values,
+                              isSubmitting,
+                              errors
+                          }) => (
                             <>
                                 <StyledTextInput
                                     label="Email Address"
@@ -111,6 +133,13 @@ const PasswordResetInitScreen = ({navigation}) => {
                                 <MsgBox style={{marginBottom: 25}} success={isSuccessMessage}>
                                     {message || ' '}
                                 </MsgBox>
+
+                                {errors.email && (
+                                    <MsgBox style={{marginBottom: 25}} success={false}>
+                                        {errors.email}
+                                    </MsgBox>
+                                )}
+
                                 {!isSubmitting && <RegularButton
                                     onPress={handleSubmit}
                                     accessibilityLabel={"Submit"}
