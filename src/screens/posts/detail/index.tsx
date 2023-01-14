@@ -30,7 +30,7 @@ import AppConfig from '../../../config/app.config';
 import {ParentCommentDto} from '../../../shared/models/comments/parent-comment.dto';
 import {ChildCommentDto} from '../../../shared/models/comments/child-comment.dto';
 import {Ionicons} from "@expo/vector-icons";
-import {FlashMessageRef} from "../../../app/App";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 const {primary} = colorsVerifyCode;
 

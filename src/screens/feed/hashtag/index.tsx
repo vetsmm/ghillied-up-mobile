@@ -22,7 +22,7 @@ import RegularText from "../../../components/texts/regular-texts";
 import {useStateWithCallback} from "../../../shared/hooks";
 import {Ionicons} from '@expo/vector-icons';
 import {colorsVerifyCode} from '../../../components/colors';
-import {FlashMessageRef} from "../../../app/App";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 
 function PostFeedHeader() {
@@ -72,7 +72,7 @@ function PostFeedHeader() {
         justifyContent: 'flex-end',
         marginRight: 10
       }}>
-      
+
       </View>
     </View>
   );
@@ -85,18 +85,18 @@ interface Route {
 }
 
 export const HashTagPostListingScreen = ({route}: { route: Route }) => {
-  
+
   const [posts, setPosts] = React.useState<PostFeedDto[]>([]);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLoadingReactionUpdate, setIsLoadingReactionUpdate] = useStateWithCallback(false);
-  
+
   const navigation: any = useNavigation();
-  
+
   const {params} = {...route};
   const {hashtag} = {...params};
-  
-  
+
+
   const isModerator = useSelector(
     (state: IRootState) =>
       state.ghillie.ghillie.memberMeta !== null &&
@@ -105,22 +105,22 @@ export const HashTagPostListingScreen = ({route}: { route: Route }) => {
         state.ghillie.ghillie.memberMeta?.role === GhillieRole.MODERATOR
       )
   );
-  
+
   const isAdmin = useSelector(
     (state: IRootState) => state.authentication.isAdmin
   );
   const currentUser = useSelector(
     (state: IRootState) => state.authentication.account
   );
-  
+
   React.useEffect(() => {
     getFeed(1);
   }, [hashtag]);
-  
+
   const handleRefresh = () => {
     getFeed(1);
   };
-  
+
   const getFeed = (page: number) => {
     setIsLoading(true);
     postFeedService.getHashTagFeed(hashtag, page, 25)
@@ -129,7 +129,7 @@ export const HashTagPostListingScreen = ({route}: { route: Route }) => {
           if (page === currentPage) {
             return;
           }
-          
+
           if (res.length > 0) {
             setPosts([...posts, ...res]);
             setCurrentPage(page);
@@ -148,11 +148,11 @@ export const HashTagPostListingScreen = ({route}: { route: Route }) => {
       })
       .finally(() => setIsLoading(false));
   };
-  
+
   const loadNextPage = () => {
     getFeed(currentPage)
   }
-  
+
   const moderatorRemovePost = (post) => {
     PostService.updatePost(post.id, {
       status: PostStatus.REMOVED
@@ -171,7 +171,7 @@ export const HashTagPostListingScreen = ({route}: { route: Route }) => {
         });
       });
   };
-  
+
   const ownerDeletePost = (post) => {
     PostService.updatePost(post.id, {
       status: PostStatus.ARCHIVED
@@ -190,7 +190,7 @@ export const HashTagPostListingScreen = ({route}: { route: Route }) => {
         });
       });
   };
-  
+
   const getReactionCount = (updatedPost: PostFeedDto, reaction: ReactionType | null) => {
     if (reaction === null) {
       const newReactionCount = updatedPost.postReactionsCount - 1;
@@ -199,10 +199,10 @@ export const HashTagPostListingScreen = ({route}: { route: Route }) => {
     if (updatedPost.currentUserReactionId === null) {
       return updatedPost.postReactionsCount + 1;
     }
-    
+
     return updatedPost.postReactionsCount;
   }
-  
+
   const onHandleReaction = (postId: string, reaction: ReactionType | null) => {
     setIsLoadingReactionUpdate(true, () => {
       postReactionService.reactToPost(reaction, postId)
@@ -232,7 +232,7 @@ export const HashTagPostListingScreen = ({route}: { route: Route }) => {
         });
     });
   }
-  
+
   return (
     <MainContainer style={[styles.container]}>
       <PostFeedHeader/>

@@ -11,11 +11,10 @@ import RegularButton from "../../components/buttons/regular-button";
 import RowContainer from "../../components/containers/row-container";
 import PressableText from "../../components/texts/pressable-text";
 import {Hidden, HStack, Text, VStack} from "native-base";
-import {IRootState, useAppDispatch} from "../../store";
+import {useAppDispatch} from "../../store";
 import AuthService from "../../shared/services/auth.service";
 import {login} from "../../shared/reducers/authentication.reducer";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
-import {useSelector} from "react-redux";
 import {ValidationSchemas} from "../../shared/validators/schemas";
 
 const {white} = colorsVerifyCode;

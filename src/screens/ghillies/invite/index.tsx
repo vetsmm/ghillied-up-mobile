@@ -4,9 +4,9 @@ import {ActivityIndicator} from "react-native";
 import {colorsVerifyCode} from "../../../components/colors";
 import {Center} from "native-base";
 import GhillieService from "../../../shared/services/ghillie.service";
-import {FlashMessageRef} from "../../../app/App";
 import MainContainer from "../../../components/containers/MainContainer";
 import BigText from "../../../components/texts/big-text";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 interface Route {
     params: {

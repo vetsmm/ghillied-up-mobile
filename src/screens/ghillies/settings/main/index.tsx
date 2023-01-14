@@ -13,13 +13,13 @@ import {useSelector} from "react-redux";
 import {IRootState, useAppDispatch} from "../../../../store";
 import GhillieService from "../../../../shared/services/ghillie.service";
 import {getGhillie} from "../../../../shared/reducers/ghillie.reducer";
-import {FlashMessageRef} from "../../../../app/App";
 import {GhillieRole} from "../../../../shared/models/ghillies/ghillie-role";
 import * as Clipboard from 'expo-clipboard';
 import {ReportMenuDialog} from "../../../../components/reporting/report-menu-dialog";
 import {FlagCategory} from "../../../../shared/models/flags/flag-category";
 import flagService from "../../../../shared/services/flag.service";
 import ShareUtils from "../../../../shared/utils/share-utils";
+import {FlashMessageRef} from "../../../../components/flash-message/index";
 
 
 export const GhillieSettingsScreen: React.FC = () => {

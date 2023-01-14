@@ -25,7 +25,7 @@ import GhillieService from '../../../shared/services/ghillie.service';
 import {GhillieCircle} from '../../../components/ghillie-circle';
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 import {colorsVerifyCode} from "../../../components/colors";
-import {FlashMessageRef} from "../../../app/App";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 
 function PostFeedHeader() {

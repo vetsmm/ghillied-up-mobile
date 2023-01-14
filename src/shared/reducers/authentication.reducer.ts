@@ -7,7 +7,7 @@ import {AuthPasswordResetFinishDto} from "../models/auth/auth-password-reset-fin
 import {UserOutput} from "../models/users/user-output.dto";
 import {AuthTokenOutput} from "../models/auth/auth-token-output.dto";
 import {clearAuthenticationCredentials, clearAuthTokens, setAuthenticationCredentials, setAuthTokens} from "../jwt";
-import {FlashMessageRef} from "../../app/App";
+import {FlashMessageRef} from "../../components/flash-message/index";
 
 export const initialState = {
     loading: false,

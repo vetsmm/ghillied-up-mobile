@@ -25,10 +25,10 @@ import {PostDetailDto} from "../../shared/models/posts/post-detail.dto";
 import {FlagCategory} from "../../shared/models/flags/flag-category";
 import flagService from "../../shared/services/flag.service";
 import {SuccessAlert} from "../alerts/success-alert";
-import {FlashMessageRef} from "../../app/App";
 import ShareUtils from "../../shared/utils/share-utils";
 import postService from "../../shared/services/post.service";
 import PostService from "../../shared/services/post.service";
+import {FlashMessageRef} from "../flash-message/index";
 
 export interface IPostCardProps {
     post: PostListingDto | PostDetailDto;

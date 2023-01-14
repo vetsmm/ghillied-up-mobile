@@ -25,11 +25,10 @@ import {ReactionType} from "../../shared/models/reactions/reaction-type";
 import {PostDetailDto} from "../../shared/models/posts/post-detail.dto";
 import {FlagCategory} from "../../shared/models/flags/flag-category";
 import {colorsVerifyCode} from '../colors';
-import {LinkPreview} from '../link-preview';
 import {PostContent} from '../post-content';
-import {FlashMessageRef} from "../../app/App";
 import ShareUtils from "../../shared/utils/share-utils";
 import postService from "../../shared/services/post.service";
+import {FlashMessageRef} from "../flash-message/index";
 
 export interface IPostCardProps {
     post: PostListingDto | PostDetailDto;

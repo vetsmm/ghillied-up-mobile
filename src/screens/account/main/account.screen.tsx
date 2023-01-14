@@ -28,8 +28,8 @@ import postService from "../../../shared/services/post.service";
 import idmeService from "../../../shared/services/idme.service";
 import {getAccount} from "../../../shared/reducers/authentication.reducer";
 import MessageModal from "../../../components/modals/message-modal";
-import {FlashMessageRef} from "../../../app/App";
 import GhillieCreateOrJoin from "../../../components/ghillie-create-or-join";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 
 const RenderGhillies: React.FC<{

@@ -27,9 +27,9 @@ import {colorsVerifyCode} from "../colors";
 import {TouchableOpacity} from "react-native";
 import PostService from "../../shared/services/post.service";
 import {PostContent} from '../post-content';
-import {FlashMessageRef} from "../../app/App";
 import ShareUtils from "../../shared/utils/share-utils";
 import postService from "../../shared/services/post.service";
+import {FlashMessageRef} from "../flash-message/index";
 
 export interface IPostCardProps {
     isPinnable?: boolean;
