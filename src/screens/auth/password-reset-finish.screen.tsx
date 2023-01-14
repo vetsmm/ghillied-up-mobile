@@ -12,9 +12,9 @@ import RegularButton from "../../components/buttons/regular-button";
 import StyledTextInput from "../../components/inputs/styled-text-input";
 import {VStack} from 'native-base';
 import AuthService from "../../shared/services/auth.service";
-import {validatePasswords} from "../../shared/validators/auth/validators";
 import {FlashMessageRef} from "../../app/App";
 import MsgBox from "../../components/texts/message-box";
+import {ValidationSchemas} from "../../shared/validators/schemas";
 
 const {white} = colorsVerifyCode;
 
@@ -42,14 +42,8 @@ const PasswordResetFinishScreen = ({navigation, route}) => {
         }
     }, [resetKey]);
 
-    const handleOnSubmit = async (credentials, setSubmitting) => {
+    const handleOnSubmit = (credentials, setSubmitting) => {
         setMessage(undefined);
-
-        if (validatePasswords(credentials.newPassword, credentials.confirmNewPassword)) {
-            setMessage('Passwords do not match.');
-            setSubmitting(false);
-            return;
-        }
 
         AuthService.resetPasswordFinish({
             resetKey: resetKey,
@@ -83,6 +77,23 @@ const PasswordResetFinishScreen = ({navigation, route}) => {
             });
     };
 
+    const _validateForm = (formData) => {
+        try {
+            ValidationSchemas.PasswordResetFormSchema
+                .validateSync(formData, {abortEarly: false});
+            return {};
+        } catch (e: any) {
+            let errors = {};
+            e.inner.reduce((acc, curr) => {
+                if (curr.message) {
+                    errors[curr.path] = curr.message;
+                }
+            }, {});
+
+            return errors;
+        }
+    }
+
     return (
         <MainContainer>
             <KeyboardAvoidingContainer>
@@ -101,19 +112,21 @@ const PasswordResetFinishScreen = ({navigation, route}) => {
 
                     <Formik
                         initialValues={{newPassword: '', confirmNewPassword: ''}}
+                        validate={_validateForm}
+                        validateOnChange={false}
+                        validateOnBlur={false}
                         onSubmit={(values, {setSubmitting}) => {
-                            if (values.newPassword == '' || values.confirmNewPassword == '') {
-                                setMessage('Please fill in all fields');
-                                setSubmitting(false);
-                            } else if (values.newPassword !== values.confirmNewPassword) {
-                                setMessage('Passwords do not match');
-                                setSubmitting(false);
-                            } else {
-                                handleOnSubmit(values, setSubmitting);
-                            }
+                            handleOnSubmit(values, setSubmitting);
                         }}
                     >
-                        {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+                        {({
+                              handleChange,
+                              handleBlur,
+                              handleSubmit,
+                              values,
+                              isSubmitting,
+                              errors
+                          }) => (
                             <>
                                 <StyledTextInput
                                     label="New Password"
@@ -128,6 +141,14 @@ const PasswordResetFinishScreen = ({navigation, route}) => {
                                     accessibilityLabel="Enter your new password"
                                 />
 
+                                {errors.newPassword && (
+                                    <MsgBox
+                                        success={false}
+                                        style={{marginBottom: 5}}>
+                                        {errors.newPassword}
+                                    </MsgBox>
+                                )}
+
                                 <StyledTextInput
                                     label="Confirm New Password"
                                     icon="lock-open-variant"
@@ -140,6 +161,14 @@ const PasswordResetFinishScreen = ({navigation, route}) => {
                                     accessible={true}
                                     accessibilityLabel="Confirm your new password"
                                 />
+
+                                {errors.confirmNewPassword && (
+                                    <MsgBox
+                                        success={false}
+                                        style={{marginBottom: 5}}>
+                                        {errors.confirmNewPassword}
+                                    </MsgBox>
+                                )}
 
                                 <MsgBox style={{marginBottom: 25}} success={!!message}>
                                     {message || ' '}

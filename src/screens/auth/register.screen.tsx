@@ -16,12 +16,11 @@ import PressableText from "../../components/texts/pressable-text";
 import StyledSelect from "../../components/select/styled-select";
 import {ServiceBranch, ServiceStatus, stringToServiceBranch, stringToServiceStatus} from "../../shared/models/users";
 import stringUtils from "../../shared/utils/string.utils";
-import validators from "../../shared/validators/auth";
 import AuthService from "../../shared/services/auth.service";
-import {FormValidationResponse} from "../../shared/validators/auth/register-form.validator";
 import authErrorHandler from "../../shared/handlers/errors/auth-error.handler";
 import * as WebBrowser from "expo-web-browser";
 import AppConfig from "../../config/app.config";
+import {ValidationSchemas} from "../../shared/validators/schemas";
 
 const {primary} = colorsVerifyCode;
 
@@ -86,7 +85,7 @@ const RegisterScreen = ({navigation}) => {
         navigation.navigate(screen, {...payload});
     };
 
-    const handleSignup = async (formData, setSubmitting) => {
+    const handleSignup = (formData, setSubmitting) => {
         setMessage(null);
 
         AuthService.register(formData).then(() => {
@@ -100,21 +99,20 @@ const RegisterScreen = ({navigation}) => {
         });
     }
 
-    const _isFormInvalid = (formData): boolean => {
-        setMessage(null);
-
-        const errors: FormValidationResponse = validators.registerFormValidator(formData);
-
-        setFormErrors({
-            email: errors.email,
-            username: errors.username,
-            branch: errors.branch,
-            serviceStatus: errors.serviceStatus,
-            password: errors.password,
-            confirmPassword: errors.confirmPassword,
-        });
-
-        return Object.values(errors).some(error => error !== null);
+    const _isFormValid = (formData) => {
+        try {
+            ValidationSchemas.RegisterFormSchema
+                .validateSync(formData, {abortEarly: false});
+            return {};
+        } catch (e: any) {
+            let errors = {};
+            e.inner.reduce((acc, curr) => {
+                if (curr.message) {
+                    errors[curr.path] = curr.message;
+                }
+            }, {});
+            return errors;
+        }
     }
 
     return (
@@ -131,12 +129,11 @@ const RegisterScreen = ({navigation}) => {
                             branch: ServiceBranch.MARINES,
                             serviceStatus: ServiceStatus.VETERAN
                         }}
+                        validate={_isFormValid}
+                        validateOnChange={false}
+                        validateOnBlur={false}
                         onSubmit={(values, {setSubmitting}) => {
-                            if (_isFormInvalid(values)) {
-                                setSubmitting(false);
-                            } else {
-                                handleSignup(values, setSubmitting);
-                            }
+                            handleSignup(values, setSubmitting)
                         }}
                     >
                         {({
@@ -144,7 +141,8 @@ const RegisterScreen = ({navigation}) => {
                               handleBlur,
                               handleSubmit,
                               values,
-                              isSubmitting
+                              isSubmitting,
+                              errors
                           }) => (
                             <>
                                 <StyledTextInput
@@ -161,9 +159,17 @@ const RegisterScreen = ({navigation}) => {
                                     accessibilityLabel={'Enter username'}
                                 />
 
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.username && formErrors.username}
-                                </MsgBox>
+                                {formErrors.username && (
+                                    <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
+                                        {formErrors.username}
+                                    </MsgBox>
+                                )}
+
+                                {errors.username && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {errors.username}
+                                    </MsgBox>
+                                )}
 
                                 <StyledTextInput
                                     label="Email Address"
@@ -179,9 +185,17 @@ const RegisterScreen = ({navigation}) => {
                                     accessibilityLabel={'Enter email address'}
                                 />
 
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.email || ' '}
-                                </MsgBox>
+                                {formErrors.email && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {formErrors.email}
+                                    </MsgBox>
+                                )}
+
+                                {errors.email && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {errors.email}
+                                    </MsgBox>
+                                )}
 
                                 <StyledTextInput
                                     label="Password"
@@ -197,9 +211,17 @@ const RegisterScreen = ({navigation}) => {
                                     accessibilityLabel={'Enter password'}
                                 />
 
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.password || ' '}
-                                </MsgBox>
+                                {formErrors.password && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {formErrors.password}
+                                    </MsgBox>
+                                )}
+
+                                {errors.password && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {errors.password}
+                                    </MsgBox>
+                                )}
 
                                 <StyledTextInput
                                     label="Confirm Password"
@@ -215,9 +237,17 @@ const RegisterScreen = ({navigation}) => {
                                     accessibilityLabel={'Enter password again'}
                                 />
 
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.confirmPassword || ' '}
-                                </MsgBox>
+                                {formErrors.confirmPassword && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {formErrors.confirmPassword}
+                                    </MsgBox>
+                                )}
+
+                                {errors.confirmPassword && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {errors.confirmPassword}
+                                    </MsgBox>
+                                )}
 
                                 <StyledSelect
                                     label={'Branch of Service'}
@@ -239,9 +269,17 @@ const RegisterScreen = ({navigation}) => {
                                     isError={formErrors.branch !== null}
                                 />
 
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.branch || ' '}
-                                </MsgBox>
+                                {formErrors.branch && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {formErrors.branch}
+                                    </MsgBox>
+                                )}
+
+                                {errors.branch && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {errors.branch}
+                                    </MsgBox>
+                                )}
 
                                 <StyledSelect
                                     label={'Service Status'}
@@ -263,9 +301,17 @@ const RegisterScreen = ({navigation}) => {
                                     isError={formErrors.serviceStatus !== null}
                                 />
 
-                                <MsgBox success={isSuccessMessage} style={{marginBottom: 2}}>
-                                    {formErrors.serviceStatus || ' '}
-                                </MsgBox>
+                                {formErrors.serviceStatus && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {formErrors.serviceStatus}
+                                    </MsgBox>
+                                )}
+
+                                {errors.serviceStatus && (
+                                    <MsgBox success={false} style={{marginBottom: 2}}>
+                                        {errors.serviceStatus}
+                                    </MsgBox>
+                                )}
 
 
                                 <MsgBox style={{marginBottom: 25}} success={isSuccessMessage}>

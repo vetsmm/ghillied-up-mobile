@@ -16,6 +16,7 @@ import AuthService from "../../shared/services/auth.service";
 import {login} from "../../shared/reducers/authentication.reducer";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import {useSelector} from "react-redux";
+import {ValidationSchemas} from "../../shared/validators/schemas";
 
 const {white} = colorsVerifyCode;
 
@@ -58,11 +59,7 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
         navigation.navigate(screen, {...payload});
     };
 
-    const isLoading = useSelector(
-        (state: IRootState) => state.authentication.loading,
-    );
-
-    const handleLogin = async (credentials, setSubmitting) => {
+    const handleLogin = (credentials, setSubmitting) => {
         setMessage(null);
 
         AuthService.login(credentials)
@@ -90,6 +87,23 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
             });
     };
 
+    const _validateForm = (formData) => {
+        try {
+            ValidationSchemas.LoginFormSchema
+                .validateSync(formData, {abortEarly: false});
+            return {};
+        } catch (e: any) {
+            let errors = {};
+            e.inner.reduce((acc, curr) => {
+                if (curr.message) {
+                    errors[curr.path] = curr.message;
+                }
+            }, {});
+
+            return errors;
+        }
+    }
+
     return (
         <MainContainer>
             <KeyboardAvoidingContainer>
@@ -97,16 +111,21 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
                 <VStack style={{margin: 25}}>
                     <Formik
                         initialValues={{username: '', password: ''}}
+                        validate={_validateForm}
+                        validateOnChange={false}
+                        validateOnBlur={false}
                         onSubmit={async (values, {setSubmitting}) => {
-                            if (values.username === '' || values.password === '') {
-                                setMessage('Please fill in all fields');
-                                setSubmitting(false);
-                            } else {
-                                handleLogin(values, setSubmitting);
-                            }
+                            handleLogin(values, setSubmitting);
                         }}
                     >
-                        {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+                        {({
+                              handleChange,
+                              handleBlur,
+                              handleSubmit,
+                              values,
+                              isSubmitting,
+                              errors,
+                          }) => (
                             <>
                                 <StyledTextInput
                                     label="Username"
@@ -121,6 +140,14 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
                                     accessibilityLabel="Username"
                                 />
 
+                                {errors.username && (
+                                    <MsgBox
+                                        success={false}
+                                        style={{marginBottom: 5}}>
+                                        {errors.username}
+                                    </MsgBox>
+                                )}
+
                                 <StyledTextInput
                                     label="Password"
                                     icon="lock-open"
@@ -133,13 +160,25 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
                                     accessible={true}
                                     accessibilityLabel="Password"
                                 />
+                                {errors.password && (
+                                    <MsgBox
+                                        success={false}
+                                        style={{marginBottom: 5}}>
+                                        {errors.password}
+                                    </MsgBox>
+                                )}
 
                                 <MsgBox style={{marginBottom: 25}} success={isSuccessMessage}>
                                     {message || ' '}
                                 </MsgBox>
-                                {(!isSubmitting && !isLoading) && <RegularButton onPress={handleSubmit}
-                                                                                 accessibilityLabel={"Login"}>Login</RegularButton>}
-                                {(isSubmitting || isLoading) && (
+                                {!isSubmitting && (
+                                    <RegularButton
+                                        onPress={handleSubmit}
+                                        accessibilityLabel={"Login"}>
+                                        Login
+                                    </RegularButton>
+                                )}
+                                {isSubmitting && (
                                     <RegularButton disabled={true}>
                                         <ActivityIndicator size="small" color={white}/>
                                     </RegularButton>
@@ -156,8 +195,8 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
                                         accessibility={true}
                                         accessibilityLabel="Forgot password"
                                         onPress={() => {
-                                        moveTo('PasswordResetInit')
-                                    }}>Forgot Password</PressableText>
+                                            moveTo('PasswordResetInit')
+                                        }}>Forgot Password</PressableText>
                                 </RowContainer>
                             </>
                         )}
