@@ -1,5 +1,5 @@
 import FlashMessageManager from "./flash-message-manager";
-import FlashMessageWrapper, { getFlashMessageStatusBarHeight, styleWithInset } from "./flash-message-wrapper";
+import { getFlashMessageStatusBarHeight, styleWithInset } from "./flash-message-wrapper";
 import FlashMessage, {
   DefaultFlash,
   positionStyle,
@@ -8,6 +8,7 @@ import FlashMessage, {
   FlashMessageTransition,
   renderFlashMessageIcon,
 } from "./flash-message";
+import React from "react";
 
 export {
   FlashMessageManager,
@@ -22,3 +23,5 @@ export {
 };
 
 export default FlashMessage;
+
+export const FlashMessageRef = React.createRef<FlashMessage>();

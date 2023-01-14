@@ -15,7 +15,7 @@ import {ParentCommentDto} from '../../shared/models/comments/parent-comment.dto'
 import {colorsVerifyCode} from '../colors';
 import ChildComment from '../child-comment';
 import {ChildCommentDto} from '../../shared/models/comments/child-comment.dto';
-import {FlashMessageRef} from "../../app/App";
+import {FlashMessageRef} from "../flash-message/index";
 
 export interface CommentBlockProps {
     post: PostDetailDto;

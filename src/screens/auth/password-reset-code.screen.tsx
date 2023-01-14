@@ -11,7 +11,7 @@ import MainContainer from "../../components/containers/MainContainer";
 import RegularButton from "../../components/buttons/regular-button";
 import {VStack} from 'native-base';
 import AuthService from "../../shared/services/auth.service";
-import {FlashMessageRef} from "../../app/App";
+import {FlashMessageRef} from "../../components/flash-message/index";
 
 const {primary} = colorsVerifyCode;
 

@@ -16,9 +16,9 @@ import {colorsVerifyCode} from '../../../components/colors';
 import GhillieCardV2 from '../../../components/ghillie-card-v2';
 import RegularText from '../../../components/texts/regular-texts';
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
-import {FlashMessageRef} from "../../../app/App";
 import {FlashList} from "@shopify/flash-list";
 import GhillieCreateOrJoin from "../../../components/ghillie-create-or-join";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 function GhillieListingHeader({isVerifiedMilitary, isAdmin}) {
     const navigation: any = useNavigation();

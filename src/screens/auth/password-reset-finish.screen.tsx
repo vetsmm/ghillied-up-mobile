@@ -12,9 +12,9 @@ import RegularButton from "../../components/buttons/regular-button";
 import StyledTextInput from "../../components/inputs/styled-text-input";
 import {VStack} from 'native-base';
 import AuthService from "../../shared/services/auth.service";
-import {FlashMessageRef} from "../../app/App";
 import MsgBox from "../../components/texts/message-box";
 import {ValidationSchemas} from "../../shared/validators/schemas";
+import {FlashMessageRef} from "../../components/flash-message/index";
 
 const {white} = colorsVerifyCode;
 

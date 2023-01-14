@@ -13,7 +13,7 @@ import {useNavigation} from "@react-navigation/native";
 import RegularButton from "../../../components/buttons/regular-button";
 
 
-const {primary, secondary} = colorsVerifyCode;
+const {primary} = colorsVerifyCode;
 
 
 export const NotVerifiedScreen = () => {

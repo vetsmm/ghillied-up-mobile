@@ -10,7 +10,7 @@ import {IRootState, useAppDispatch} from "../../../../store";
 import {useSelector} from "react-redux";
 import GhillieService from "../../../../shared/services/ghillie.service";
 import {updateGhillie} from "../../../../shared/reducers/ghillie.reducer";
-import {FlashMessageRef} from "../../../../app/App";
+import {FlashMessageRef} from "../../../../components/flash-message/index";
 
 
 const UpdateGhillieTopicsScreen = () => {

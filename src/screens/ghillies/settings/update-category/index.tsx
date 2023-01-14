@@ -11,7 +11,7 @@ import {ActivityIndicator} from "react-native";
 import {useSelector} from "react-redux";
 import {IRootState, useAppDispatch} from "../../../../store";
 import {updateGhillie} from "../../../../shared/reducers/ghillie.reducer";
-import {FlashMessageRef} from "../../../../app/App";
+import {FlashMessageRef} from "../../../../components/flash-message/index";
 
 
 const UpdateGhillieCategoryScreen: React.FC = () => {

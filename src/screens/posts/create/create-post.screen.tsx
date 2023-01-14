@@ -25,8 +25,8 @@ import PostService from "../../../shared/services/post.service";
 import postErrorHandler from "../../../shared/handlers/errors/post-error.handler";
 import {PostStatus} from "../../../shared/models/posts/post-status";
 import RegularText from "../../../components/texts/regular-texts";
-import {FlashMessageRef} from "../../../app/App";
 import {ValidationSchemas} from "../../../shared/validators/schemas";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 
 const {primary} = colorsVerifyCode;

@@ -11,7 +11,7 @@ import KeyboardAvoidingContainer from "../../../components/containers/KeyboardAv
 import AuthService from "../../../shared/services/auth.service";
 import {colorsVerifyCode} from "../../../components/colors";
 import {ValidationSchemas} from "../../../shared/validators/schemas";
-import {FlashMessageRef} from "../../../app/App";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 const {primary} = colorsVerifyCode;
 

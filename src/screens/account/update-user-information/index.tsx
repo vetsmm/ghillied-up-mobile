@@ -21,7 +21,7 @@ import userErrorHandler, {UpdateUserFormErrors} from "../../../shared/handlers/e
 import {useNavigation} from "@react-navigation/native";
 import {getAccount} from "../../../shared/reducers/authentication.reducer";
 import {ValidationSchemas} from "../../../shared/validators/schemas";
-import {FlashMessageRef} from "../../../app/App";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 
 export const UpdateUserInformation = () => {

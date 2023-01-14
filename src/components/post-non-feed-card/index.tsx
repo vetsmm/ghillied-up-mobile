@@ -26,9 +26,9 @@ import {colorsVerifyCode} from "../colors";
 import {TouchableOpacity} from "react-native";
 import PostService from "../../shared/services/post.service";
 import {PostContent} from '../post-content';
-import {FlashMessageRef} from "../../app/App";
 import ShareUtils from "../../shared/utils/share-utils";
 import {PostNonFeedDto} from "../../shared/models/posts/post-listing-non-feed.dto";
+import {FlashMessageRef} from "../flash-message/index";
 
 export interface IPostCardProps {
     post: PostNonFeedDto;

@@ -1,8 +1,8 @@
 import { axiosInstance as axios } from './api'
 import AppConfig from "../../config/app.config";
 import {Platform} from "react-native";
-import {FlashMessageRef} from "../../app/App";
 import * as Sentry from 'sentry-expo';
+import {FlashMessageRef} from "../../components/flash-message/index";
 
 const addPushTokenToAccount = async (token): Promise<void> => {
   axios.post(`${AppConfig.apiUrl}/settings/device-token`, {

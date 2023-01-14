@@ -18,10 +18,10 @@ import {verifyEmail} from "../../shared/reducers/authentication.reducer";
 import AuthService from "../../shared/services/auth.service";
 import {useAppDispatch} from "../../store";
 import * as Sentry from "sentry-expo";
-import {FlashMessageRef} from "../../app/App";
 import PressableText from "../../components/texts/pressable-text";
 import {StringFormat} from "expo-clipboard/src/Clipboard.types";
 import {useStateWithCallback} from "../../shared/hooks";
+import {FlashMessageRef} from "../../components/flash-message/index";
 
 const {primary, secondary, lightGray} = colorsVerifyCode;
 

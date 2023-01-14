@@ -13,11 +13,9 @@ import AppConfig from "../config/app.config";
 import {logout} from "../shared/reducers/authentication.reducer";
 import {applyAxiosErrorInterceptor, axiosInstance} from "../shared/services/api";
 import {bindActionCreators} from "redux";
-import FlashMessage from "../components/flash-message/index";
+import FlashMessage, {FlashMessageRef} from "../components/flash-message/index";
 import {useNetInfo} from "@react-native-community/netinfo";
 import {enableFreeze} from "react-native-screens";
-
-export const FlashMessageRef = React.createRef<FlashMessage>();
 
 enableFreeze(true);
 

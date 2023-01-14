@@ -15,12 +15,12 @@ import GhillieCardV2 from '../../../components/ghillie-card-v2';
 import {useSelector} from 'react-redux';
 import {IRootState} from '../../../store';
 import {useNavigation} from '@react-navigation/native';
-import {FlashMessageRef} from "../../../app/App";
 import GhillieCreateOrJoin from "../../../components/ghillie-create-or-join";
 import {GhillieCategory} from "../../../shared/models/ghillies/ghillie-category";
 import GhillieCategoryCircle from "../../../components/ghillie-category-circle";
 import GhillieCategoryRow from "../../../components/ghillie-category-row";
 import RegularText from "../../../components/texts/regular-texts";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 
 function GhillieListingHeader({searchText, setSearchText, clearSearch, onSearchPress, navigation}) {

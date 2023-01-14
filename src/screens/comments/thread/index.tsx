@@ -26,7 +26,7 @@ import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
 import {SuccessAlert} from '../../../components/alerts/success-alert';
 import AppConfig from '../../../config/app.config';
 import {Ionicons} from "@expo/vector-icons";
-import {FlashMessageRef} from "../../../app/App";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 interface Route {
   params: {
@@ -83,9 +83,9 @@ const ChildCommentBlock = ({
   const [isChildOpen, setIsChildOpen] = React.useState(false);
   const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
   const [showReportAlert, setShowReportAlert] = React.useState(false);
-  
+
   const cancelRef = React.useRef(null);
-  
+
   useEffect(() => {
     if (showReportAlert) {
       setTimeout(() => {
@@ -156,9 +156,9 @@ const ChildCommentBlock = ({
 export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
   const {params} = {...route};
   const {parentCommentId} = {...params};
-  
+
   const navigation: any = useNavigation();
-  
+
   const [post, setPost] = useState<PostDetailDto>();
   const [parentComment, setParentComment] = useState<ParentCommentDto>();
   const [commentReplies, setCommentReplies] = useState<ChildCommentDto[]>();
@@ -170,7 +170,7 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
   const [commentRepliesError, setCommentRepliesError] = React.useState(false);
   const [commentRepliesLoading, setCommentRepliesLoading] = React.useState(false);
   const cancelRef = React.useRef(null);
-  
+
   useEffect(() => {
     if (showReportAlert) {
       setTimeout(() => {
@@ -178,16 +178,16 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
       }, AppConfig.timeouts.reportDialogs);
     }
   }, [showReportAlert]);
-  
+
   React.useEffect(() => {
     const initialLoad = navigation.addListener('focus', async () => {
       getComment();
       getCommentReplies(1);
     });
-    
+
     return initialLoad;
   }, [parentCommentId]);
-  
+
   React.useEffect(() => {
     if (parentComment) {
       postService.getPost(parentComment.postId).then((post) => {
@@ -195,11 +195,11 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
       });
     }
   }, [parentComment]);
-  
+
   const moveTo = (screen, payload?) => {
     navigation.navigate(screen, {...payload});
   };
-  
+
   const getComment = () => {
     commentService.getParentById(parentCommentId).then((parentComment) => {
       setParentComment(parentComment);
@@ -208,7 +208,7 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
       setParentCommentError(true);
     });
   }
-  
+
   const getCommentReplies = (page: number) => {
     setCommentRepliesLoading(true);
     commentService.getReplyComments(parentCommentId, page).then((replies) => {
@@ -227,7 +227,7 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
     });
     setCommentRepliesLoading(false);
   }
-  
+
   const isAdmin = useSelector(
     (state: IRootState) => state.authentication.isAdmin
   );
@@ -240,9 +240,9 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
         state.ghillie.ghillie.memberMeta?.role === GhillieRole.MODERATOR
       )
   );
-  
+
   const isPostOwner = post ? (post?.postedBy?.username === parentComment?.createdBy.username) : false;
-  
+
   const onHandleCommentReaction = (commentId: string, shouldDelete: boolean) => {
     postCommentReactionService.reactToParentComment(shouldDelete ? null : ReactionType.THUMBS_UP, commentId)
       .then(async () => {
@@ -259,11 +259,11 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
         });
       });
   }
-  
+
   const onHandleCommentReply = (comment: ParentCommentDto) => {
     moveTo("CreateChildComment", {parentComment: comment});
   }
-  
+
   const ownerDeleteComment = (commentId: string, isParent = true) => {
     if (isParent) {
       commentService.deleteParentComment(commentId)
@@ -295,7 +295,7 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
         })
     }
   }
-  
+
   const moderatorRemoveComment = (commentId: string, isParent = true) => {
     if (isParent) {
       commentService.deleteParentComment(commentId)
@@ -309,16 +309,16 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
         });
     }
   };
-  
+
   const onHandleCommentEdit = async (comment: ParentCommentDto) => {
     const post = await postService.getPost(comment.postId);
     moveTo("UpdatePostComment", {post: post.data, comment});
   }
-  
+
   const onHandleChildCommentEdit = (comment: ChildCommentDto) => {
     moveTo("UpdateChildComment", {comment});
   }
-  
+
   const onReportComment = (commentId: string, category: FlagCategory, details: string) => {
     setIsReportDialogOpen(false);
     flagService.flagComment({
@@ -340,7 +340,7 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
         });
       });
   }
-  
+
   const onHandleChildCommentReaction = (commentId: string, shouldDelete: boolean) => {
     postCommentReactionService.reactToChildComment(shouldDelete ? null : ReactionType.THUMBS_UP, commentId)
       .then(async () => {
@@ -357,16 +357,16 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
         });
       });
   }
-  
+
   const loadNextPage = () => {
     getCommentReplies(commentRepliesPage)
   }
-  
+
   const handleRefresh = () => {
     getComment();
     getCommentReplies(1)
   };
-  
+
   const _renderHeader = () => (
     <>
       {parentComment && (
@@ -433,7 +433,7 @@ export const CommentThreadScreen: React.FC<{ route: Route }> = ({route}) => {
       )}
     </>
   )
-  
+
   return (
     <MainContainer style={{
       flex: 1,

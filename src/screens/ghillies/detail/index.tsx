@@ -31,12 +31,12 @@ import postFeedService from "../../../shared/services/post-feed.service";
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 import {GhillieStatus} from "../../../shared/models/ghillies/ghillie-status";
 import GhillieService from "../../../shared/services/ghillie.service";
-import {FlashMessageRef} from "../../../app/App";
 import {Autolink} from "../../../components/autolink";
 import {PostNonFeedDto} from "../../../shared/models/posts/post-listing-non-feed.dto";
 import PostNonFeedCard from "../../../components/post-non-feed-card";
 import postService from "../../../shared/services/post.service";
 import {Colors} from "../../../shared/styles";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 const {primary, secondary} = colorsVerifyCode;
 
