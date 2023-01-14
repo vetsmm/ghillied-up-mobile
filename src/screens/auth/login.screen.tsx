@@ -15,7 +15,7 @@ import {useAppDispatch} from "../../store";
 import AuthService from "../../shared/services/auth.service";
 import {login} from "../../shared/reducers/authentication.reducer";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
-import {ValidationSchemas} from "../../shared/validators/schemas";
+import {ValidationSchemas} from "../../shared/validators";
 
 const {white} = colorsVerifyCode;
 

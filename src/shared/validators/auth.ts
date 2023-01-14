@@ -1,21 +1,6 @@
 import {date, object, ref, string} from "yup";
 
-const CreatePostSchema = object({
-    title: string()
-        .required('A Title is required')
-        .max(50, 'Title must be less than 50 characters')
-        .min(5, 'Title must be at least 5 characters'),
-    ghillie: string()
-        .required('A ghillie must be selected'),
-    content: string()
-        .required("A post must contain content")
-        .min(5, 'Content must be at least 5 characters')
-        .max(1000, 'Content must be less than 1000 characters'),
-    status: string()
-        .required('A status must be selected')
-});
-
-const LoginFormSchema = object({
+export const LoginFormSchema = object({
     username: string()
         .required('Username is required')
         .min(3, 'Username must be at least 3 characters long')
@@ -27,7 +12,7 @@ const LoginFormSchema = object({
         .max(25, 'Password must be less than 25 characters long')
 });
 
-const RegisterFormSchema = object({
+export const RegisterFormSchema = object({
     email: string()
         .required('Email is required')
         .email('Email must be a valid email address'),
@@ -49,7 +34,7 @@ const RegisterFormSchema = object({
         .required('Service Status is required')
 });
 
-const UpdateUserInfoFormSchema = object({
+export const UpdateUserInfoFormSchema = object({
     firstName: string()
         .optional()
         .max(30, 'First Name must be less than 30 characters'),
@@ -66,13 +51,13 @@ const UpdateUserInfoFormSchema = object({
         .optional()
 });
 
-const PasswordResetInitFormSchema = object({
+export const PasswordResetInitFormSchema = object({
     email: string()
         .required('Email is required')
         .email('Email must be a valid email address')
 });
 
-const PasswordChangeFormSchema = object({
+export const PasswordChangeFormSchema = object({
     oldPassword: string()
         .required('Old Password is required')
         .min(8, 'Old Password must be at least 8 characters long')
@@ -86,7 +71,7 @@ const PasswordChangeFormSchema = object({
         .oneOf([ref('newPassword')], 'Passwords must match')
 });
 
-const PasswordResetFormSchema = object({
+export const PasswordResetFormSchema = object({
     newPassword: string()
         .required('Password is required')
         .min(8, 'Password must be at least 8 characters long')
@@ -95,13 +80,3 @@ const PasswordResetFormSchema = object({
         .required('Confirm Password is required')
         .oneOf([ref('newPassword')], 'Passwords must match')
 });
-
-export const ValidationSchemas = {
-    CreatePostSchema,
-    LoginFormSchema,
-    RegisterFormSchema,
-    UpdateUserInfoFormSchema,
-    PasswordResetInitFormSchema,
-    PasswordChangeFormSchema,
-    PasswordResetFormSchema
-}

@@ -20,7 +20,7 @@ import AuthService from "../../shared/services/auth.service";
 import authErrorHandler from "../../shared/handlers/errors/auth-error.handler";
 import * as WebBrowser from "expo-web-browser";
 import AppConfig from "../../config/app.config";
-import {ValidationSchemas} from "../../shared/validators/schemas";
+import {ValidationSchemas} from "../../shared/validators";
 
 const {primary} = colorsVerifyCode;
 

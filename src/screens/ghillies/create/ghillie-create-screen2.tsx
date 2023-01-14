@@ -5,8 +5,8 @@ import MainContainer from "../../../components/containers/MainContainer";
 import RegularText from "../../../components/texts/regular-texts";
 import {colorsVerifyCode} from "../../../components/colors";
 import {Platform, TextInput, TouchableOpacity} from "react-native";
-import ghillieValidators from "../../../shared/validators/ghillies";
 import RegularButton from "../../../components/buttons/regular-button";
+import {ValidationSchemas} from "../../../shared/validators";
 
 
 const GhillieCreateScreen2 = ({route, navigation}) => {
@@ -36,7 +36,7 @@ const GhillieCreateScreen2 = ({route, navigation}) => {
                 setTopicError('Topic already exists');
                 return;
             }
-            if (ghillieValidators.isBadWord(topicName)) {
+            if (ValidationSchemas.IsBadWord(topicName)) {
                 setTopicError('Topic name cannot contain inappropriate words');
                 return;
             }

@@ -5,10 +5,6 @@ import {ActivityIndicator} from 'react-native';
 
 import {VStack} from "native-base";
 import {colorsVerifyCode} from "../../../../components/colors";
-import ghillieValidators from "../../../../shared/validators/ghillies";
-import {
-    UpdateGhillieFormValidationResponse
-} from "../../../../shared/validators/ghillies/create-ghillie-form.validator";
 import MainContainer from "../../../../components/containers/MainContainer";
 import KeyboardAvoidingContainer from "../../../../components/containers/KeyboardAvoidingContainer";
 import StyledTextInput from "../../../../components/inputs/styled-text-input";
@@ -25,6 +21,7 @@ import MessageModal from "../../../../components/modals/message-modal";
 import ImageUploader from '../../../../components/upload/image-upload';
 import {ImagePickerResult} from 'expo-image-picker';
 import {UpdateGhillieDto} from '../../../../shared/models/ghillies/update-ghillie.dto';
+import {ValidationSchemas} from "../../../../shared/validators";
 
 
 const {primary} = colorsVerifyCode;
@@ -144,25 +141,21 @@ export const GhillieUpdateScreen: React.FC = () => {
             setSubmitting(false);
         }
 
-        const _isFormInvalid = (formData): boolean => {
-            setMessage(null);
+        const _validateForm = (formData) => {
+            try {
+                ValidationSchemas.UpdateGhillieFormSchema
+                    .validateSync(formData, {abortEarly: false});
+                return {};
+            } catch (e: any) {
+                let errors = {};
+                e.inner.reduce((acc, curr) => {
+                    if (curr.message) {
+                        errors[curr.path] = curr.message;
+                    }
+                }, {});
 
-            const errors: UpdateGhillieFormValidationResponse = ghillieValidators.updateGhillieFormValidator(formData);
-
-            if (ghillie.imageUrl && !formData.ghillieLogo) {
-                errors.ghillieLogo = null;
+                return errors;
             }
-
-            setFormErrors({
-                name: errors.name,
-                about: errors.about,
-                ghillieLogo: errors.ghillieLogo,
-                readOnly: null,
-                isPrivate: null,
-                adminInviteOnly: null,
-            });
-
-            return Object.values(errors).some(error => error !== null);
         }
 
         return (
@@ -178,12 +171,11 @@ export const GhillieUpdateScreen: React.FC = () => {
                                 adminInviteOnly: ghillie.adminInviteOnly || false,
                                 ghillieLogo: null as unknown as ImagePickerResult
                             }}
+                            validate={_validateForm}
+                            validateOnChange={false}
+                            validateOnBlur={false}
                             onSubmit={(values, {setSubmitting}) => {
-                                if (!_isFormInvalid(values)) {
-                                    handleUpdate(values, setSubmitting);
-                                } else {
-                                    setSubmitting(false);
-                                }
+                                handleUpdate(values, setSubmitting);
                             }}
                         >
                             {({
@@ -192,7 +184,8 @@ export const GhillieUpdateScreen: React.FC = () => {
                                   handleBlur,
                                   handleSubmit,
                                   values,
-                                  isSubmitting
+                                  isSubmitting,
+                                  errors,
                               }) => (
                                 <>
                                     <ImageUploader
@@ -200,9 +193,18 @@ export const GhillieUpdateScreen: React.FC = () => {
                                         imageUri={values?.ghillieLogo?.assets?.[0]?.uri ?? ghillie.imageUrl}
                                     />
 
-                                    <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                                        {formErrors.ghillieLogo || ' '}
-                                    </MsgBox>
+                                    {formErrors.ghillieLogo && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {formErrors.ghillieLogo}
+                                        </MsgBox>
+                                    )}
+                                    {errors.ghillieLogo && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {/* @ts-ignore */}
+                                            {errors.ghillieLogo}
+                                        </MsgBox>
+                                    )}
+
 
                                     <StyledTextInput
                                         label="Ghillie Name"
@@ -216,9 +218,16 @@ export const GhillieUpdateScreen: React.FC = () => {
                                         isError={formErrors.name !== null}
                                     />
 
-                                    <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                                        {formErrors.name || ''}
-                                    </MsgBox>
+                                    {formErrors.name && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {formErrors.name}
+                                        </MsgBox>
+                                    )}
+                                    {errors.name && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {errors.name}
+                                        </MsgBox>
+                                    )}
 
                                     <StyledTextFieldInput
                                         label="About"
@@ -232,9 +241,16 @@ export const GhillieUpdateScreen: React.FC = () => {
                                         isError={formErrors.about !== null}
                                     />
 
-                                    <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                                        {formErrors.about || ' '}
-                                    </MsgBox>
+                                    {formErrors.about && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {formErrors.about}
+                                        </MsgBox>
+                                    )}
+                                    {errors.about && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {errors.about}
+                                        </MsgBox>
+                                    )}
 
                                     <StyledCheckboxInput
                                         label="Is this a private Ghillie? (Invite Only)"
@@ -243,12 +259,16 @@ export const GhillieUpdateScreen: React.FC = () => {
                                         isError={false}
                                     />
 
-                                    <MsgBox
-                                        style={message ? {marginBottom: 5} : {marginBottom: 0}}
-                                        success={isSuccessMessage}
-                                    >
-                                        {formErrors.isPrivate || ' '}
-                                    </MsgBox>
+                                    {formErrors.isPrivate && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {formErrors.isPrivate}
+                                        </MsgBox>
+                                    )}
+                                    {errors.isPrivate && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {errors.isPrivate}
+                                        </MsgBox>
+                                    )}
 
                                     {values.isPrivate && (
                                         <>
@@ -259,12 +279,16 @@ export const GhillieUpdateScreen: React.FC = () => {
                                                 isError={false}
                                             />
 
-                                            <MsgBox
-                                                style={message ? {marginBottom: 5} : {marginBottom: 0}}
-                                                success={isSuccessMessage}
-                                            >
-                                                {message || ' '}
-                                            </MsgBox>
+                                            {formErrors.adminInviteOnly && (
+                                                <MsgBox success={false} style={{marginBottom: 5}}>
+                                                    {formErrors.adminInviteOnly}
+                                                </MsgBox>
+                                            )}
+                                            {errors.adminInviteOnly && (
+                                                <MsgBox success={false} style={{marginBottom: 5}}>
+                                                    {errors.adminInviteOnly}
+                                                </MsgBox>
+                                            )}
                                         </>
                                     )}
 
@@ -278,9 +302,16 @@ export const GhillieUpdateScreen: React.FC = () => {
                                                 isError={false}
                                             />
 
-                                            <MsgBox style={{marginBottom: 5}} success={isSuccessMessage}>
-                                                {message || ' '}
-                                            </MsgBox>
+                                            {formErrors.readOnly && (
+                                                <MsgBox success={false} style={{marginBottom: 5}}>
+                                                    {formErrors.readOnly}
+                                                </MsgBox>
+                                            )}
+                                            {errors.readOnly && (
+                                                <MsgBox success={false} style={{marginBottom: 5}}>
+                                                    {errors.readOnly}
+                                                </MsgBox>
+                                            )}
                                         </>
                                     )}
 

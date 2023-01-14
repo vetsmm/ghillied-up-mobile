@@ -13,7 +13,7 @@ import StyledTextInput from "../../components/inputs/styled-text-input";
 import {VStack} from 'native-base';
 import AuthService from "../../shared/services/auth.service";
 import MsgBox from "../../components/texts/message-box";
-import {ValidationSchemas} from "../../shared/validators/schemas";
+import {ValidationSchemas} from "../../shared/validators";
 import {FlashMessageRef} from "../../components/flash-message/index";
 
 const {white} = colorsVerifyCode;

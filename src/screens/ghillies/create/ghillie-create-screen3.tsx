@@ -4,8 +4,6 @@ import {ActivityIndicator} from 'react-native';
 
 import {VStack} from "native-base";
 import {colorsVerifyCode} from "../../../components/colors";
-import ghillieValidators from "../../../shared/validators/ghillies";
-import {CreateGhillieFormValidationResponse} from "../../../shared/validators/ghillies/create-ghillie-form.validator";
 import MainContainer from "../../../components/containers/MainContainer";
 import KeyboardAvoidingContainer from "../../../components/containers/KeyboardAvoidingContainer";
 import StyledTextInput from "../../../components/inputs/styled-text-input";
@@ -21,6 +19,7 @@ import {ImagePickerResult} from 'expo-image-picker';
 import ImageUploader from '../../../components/upload/image-upload';
 import {CreateGhillieInputDto} from '../../../shared/models/ghillies/create-ghillie-input.dto';
 import {GhillieCategory} from "../../../shared/models/ghillies/ghillie-category";
+import {ValidationSchemas} from "../../../shared/validators";
 
 
 const {primary} = colorsVerifyCode;
@@ -113,22 +112,21 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
             }
         }
 
-        const _isFormInvalid = (formData): boolean => {
-            setMessage(null);
+        const _validateForm = (formData) => {
+            try {
+                ValidationSchemas.CreateGhillieFormSchema
+                    .validateSync(formData, {abortEarly: false});
+                return {};
+            } catch (e: any) {
+                let errors = {};
+                e.inner.reduce((acc, curr) => {
+                    if (curr.message) {
+                        errors[curr.path] = curr.message;
+                    }
+                }, {});
 
-            const errors: CreateGhillieFormValidationResponse = ghillieValidators.createGhillieFormValidator(formData);
-
-            setFormErrors({
-                name: errors.name,
-                about: errors.about,
-                ghillieLogo: errors.ghillieLogo,
-                topicNames: errors.topicNames,
-                readOnly: null,
-                isPrivate: null,
-                adminInviteOnly: null
-            });
-
-            return Object.values(errors).some(error => error !== null);
+                return errors;
+            }
         }
 
         return (
@@ -146,12 +144,11 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
                                 adminInviteOnly: false,
                                 isPrivate: false
                             }}
+                            validate={_validateForm}
+                            validateOnChange={false}
+                            validateOnBlur={false}
                             onSubmit={(values, {setSubmitting}) => {
-                                if (!_isFormInvalid(values)) {
-                                    handleCreate(values, setSubmitting);
-                                } else {
-                                    setSubmitting(false);
-                                }
+                                handleCreate(values, setSubmitting);
                             }}
                         >
                             {({
@@ -160,7 +157,8 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
                                   handleBlur,
                                   handleSubmit,
                                   values,
-                                  isSubmitting
+                                  isSubmitting,
+                                  errors,
                               }) => (
                                 <>
 
@@ -169,9 +167,17 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
                                         imageUri={values?.ghillieLogo?.assets?.[0]?.uri}
                                     />
 
-                                    <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                                        {formErrors.ghillieLogo || ' '}
-                                    </MsgBox>
+                                    {formErrors.ghillieLogo && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {formErrors.ghillieLogo || ' '}
+                                        </MsgBox>
+                                    )}
+                                    {errors.ghillieLogo && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {/* @ts-ignore */}
+                                            {errors.ghillieLogo}
+                                        </MsgBox>
+                                    )}
 
                                     <StyledTextInput
                                         label="Ghillie Name"
@@ -185,9 +191,16 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
                                         isError={formErrors.name !== null}
                                     />
 
-                                    <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                                        {formErrors.name && formErrors.name}
-                                    </MsgBox>
+                                    {formErrors.name && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {formErrors.name || ' '}
+                                        </MsgBox>
+                                    )}
+                                    {errors.name && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {errors.name}
+                                        </MsgBox>
+                                    )}
 
                                     <StyledTextFieldInput
                                         label="About"
@@ -201,9 +214,16 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
                                         isError={formErrors.about !== null}
                                     />
 
-                                    <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                                        {formErrors.about || ' '}
-                                    </MsgBox>
+                                    {formErrors.about && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {formErrors.about || ' '}
+                                        </MsgBox>
+                                    )}
+                                    {errors.about && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {errors.about}
+                                        </MsgBox>
+                                    )}
 
                                     <StyledCheckboxInput
                                         label="Is this a private Ghillie? (Invite Only)"
@@ -212,12 +232,16 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
                                         isError={false}
                                     />
 
-                                    <MsgBox
-                                        style={message ? { marginBottom: 5} : { marginBottom: 0}}
-                                        success={isSuccessMessage}
-                                    >
-                                        {formErrors.isPrivate || ' '}
-                                    </MsgBox>
+                                    {formErrors.isPrivate && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {formErrors.isPrivate || ' '}
+                                        </MsgBox>
+                                    )}
+                                    {errors.isPrivate && (
+                                        <MsgBox success={false} style={{marginBottom: 5}}>
+                                            {errors.isPrivate}
+                                        </MsgBox>
+                                    )}
 
                                     {values.isPrivate && (
                                         <>
@@ -228,12 +252,16 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
                                                 isError={false}
                                             />
 
-                                            <MsgBox
-                                                style={message ? { marginBottom: 5} : { marginBottom: 0}}
-                                                success={isSuccessMessage}
-                                            >
-                                                {message || ' '}
-                                            </MsgBox>
+                                            {formErrors.adminInviteOnly && (
+                                                <MsgBox success={false} style={{marginBottom: 5}}>
+                                                    {formErrors.adminInviteOnly || ' '}
+                                                </MsgBox>
+                                            )}
+                                            {errors.adminInviteOnly && (
+                                                <MsgBox success={false} style={{marginBottom: 5}}>
+                                                    {errors.adminInviteOnly}
+                                                </MsgBox>
+                                            )}
                                         </>
                                     )}
 
@@ -246,9 +274,16 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
                                                 isError={false}
                                             />
 
-                                            <MsgBox style={{marginBottom: 5}} success={isSuccessMessage}>
-                                                {message || ' '}
-                                            </MsgBox>
+                                            {formErrors.readOnly && (
+                                                <MsgBox success={false} style={{marginBottom: 5}}>
+                                                    {formErrors.readOnly || ' '}
+                                                </MsgBox>
+                                            )}
+                                            {errors.readOnly && (
+                                                <MsgBox success={false} style={{marginBottom: 5}}>
+                                                    {errors.readOnly}
+                                                </MsgBox>
+                                            )}
                                         </>
                                     )}
 

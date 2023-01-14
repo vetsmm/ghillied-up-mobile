@@ -11,7 +11,7 @@ import StyledTextInput from "../../components/inputs/styled-text-input";
 import RegularButton from "../../components/buttons/regular-button";
 import AuthService from "../../shared/services/auth.service";
 import {Center, Image, useColorModeValue, VStack} from "native-base";
-import {ValidationSchemas} from "../../shared/validators/schemas";
+import {ValidationSchemas} from "../../shared/validators";
 
 const {primary} = colorsVerifyCode;
 
