@@ -20,7 +20,7 @@ import {UpdateUserInput} from "../../../shared/models/users/update-user.input";
 import userErrorHandler, {UpdateUserFormErrors} from "../../../shared/handlers/errors/user-error.handler";
 import {useNavigation} from "@react-navigation/native";
 import {getAccount} from "../../../shared/reducers/authentication.reducer";
-import {ValidationSchemas} from "../../../shared/validators/schemas";
+import {ValidationSchemas} from "../../../shared/validators";
 import {FlashMessageRef} from "../../../components/flash-message/index";
 
 

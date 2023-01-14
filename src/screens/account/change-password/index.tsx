@@ -10,7 +10,7 @@ import RegularButton from "../../../components/buttons/regular-button";
 import KeyboardAvoidingContainer from "../../../components/containers/KeyboardAvoidingContainer";
 import AuthService from "../../../shared/services/auth.service";
 import {colorsVerifyCode} from "../../../components/colors";
-import {ValidationSchemas} from "../../../shared/validators/schemas";
+import {ValidationSchemas} from "../../../shared/validators";
 import {FlashMessageRef} from "../../../components/flash-message/index";
 
 const {primary} = colorsVerifyCode;

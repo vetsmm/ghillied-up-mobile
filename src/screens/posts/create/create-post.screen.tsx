@@ -25,7 +25,7 @@ import PostService from "../../../shared/services/post.service";
 import postErrorHandler from "../../../shared/handlers/errors/post-error.handler";
 import {PostStatus} from "../../../shared/models/posts/post-status";
 import RegularText from "../../../components/texts/regular-texts";
-import {ValidationSchemas} from "../../../shared/validators/schemas";
+import {ValidationSchemas} from "../../../shared/validators";
 import {FlashMessageRef} from "../../../components/flash-message/index";
 
 
