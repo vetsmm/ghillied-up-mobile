@@ -12,6 +12,7 @@ import GhillieUpdateScreen from "../../screens/ghillies/settings/update";
 import UpdateGhillieCategoryScreen from "../../screens/ghillies/settings/update-category";
 import UpdateGhillieTopicsScreen from "../../screens/ghillies/settings/update-topics";
 import {GhillieInviteScreen} from "../../screens/ghillies/invite";
+import GhillieMemberSettingsScreen from "../../screens/ghillies/settings/member-settings";
 
 
 interface GhillieScreenProps {
@@ -101,6 +102,27 @@ export const ghilliesScreen: Array<GhillieScreenProps> = [
     options: {
       title: "Ghillie Settings",
       headerBackTitle: "Ghillie",
+      headerShown: true,
+      gestureEnabled: true,
+      // title bar color
+      headerStyle: {
+        backgroundColor: colorsVerifyCode.primary,
+      },
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        color: colorsVerifyCode.white,
+      },
+      headerTintColor: colorsVerifyCode.white,
+    }
+  },
+  {
+    name: "GhillieMemberSettingsScreen",
+    path: "member-settings/:id",
+    component: GhillieMemberSettingsScreen,
+    options: {
+      title: "Member Settings",
+      headerBackTitle: "Settings",
       headerShown: true,
       gestureEnabled: true,
       // title bar color

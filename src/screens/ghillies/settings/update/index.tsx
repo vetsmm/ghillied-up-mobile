@@ -17,26 +17,16 @@ import {IRootState, useAppDispatch} from "../../../../store";
 import GhillieService from "../../../../shared/services/ghillie.service";
 import ghillieErrorHandler from "../../../../shared/handlers/errors/ghillie-error.handler";
 import {updateGhillie} from "../../../../shared/reducers/ghillie.reducer";
-import MessageModal from "../../../../components/modals/message-modal";
 import ImageUploader from '../../../../components/upload/image-upload';
 import {ImagePickerResult} from 'expo-image-picker';
 import {UpdateGhillieDto} from '../../../../shared/models/ghillies/update-ghillie.dto';
 import {ValidationSchemas} from "../../../../shared/validators";
+import {FlashMessageRef} from "../../../../components/flash-message/index";
 
 
 const {primary} = colorsVerifyCode;
 
 export const GhillieUpdateScreen: React.FC = () => {
-        const [message, setMessage] = useState<string | null>('');
-        const [isSuccessMessage, setIsSuccessMessage] = useState(false);
-
-        // modal
-        const [modalVisible, setModalVisible] = useState(false);
-        const [modalMessageType, setModalMessageType] = useState('');
-        const [headerText, setHeaderText] = useState('');
-        const [modalMessage, setModalMessage] = useState('');
-        const [buttonText, setButtonText] = useState('');
-
         const dispatch = useAppDispatch();
 
         const ghillie = useSelector(
@@ -64,18 +54,6 @@ export const GhillieUpdateScreen: React.FC = () => {
             ghillieLogo: null,
         });
 
-        const buttonHandler = () => {
-            setModalVisible(false);
-        };
-
-        const showModal = (type: any, headerText: any, message: any, buttonText: any) => {
-            setModalMessageType(type);
-            setHeaderText(headerText);
-            setModalMessage(message);
-            setButtonText(buttonText);
-            setModalVisible(true);
-        };
-
         const hasGhillieBeenUpdated = (form) => {
             return form.name !== ghillie.name ||
                 form.about !== ghillie.about ||
@@ -85,8 +63,6 @@ export const GhillieUpdateScreen: React.FC = () => {
         }
 
         const handleUpdate = async (form, setSubmitting) => {
-            setMessage(null);
-
             const nonFormData = {
                 name: form.name,
                 about: form.about,
@@ -104,8 +80,14 @@ export const GhillieUpdateScreen: React.FC = () => {
                     })
                     .catch(error => {
                         hasError = true;
-                        setIsSuccessMessage(false);
-                        setMessage(error?.data?.error?.message || 'Something went wrong while updating ghillie, please try again later.');
+                        FlashMessageRef.current?.showMessage({
+                            message: error?.data?.error?.message || 'Something went wrong while updating ghillie, please try again later.',
+                            type: 'danger',
+                            style: {
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }
+                        });
                         if (error?.data?.error) {
                             const errorContext = ghillieErrorHandler.handleCreateGhillieError(error.data.error);
                             setFormErrors(errorContext);
@@ -116,13 +98,17 @@ export const GhillieUpdateScreen: React.FC = () => {
             if (form.ghillieLogo) {
                 GhillieService.updateGhillieImage(ghillie.id, form.ghillieLogo?.assets?.[0]?.uri)
                     .then((res) => {
-                        setIsSuccessMessage(true);
                         dispatch(updateGhillie(res));
-                        showModal('success', 'Success', 'Ghillie updated successfully', 'OK');
                     })
                     .catch(error => {
-                        setIsSuccessMessage(false);
-                        setMessage(error?.data?.error?.message || 'Something went wrong while updating logo, please try again later.');
+                        FlashMessageRef.current?.showMessage({
+                            message: error?.data?.error?.message || 'Something went wrong while updating logo, please try again later.',
+                            type: 'danger',
+                            style: {
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }
+                        });
                         if (error?.data?.error) {
                             const errorContext = ghillieErrorHandler.handleCreateGhillieError(error.data.error);
                             setFormErrors({
@@ -133,8 +119,14 @@ export const GhillieUpdateScreen: React.FC = () => {
                     });
             } else {
                 if (!hasError) {
-                    setIsSuccessMessage(true);
-                    showModal('success', 'Success', 'Ghillie updated successfully', 'OK');
+                    FlashMessageRef.current?.showMessage({
+                        message: 'Ghillie updated successfully',
+                        type: 'success',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
                 }
             }
 
@@ -326,14 +318,6 @@ export const GhillieUpdateScreen: React.FC = () => {
                         </Formik>
                     </VStack>
                 </KeyboardAvoidingContainer>
-                <MessageModal
-                    modalVisible={modalVisible}
-                    buttonHandler={buttonHandler}
-                    type={modalMessageType}
-                    headerText={headerText}
-                    message={modalMessage}
-                    buttonText={buttonText}
-                />
             </MainContainer>
         );
     }

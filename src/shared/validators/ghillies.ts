@@ -36,3 +36,7 @@ export const UpdateGhillieFormSchema = object({
     isPrivate: boolean().optional(),
     adminInviteOnly: boolean().optional(),
 });
+
+export const UpdateGhillieMemberSettingsFormSchema = object({
+    newPostNotifications: boolean().optional(),
+});

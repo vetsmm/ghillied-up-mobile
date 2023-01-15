@@ -7,7 +7,11 @@ import {
     UpdateUserInfoFormSchema
 } from "./auth";
 import {CreatePostSchema} from "./posts";
-import {CreateGhillieFormSchema, UpdateGhillieFormSchema} from "./ghillies";
+import {
+    CreateGhillieFormSchema,
+    UpdateGhillieFormSchema,
+    UpdateGhillieMemberSettingsFormSchema
+} from "./ghillies";
 import {IsBadWord} from "./utils";
 
 export const ValidationSchemas = {
@@ -20,5 +24,6 @@ export const ValidationSchemas = {
     PasswordChangeFormSchema,
     PasswordResetFormSchema,
     CreateGhillieFormSchema,
-    UpdateGhillieFormSchema
+    UpdateGhillieFormSchema,
+    UpdateGhillieMemberSettingsFormSchema
 }

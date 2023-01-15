@@ -4,7 +4,7 @@ import {ActivityIndicator, Image, TouchableOpacity} from "react-native";
 import styles from "./styles";
 import {ScrollView, Text, View} from "native-base";
 import {SharedElement} from "react-navigation-shared-element";
-import {Ionicons, MaterialIcons} from "@expo/vector-icons";
+import {FontAwesome, Ionicons, MaterialIcons} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../../../../components/colors";
 import {convertDateTimeFromServer} from "../../../../shared/utils/date-utils";
 import {useNavigation} from "@react-navigation/native";
@@ -299,6 +299,13 @@ export const GhillieSettingsScreen: React.FC = () => {
 
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Member Tools</Text>
+                    <TouchableOpacity
+                        style={styles.sectionButton}
+                        onPress={() => moveTo("GhillieMemberSettingsScreen")}
+                    >
+                        <Text style={styles.sectionButtonText}>Member Settings</Text>
+                        <FontAwesome name="cog" size={24} color={colorsVerifyCode.secondary}/>
+                    </TouchableOpacity>
                     {ghillie.inviteCode && _renderShareButtons()}
                     <TouchableOpacity
                         style={styles.sectionButton}
