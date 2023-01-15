@@ -24,8 +24,8 @@ export interface CommentBlockProps {
     onCommentReact: (commentId: string, shouldDelete: boolean) => void;
     onCommentReply: (comment: ParentCommentDto) => void;
     onReactToChildComment: (commentId: string, shouldDelete: boolean) => void;
-    onDeleteComment: (commentId: string) => void;
-    onModeratorRemoval: (commentId: string) => void;
+    onDeleteComment: (commentId: string, isParent: boolean) => void;
+    onModeratorRemoval: (commentId: string, isParent: boolean) => void;
     onEditComment: (comment: ParentCommentDto) => void;
     onEditChildComment: (comment: ChildCommentDto) => void;
     isAdmin: boolean;
@@ -137,11 +137,11 @@ export const CommentBlock: ({
                     onClose={() => setIsParentOpen(false)}
                     onDelete={() => {
                         setIsParentOpen(false);
-                        onDeleteComment(item.id);
+                        onDeleteComment(item.id, true);
                     }}
                     onRemove={() => {
                         setIsParentOpen(false);
-                        onModeratorRemoval(item.id);
+                        onModeratorRemoval(item.id, true);
                     }}
                     onEdit={() => {
                         setIsParentOpen(false);
@@ -200,11 +200,11 @@ export const CommentBlock: ({
                         onClose={() => setIsChildOpen(false)}
                         onDelete={() => {
                             setIsChildOpen(false);
-                            onDeleteComment(item.id);
+                            onDeleteComment(item.latestChildComments[0].id, false);
                         }}
                         onRemove={() => {
                             setIsChildOpen(false);
-                            onModeratorRemoval(item.id);
+                            onModeratorRemoval(item.latestChildComments[0].id, false);
                         }}
                         onEdit={() => {
                             setIsChildOpen(false);

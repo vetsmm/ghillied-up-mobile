@@ -5,7 +5,7 @@ import {
     RefreshControl, TouchableOpacity
 } from 'react-native';
 import {colorsVerifyCode} from "../../../components/colors";
-import {Text, Spinner, View, Hidden, VStack, HStack, Center} from "native-base";
+import {Text, Spinner, View, Hidden, VStack, HStack} from "native-base";
 import {useSelector} from "react-redux";
 import {IRootState} from "../../../store";
 import PostService from "../../../shared/services/post.service";
@@ -25,8 +25,6 @@ import FlatListEmptyComponent from "../../../components/flatlist-empty-component
 import postCommentReactionService from "../../../shared/services/post-comment-reaction.service";
 import {FlagCategory} from "../../../shared/models/flags/flag-category";
 import flagService from "../../../shared/services/flag.service";
-import {SuccessAlert} from "../../../components/alerts/success-alert";
-import AppConfig from '../../../config/app.config';
 import {ParentCommentDto} from '../../../shared/models/comments/parent-comment.dto';
 import {ChildCommentDto} from '../../../shared/models/comments/child-comment.dto';
 import {Ionicons} from "@expo/vector-icons";
@@ -71,24 +69,9 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const [isError, setError] = React.useState(false);
     const [parentCommentsPage, setParentCommentsPage] = React.useState(1);
     const [parentComments, setParentComments] = React.useState<ParentCommentDto[]>([]);
-    const [showReportAlert, setShowReportAlert] = React.useState(false);
-    const [showBookmarkAlert, setShowBookmarkAlert] = React.useState(false);
     const [postReactionLoading, setPostReactionLoading] = React.useState(false);
     const [parentCommentReactionLoading, setParentCommentReactionLoading] = React.useState(false);
     const [childCommentReactionLoading, setChildCommentReactionLoading] = React.useState(false);
-
-    useEffect(() => {
-        if (showReportAlert) {
-            setTimeout(() => {
-                setShowReportAlert(false);
-            }, 3000);
-        }
-        if (showBookmarkAlert) {
-            setTimeout(() => {
-                setShowBookmarkAlert(false);
-            }, AppConfig.timeouts.reportDialogs);
-        }
-    }, [showReportAlert, showBookmarkAlert]);
 
     const isAdmin = useSelector(
         (state: IRootState) => state.authentication.isAdmin
@@ -137,7 +120,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                     setParentCommentsPage(page);
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 FlashMessageRef.current?.showMessage({
                     message: page === 1 ? 'Failed to load comments' : 'Failed to load more comments',
                     type: 'danger',
@@ -157,7 +140,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         postService.getPost(postId).then((res) => {
             setPost(res.data);
             setError(false);
-        }).catch((err) => {
+        }).catch(() => {
             FlashMessageRef.current?.showMessage({
                 message: 'An error occurred while loading post',
                 type: 'danger',
@@ -185,7 +168,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             postService.getPost(postId).then((res) => {
                 setPost(res.data);
                 setError(false);
-            }).catch((err) => {
+            }).catch(() => {
                 FlashMessageRef.current?.showMessage({
                     message: 'An error occurred while loading post',
                     type: 'danger',
@@ -215,10 +198,18 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         PostService.updatePost(post.id, {
             status: PostStatus.REMOVED
         })
-            .then(async res => {
+            .then(async () => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'Post Removed',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
                 moveTo("Feed", {screen: "PostFeed"});
             })
-            .catch(err => {
+            .catch(() => {
                 FlashMessageRef.current?.showMessage({
                     message: 'An error occurred while removing post',
                     type: 'danger',
@@ -233,9 +224,16 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
     const onBookmarkPost = (post) => {
         postService.bookmarkPost(post.id)
             .then(() => {
-                setShowBookmarkAlert(true);
+                FlashMessageRef.current?.showMessage({
+                    message: 'Post bookmarked',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             })
-            .catch(err => {
+            .catch(() => {
                 FlashMessageRef.current?.showMessage({
                     message: 'An error occurred while bookmarking post',
                     type: 'danger',
@@ -254,9 +252,17 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             details
         })
             .then(() => {
-                setShowReportAlert(true);
+                FlashMessageRef.current?.showMessage({
+                    title: 'Post Reported',
+                    message: 'Thank you for reporting this post',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
             })
-            .catch((err) => {
+            .catch(() => {
                 FlashMessageRef.current?.showMessage({
                     message: 'An error occurred while reporting post',
                     type: 'danger',
@@ -272,10 +278,18 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         PostService.updatePost(post.id, {
             status: PostStatus.ARCHIVED
         })
-            .then(async res => {
+            .then(async () => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'Post removed',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
                 moveTo("Feed", {screen: "PostFeed"});
             })
-            .catch(err => {
+            .catch(() => {
                 FlashMessageRef.current?.showMessage({
                     message: 'An error occurred while deleting post',
                     type: 'danger',
@@ -293,7 +307,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             .then(async () => {
                 await getPost();
             })
-            .catch(err => {
+            .catch(() => {
                 FlashMessageRef.current?.showMessage({
                     message: 'An error occurred while reacting to post',
                     type: 'danger',
@@ -313,7 +327,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             .then(async () => {
                 await getTopLevelComments(parentCommentsPage - 1);
             })
-            .catch(err => {
+            .catch(() => {
                 FlashMessageRef.current?.showMessage({
                     message: 'An error occurred while reacting to comment',
                     type: 'danger',
@@ -334,7 +348,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             .then(async () => {
                 await getTopLevelComments(parentCommentsPage - 1);
             })
-            .catch(err => {
+            .catch(() => {
                 FlashMessageRef.current?.showMessage({
                     message: 'An error occurred while reacting to comment',
                     type: 'danger',
@@ -353,18 +367,104 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         moveTo("CreateChildComment", {parentComment: comment});
     }
 
-    const moderatorRemoveComment = (commentId: string) => {
-        commentService.deleteParentComment(commentId)
-            .then(() =>
-                getPost()
-            );
+    const moderatorRemoveComment = (commentId: string, isParent: boolean) => {
+        if (isParent) {
+            commentService.deleteParentComment(commentId)
+                .then(() => {
+                    FlashMessageRef.current?.showMessage({
+                        message: 'Comment removed',
+                        type: 'success',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
+                    getPost()
+                })
+                .catch(() => {
+                    FlashMessageRef.current?.showMessage({
+                        message: 'An error occurred while removing comment',
+                        type: 'danger',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
+                });
+        } else {
+            commentService.deleteReplyComment(commentId)
+                .then(() => {
+                    FlashMessageRef.current?.showMessage({
+                        message: 'Comment removed',
+                        type: 'success',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
+                    getPost()
+                })
+                .catch(() => {
+                    FlashMessageRef.current?.showMessage({
+                        message: 'An error occurred while removing comment',
+                        type: 'danger',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
+                });
+        }
     };
 
-    const ownerDeleteComment = (commentId: string) => {
-        commentService.deleteParentComment(commentId)
-            .then(() => {
-                getPost();
-            });
+    const ownerDeleteComment = (commentId: string, isParent: boolean) => {
+        if (isParent) {
+            commentService.deleteParentComment(commentId)
+                .then(() => {
+                    FlashMessageRef.current?.showMessage({
+                        message: 'Comment deleted',
+                        type: 'success',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
+                    getPost()
+                })
+                .catch(() => {
+                    FlashMessageRef.current?.showMessage({
+                        message: 'An error occurred while deleting comment',
+                        type: 'danger',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
+                })
+        } else {
+            commentService.deleteReplyComment(commentId)
+                .then(() => {
+                    FlashMessageRef.current?.showMessage({
+                        message: 'Comment Reply Deleted',
+                        type: 'success',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
+                    getPost()
+                })
+                .catch(() => {
+                    FlashMessageRef.current?.showMessage({
+                        message: 'An error occurred while deleting comment reply',
+                        type: 'danger',
+                        style: {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }
+                    });
+                });
+        }
     }
 
     const onHandleCommentEdit = (comment: ParentCommentDto) => {
@@ -381,6 +481,66 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
 
     const onHandleViewReplies = (commentId: string) => {
         moveTo("CommentThread", {parentCommentId: commentId});
+    }
+
+    const onSubscribe = (postId: string) => {
+        PostService.subscribeToPost(postId)
+            .then(() => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'Subscribed to post',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+                setPost((prevState) => {
+                    return {
+                        ...prevState!,
+                        isSubscribed: true
+                    }
+                });
+            })
+            .catch(() => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while subscribing to the post',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            });
+    }
+
+    const onUnsubscribe = (postId: string) => {
+        PostService.unsubscribeFromPost(postId)
+            .then(() => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'Unsubscribed to post',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+                setPost((prevState) => {
+                    return {
+                        ...prevState!,
+                        isSubscribed: false
+                    }
+                });
+            })
+            .catch(() => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'An error occurred while Unsubscribing to the post',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            });
     }
 
     const renderItem = useCallback(
@@ -408,7 +568,7 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             );
         }, [isAdmin, isModerator, isPostOwner]);
 
-    const keyExtractor = (item, index) => item.id;
+    const keyExtractor = (item) => item.id;
 
     const renderSpinner = () => {
         return <Spinner color="emerald.500" size="lg"/>;
@@ -482,19 +642,9 @@ export const PostDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                                     isModerator={isModerator}
                                     navigation={navigation}
                                     reactionLoading={postReactionLoading}
+                                    onSubscribe={onSubscribe}
+                                    onUnsubscribe={onUnsubscribe}
                                 />
-                                {showReportAlert && (
-                                    <SuccessAlert
-                                        title="Report Sent"
-                                        body="Thank you for reporting this post. We appreciate your help in keeping our community safe. If appropriate, we will take the necessary actions."
-                                    />
-                                )}
-                                {showBookmarkAlert && (
-                                    <SuccessAlert
-                                        title="Bookmark Added"
-                                        body="This post has been added to your bookmarks."
-                                    />
-                                )}
                             </>
                         )}
                     >
