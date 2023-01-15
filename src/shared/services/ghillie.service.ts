@@ -8,6 +8,8 @@ import {UpdateGhillieDto} from '../models/ghillies/update-ghillie.dto';
 import {Platform} from 'react-native';
 import {CreateGhillieInputDto} from '../models/ghillies/create-ghillie-input.dto';
 import {CombinedGhilliesDto} from "../models/ghillies/combined-ghillies.dto";
+import {GhillieMemberSettingsUpdateDto} from "../models/ghillies/ghillie-member-settings-update.dto";
+import {GhillieMemberDto} from "../models/ghillies/ghillie-member.dto";
 
 const getGhillies = async (criteria: GhillieSearchCriteria): Promise<BaseApiResponse<Array<GhillieDetailDto>, PageInfo>> => {
     return await axios.post(`${AppConfig.apiUrl}/ghillies/all`, criteria)
@@ -148,6 +150,20 @@ const getGhillieByInviteCode = async (inviteCode: string): Promise<GhillieDetail
         });
 }
 
+const updateGhillieMemberSettings = async (ghillieId: string, settings: GhillieMemberSettingsUpdateDto): Promise<GhillieMemberDto> => {
+    return await axios.patch(`${AppConfig.apiUrl}/ghillies/${ghillieId}/member-settings`, settings)
+        .then(response => {
+            return response.data;
+        });
+}
+
+const getGhillieMemberSettings = async (ghillieId: string): Promise<GhillieMemberDto> => {
+    return await axios.get(`${AppConfig.apiUrl}/ghillies/${ghillieId}/member-settings`)
+        .then(response => {
+            return response.data;
+        });
+}
+
 const ghillieService = {
     getGhillies,
     joinGhillie,
@@ -167,7 +183,9 @@ const ghillieService = {
     addTopicsToGhillie,
     removeTopicsFromGhillies,
     generateInviteCode,
-    getGhillieByInviteCode
+    getGhillieByInviteCode,
+    updateGhillieMemberSettings,
+    getGhillieMemberSettings
 }
 
 export default ghillieService;

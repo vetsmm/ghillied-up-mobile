@@ -2,6 +2,7 @@ import {GhillieDetailDto} from "../models/ghillies/ghillie-detail.dto";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import GhillieService from "../services/ghillie.service";
 import {GhillieSearchCriteria} from "../models/ghillies/ghillie-search.criteria";
+import {GhillieMemberDto} from "../models/ghillies/ghillie-member.dto";
 
 export const initialState = {
   loading: false,
@@ -82,6 +83,12 @@ export const GhillieSlice = createSlice({
     },
     updateGhillie: (state, action) => {
       state.ghillie = action.payload;
+    },
+    updateGhillieMember: (state, action) => {
+      state.ghillie = {
+        ...state.ghillie,
+        memberMeta: action.payload
+      }
     }
   },
   extraReducers(builder) {
@@ -166,5 +173,6 @@ export default GhillieSlice.reducer;
 // eslint-disable-next-line no-empty-pattern
 export const {
   resetResults,
-  updateGhillie
+  updateGhillie,
+  updateGhillieMember
 } = GhillieSlice.actions;

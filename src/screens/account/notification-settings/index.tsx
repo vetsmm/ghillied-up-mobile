@@ -2,26 +2,14 @@ import React from "react";
 import MainContainer from "../../../components/containers/MainContainer";
 import styles from "./styles";
 import RegularText from "../../../components/texts/regular-texts";
-import {Spinner, Switch, Text, View} from "native-base";
+import {View} from "native-base";
 import {UserPushNotificationSettingsDto} from "../../../shared/models/settings/user-push-notification-settings.dto";
 import {useNavigation} from "@react-navigation/native";
 import userSettingsService from "../../../shared/services/user-settings.service";
 import {UserPushNotificationsInputDto} from "../../../shared/models/settings/user-push-notifications-input.dto";
+import ItemToggle from "../../../components/item-toggle";
 
 type TOGGLE_TYPE = "POST_REACTION" | "COMMENT_REACTION" | "POST_REPLY" | "NEW_ACTIVITY";
-
-const ItemToggle = ({title, value, onValueChange, isLoading, isDisabled}) => {
-    return (
-        <View style={styles.sectionItem}>
-            <Text style={styles.sectionButtonText}>{title}</Text>
-            {isLoading ? (
-                <Spinner color="blue"/>
-            ) : (
-                <Switch size="lg" onToggle={onValueChange} value={value} isDisabled={isDisabled}/>
-            )}
-        </View>
-    );
-}
 
 export const PushNotificationSettings = () => {
     const [{

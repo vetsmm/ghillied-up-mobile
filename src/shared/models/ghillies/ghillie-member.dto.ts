@@ -7,4 +7,5 @@ export interface GhillieMemberDto {
   joinDate: Date;
   memberStatus: MemberStatus;
   role: GhillieRole;
+  newPostNotifications: boolean;
 }
