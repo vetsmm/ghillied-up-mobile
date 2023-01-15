@@ -18,6 +18,8 @@ export interface PostSharedElementProps {
     ownerDeletePost: (post: PostListingDto | PostDetailDto) => void;
     moderatorRemovePost: (post: PostListingDto | PostDetailDto) => void;
     onHandleReaction: (postId: string, reaction: ReactionType | null) => void;
+    onSubscribe: (postId: string) => void;
+    onUnsubscribe: (postId: string) => void;
     isPostOwner: boolean;
     isAdmin: boolean;
     isModerator: boolean;
@@ -37,6 +39,8 @@ export const PostSharedElement = ({
                                       isAdmin,
                                       isModerator,
                                       navigation,
+                                      onSubscribe,
+                                      onUnsubscribe,
                                       reactionLoading = false
                                   }: PostSharedElementProps) => {
     return (
@@ -57,6 +61,8 @@ export const PostSharedElement = ({
                         isAdmin={isAdmin}
                         isModerator={isModerator}
                         reactionLoading={reactionLoading}
+                        onSubscribe={onSubscribe}
+                        onUnsubscribe={onUnsubscribe}
                     />
                 )}
             </SharedElement>

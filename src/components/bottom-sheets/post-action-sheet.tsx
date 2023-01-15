@@ -1,7 +1,7 @@
 import React from "react";
 import {Actionsheet, Divider, Icon} from "native-base";
 import {colorsVerifyCode} from "../colors";
-import {Ionicons, MaterialIcons} from "@expo/vector-icons";
+import {FontAwesome, Ionicons, MaterialIcons} from "@expo/vector-icons";
 
 export interface PostActionSheetProps {
     isOpen: boolean;
@@ -21,6 +21,9 @@ export interface PostActionSheetProps {
     isPinnable?: boolean;
     onPinPost: () => void;
     onUnpinPost: () => void;
+    isSubscribed?: boolean;
+    onSubscribe?: () => void;
+    onUnsubscribe?: () => void;
 }
 
 export const PostActionSheet = ({
@@ -35,6 +38,9 @@ export const PostActionSheet = ({
                                     onShare,
                                     onPinPost,
                                     onUnpinPost,
+                                    isSubscribed,
+                                    onSubscribe,
+                                    onUnsubscribe,
                                     isPinnable = false,
                                     isPinned = false,
                                     isOwner = false,
@@ -42,6 +48,10 @@ export const PostActionSheet = ({
                                     isAdmin = false,
                                     isGhillieMember = false,
                                 }: PostActionSheetProps) => {
+
+    if (isSubscribed !== undefined && onSubscribe === undefined && onUnsubscribe === undefined) {
+        throw new Error("onSubscribe and onUnsubscribe must be defined if isSubscribed is defined");
+    }
 
     return (
         <Actionsheet isOpen={isOpen} onClose={onClose}>
@@ -78,6 +88,23 @@ export const PostActionSheet = ({
                         >
                             Bookmark Post
                         </Actionsheet.Item>
+                        {(isSubscribed !== undefined && !isOwner) && (
+                            <Actionsheet.Item
+                                onPress={() => isSubscribed ? onUnsubscribe!() : onSubscribe!()}
+                                mr={3}
+                                startIcon={
+                                    <Icon
+                                        as={<FontAwesome name="bell"/>}
+                                        size={30}
+                                    />
+                                }
+                                _text={{
+                                    fontSize: 20
+                                }}
+                            >
+                                {isSubscribed ? "Unsubscribe" : "Subscribe"}
+                            </Actionsheet.Item>
+                        )}
                         <Actionsheet.Item
                             onPress={() => onShare()}
                             mr={3}

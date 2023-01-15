@@ -1,14 +1,14 @@
 import { axiosInstance as axios } from './api'
 import AppConfig from "../../config/app.config";
-import {CreatePostInputDto} from "../models/posts/create-post-input.dto";
 import {UpdatePostInputDto} from "../models/posts/update-post-input.dto";
 import {BaseApiResponse} from "../models/base-api-response";
 import {PostDetailDto} from "../models/posts/post-detail.dto";
 import {PostListingDto} from "../models/posts/post-listing.dto";
 import {PageInfo} from "../models/pagination/types";
 import {PostNonFeedDto} from "../models/posts/post-listing-non-feed.dto";
+import {CreatePostInput} from "../models/posts/create-post-input.dto";
 
-const createPost = async (post: CreatePostInputDto): Promise<BaseApiResponse<PostDetailDto, any>> => {
+const createPost = async (post: CreatePostInput): Promise<BaseApiResponse<PostDetailDto, any>> => {
     return axios.post(`${AppConfig.apiUrl}/posts`, post)
         .then(response => {
             return response.data;
@@ -85,6 +85,20 @@ const getPinnedPostsForGhillie = async (ghillieId: string): Promise<PostNonFeedD
         });
 }
 
+const subscribeToPost = async (id: string): Promise<void> => {
+    return axios.put(`${AppConfig.apiUrl}/posts/${id}/subscribe`)
+        .then(response => {
+            return response.data;
+        });
+}
+
+const unsubscribeFromPost = async (id: string): Promise<void> => {
+    return axios.put(`${AppConfig.apiUrl}/posts/${id}/unsubscribe`)
+        .then(response => {
+            return response.data;
+        });
+}
+
 const postService = {
     createPost,
     getPost,
@@ -96,7 +110,9 @@ const postService = {
     unBookmarkPost,
     pinPost,
     unpinPost,
-    getPinnedPostsForGhillie
+    getPinnedPostsForGhillie,
+    subscribeToPost,
+    unsubscribeFromPost,
 }
 
 export default postService;

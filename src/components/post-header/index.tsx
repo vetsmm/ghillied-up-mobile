@@ -9,7 +9,6 @@ import {
     Avatar,
     View, Spinner
 } from "native-base";
-import {PostListingDto} from "../../shared/models/posts/post-listing.dto";
 import {AntDesign, MaterialIcons} from "@expo/vector-icons";
 import {getMilitaryString} from "../../shared/utils/military-utils";
 import RegularText from "../texts/regular-texts";
@@ -29,18 +28,21 @@ import {PostContent} from '../post-content';
 import ShareUtils from "../../shared/utils/share-utils";
 import postService from "../../shared/services/post.service";
 import {FlashMessageRef} from "../flash-message/index";
+import PostService from "../../shared/services/post.service";
 
 export interface IPostCardProps {
-    post: PostListingDto | PostDetailDto;
+    post: PostDetailDto;
     isOwner?: boolean;
     isAdmin?: boolean;
     isModerator?: boolean;
-    onBookmarkPost: (post: PostListingDto | PostDetailDto) => void;
+    onBookmarkPost: (post: PostDetailDto) => void;
     onReport: (category: FlagCategory, details: string) => void;
-    onOwnerDelete: (post: PostListingDto | PostDetailDto) => void;
-    onModeratorRemoval: (post: PostListingDto | PostDetailDto) => void;
+    onOwnerDelete: (post: PostDetailDto) => void;
+    onModeratorRemoval: (post: PostDetailDto) => void;
     onHandleReaction: (postId: string, reaction: ReactionType | null) => void;
     reactionLoading?: boolean;
+    onSubscribe: (postId: string) => void;
+    onUnsubscribe: (postId: string) => void;
 }
 
 export const PostHeader = ({
@@ -49,6 +51,8 @@ export const PostHeader = ({
                                onBookmarkPost,
                                onOwnerDelete,
                                onHandleReaction,
+                               onSubscribe,
+                               onUnsubscribe,
                                onReport,
                                isAdmin,
                                isOwner,
@@ -235,6 +239,15 @@ export const PostHeader = ({
                 isPinned={post.isPinned}
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
+                isSubscribed={post.isSubscribed}
+                onSubscribe={() => {
+                    onSubscribe(post.id);
+                    setIsOpen(false);
+                }}
+                onUnsubscribe={() => {
+                    onUnsubscribe(post.id);
+                    setIsOpen(false);
+                }}
                 onPinPost={() => {
                     onPinPost(post.id);
                     setIsOpen(false);

@@ -33,4 +33,5 @@ export interface PostDetailDto {
   edited: boolean;
   linkMeta?: LinkMeta | undefined;
   isPinned: boolean;
+  isSubscribed: boolean;
 }
