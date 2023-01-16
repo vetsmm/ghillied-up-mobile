@@ -6,7 +6,6 @@ import {persistor, store} from "../store";
 import {NativeBaseProvider} from "native-base";
 import {appTheme} from "../shared/styles/app.theme"
 import NavContainer from "../navigation/navigation-container";
-import * as Notifications from 'expo-notifications';
 
 import * as Sentry from 'sentry-expo';
 import AppConfig from "../config/app.config";
@@ -28,14 +27,6 @@ Sentry.init({
     enableAutoPerformanceTracking: AppConfig.sentry.enableAutoPerformanceTracking,
     enableOutOfMemoryTracking: AppConfig.sentry.enableOutOfMemoryTracking,
     debug: AppConfig.sentry.enableDebug, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-});
-
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true,
-    }),
 });
 
 const _renderApp = () => {

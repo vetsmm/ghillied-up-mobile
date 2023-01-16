@@ -8,7 +8,6 @@ import {NavigationContainer} from "@react-navigation/native";
 import {isReadyRef, navigationRef} from "./nav-ref";
 import ApplicationTabBar from "../components/tab-bar/application-tab-bar";
 import notificationService from "../shared/services/push-notification.service";
-import * as Notifications from "expo-notifications";
 import settingsService from "../shared/services/settings.service";
 import {getUnreadNotifications} from "../shared/reducers/notifications.reducer";
 import {usePolling} from "../shared/hooks";
@@ -23,6 +22,9 @@ import {getNotificationScreenRoutes} from "./stacks/notification-stack";
 import {getAccountRoutes} from "./stacks/account-stack";
 import {getGhillieScreenRoutes} from "./stacks/ghillie-stack";
 import NoAuthStackNavigator, {getNoAuthScreenRoutes} from "./stacks/no-auth-stack";
+import {FlashMessageRef} from "../components/flash-message/index";
+import * as Sentry from 'sentry-expo';
+import messaging from "@react-native-firebase/messaging";
 
 export const linkingConfig: LinkingOptions<any> | undefined = {
     enabled: true,
@@ -87,7 +89,7 @@ export const linkingConfig: LinkingOptions<any> | undefined = {
 const Stack = createNativeStackNavigator();
 
 function NavContainer() {
-    const [expoPushToken, setExpoPushToken] = React.useState<any>('');
+    const [pushToken, setPushToken] = React.useState<string>();
     const [delay, setDelay] = React.useState<number>(30000);
     const notificationListener = React.useRef<any>();
     const responseListener = React.useRef<any>();
@@ -130,31 +132,57 @@ function NavContainer() {
     }, [dispatch]);
 
     React.useEffect(() => {
-        const addTokenToUser = async (token: any) => {
+        const addTokenToUser = async (token: string) => {
             await settingsService.addPushTokenToAccount(token);
         }
-        if (isAuthenticated && expoPushToken) {
-            addTokenToUser(expoPushToken)
+        if (isAuthenticated && pushToken) {
+            addTokenToUser(pushToken)
         }
-    }, [isAuthenticated, expoPushToken]);
+    }, [isAuthenticated, pushToken]);
 
     React.useEffect(() => {
-        notificationService.registerForPushNotificationsAsync().then(async token => setExpoPushToken(token));
+        notificationService.registerForPushNotificationsAsync()
+            .then(async token => setPushToken(token))
+            .catch(err => {
+                FlashMessageRef.current?.showMessage({
+                    message: err.message,
+                    type: "danger",
+                    icon: "danger",
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+                Sentry.Native.captureException(err);
+            });
 
-        // This listener is fired whenever a notification is received while the app is foregrounded
-        // notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-        //   notificationService.processPushNotificationInApp(notification);
-        // });
+        messaging()
+            .getInitialNotification()
+            .then(async (remoteMessage) => {
+                if (remoteMessage) {
+                    console.log(
+                        'Notification caused app to open from quit state:',
+                        remoteMessage.notification,
+                    );
+                }
+            });
 
-        // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            notificationService.processPushNotification(response.notification)
+        messaging().onNotificationOpenedApp((remoteMessage) => {
+            console.log(
+                'Notification caused app to open from background state:',
+                remoteMessage.notification,
+            );
         });
 
-        return () => {
-            Notifications.removeNotificationSubscription(notificationListener.current);
-            Notifications.removeNotificationSubscription(responseListener.current);
-        };
+        messaging().setBackgroundMessageHandler(async remoteMessage => {
+            console.log('Message handled in the background!', remoteMessage);
+        })
+
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+        });
+
+        return unsubscribe;
     }, []);
 
     return (

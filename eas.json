@@ -5,7 +5,8 @@
       "distribution": "store",
       "autoIncrement": true,
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "app-bundle",
+        "image": "ubuntu-18.04-jdk-11-ndk-r19c"
       },
       "env": {
         "APP_ENV": "production"
@@ -18,6 +19,9 @@
       "distribution": "internal",
       "env": {
         "APP_ENV": "development"
+      },
+      "android": {
+        "image": "ubuntu-18.04-jdk-11-ndk-r19c"
       }
     },
     "development-simulator": {
@@ -28,6 +32,9 @@
       },
       "env": {
         "APP_ENV": "development"
+      },
+      "android": {
+        "image": "ubuntu-18.04-jdk-11-ndk-r19c"
       }
     },
     "staging": {
@@ -38,7 +45,8 @@
         "APP_ENV": "staging"
       },
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "app-bundle",
+        "image": "ubuntu-18.04-jdk-11-ndk-r19c"
       }
     }
   },

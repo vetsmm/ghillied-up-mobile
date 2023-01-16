@@ -40,18 +40,10 @@ export default {
     orientation: "portrait",
     icon: getProperties().icon,
     scheme: "ghilliedup",
-    notification: {
-        "icon": "./assets/logos/notification/Icon-1024.png"
-    },
     plugins: [
         "sentry-expo",
-        [
-            "expo-notifications",
-            {
-                "icon": "./assets/logos/notification/Icon-96.png",
-                "color": "#1e4c69"
-            }
-        ],
+        "@react-native-firebase/app",
+        "@notifee/react-native",
         [
             "expo-image-picker",
             {
@@ -71,6 +63,13 @@ export default {
     ios: {
         supportsTablet: true,
         bundleIdentifier: getProperties().bundleIdentifier,
+        googleServicesFile: "./GoogleService-Info.plist",
+        infoPlist: {
+            UIBackgroundModes: [
+                "fetch",
+                "remote-notification"
+            ]
+        },
         associatedDomains: [
             "applinks:ghilliedup.com",
             "applinks:ghilliedup.com.*",
@@ -86,6 +85,7 @@ export default {
             backgroundColor: "#1E4C69"
         },
         package: getProperties().package,
+        googleServicesFile: "./google-services.json",
         intentFilters: [
             {
                 action: "MAIN",

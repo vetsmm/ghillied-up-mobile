@@ -8,7 +8,7 @@ export const ActivityType = {
 
 export type ActivityType = typeof ActivityType[keyof typeof ActivityType];
 
-export type ExpoPushMessageData = {
+export type PushMessageData = {
     activityType: ActivityType;
     activityId: string;
     routingId: string;
