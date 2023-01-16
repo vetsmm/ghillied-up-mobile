@@ -6,27 +6,35 @@ const getProperties = () => {
                 icon: "./assets/app-icons/dev.png",
                 bundleIdentifier: 'com.ghilliedup.dev',
                 package: 'com.ghilliedup.dev',
+                googleServicesFileIos: './firebase/dev-client/GoogleService-Info.plist',
+                googleServicesFileAndroid: "./firebase/dev-client/google-services.json",
             }
         case 'staging':
             return {
                 appName: `Ghillied Up`,
                 icon: "./assets/app-icons/beta.png",
                 bundleIdentifier: 'com.ghilliedup',
-                package: 'com.ghilliedup'
+                package: 'com.ghilliedup',
+                googleServicesFileIos: './firebase/store-bundles/GoogleService-Info.plist',
+                googleServicesFileAndroid: "./firebase/store-bundles/google-services.json",
             }
         case 'production':
             return {
                 appName: `Ghillied Up`,
                 icon: "./assets/app-icons/prod.png",
                 bundleIdentifier: 'com.ghilliedup',
-                package: 'com.ghilliedup'
+                package: 'com.ghilliedup',
+                googleServicesFileIos: './firebase/store-bundles/GoogleService-Info.plist',
+                googleServicesFileAndroid: "./firebase/store-bundles/google-services.json",
             }
         default:
             return {
                 appName: `Ghillied Up`,
                 icon: "./assets/app-icons/prod.png",
                 bundleIdentifier: 'com.ghilliedup',
-                package: 'com.ghilliedup'
+                package: 'com.ghilliedup',
+                googleServicesFileIos: './firebase/store-bundles/GoogleService-Info.plist',
+                googleServicesFileAndroid: "./firebase/store-bundles/google-services.json",
             }
     }
 }
@@ -40,24 +48,27 @@ export default {
     orientation: "portrait",
     icon: getProperties().icon,
     scheme: "ghilliedup",
-    notification: {
-        "icon": "./assets/logos/notification/Icon-1024.png"
-    },
     plugins: [
         "sentry-expo",
-        [
-            "expo-notifications",
-            {
-                "icon": "./assets/logos/notification/Icon-96.png",
-                "color": "#1e4c69"
-            }
-        ],
+        "@react-native-firebase/app",
+        "@notifee/react-native",
         [
             "expo-image-picker",
             {
                 "photosPermission": "The app accesses your photos when creating ghillies."
             }
-        ]
+        ],
+        [
+            "expo-build-properties",
+            {
+                "ios": {
+                    "useFrameworks": "static"
+                },
+                "android": {
+                    "compileSdkVersion": 33,
+                },
+            }
+        ],
     ],
     splash: {
         image: "./assets/logos/splash.png",
@@ -71,6 +82,13 @@ export default {
     ios: {
         supportsTablet: true,
         bundleIdentifier: getProperties().bundleIdentifier,
+        googleServicesFile: getProperties().googleServicesFileIos,
+        infoPlist: {
+            UIBackgroundModes: [
+                "fetch",
+                "remote-notification"
+            ]
+        },
         associatedDomains: [
             "applinks:ghilliedup.com",
             "applinks:ghilliedup.com.*",
@@ -86,6 +104,7 @@ export default {
             backgroundColor: "#1E4C69"
         },
         package: getProperties().package,
+        googleServicesFile: getProperties().googleServicesFileAndroid,
         intentFilters: [
             {
                 action: "MAIN",

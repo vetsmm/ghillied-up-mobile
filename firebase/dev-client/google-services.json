@@ -1,0 +1,92 @@
+{
+  "project_info": {
+    "project_number": "701930770216",
+    "project_id": "ghillied-up",
+    "storage_bucket": "ghillied-up.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701930770216:android:05800f4f8bd7bea96c8a1d",
+        "android_client_info": {
+          "package_name": "com.ghilliedup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "701930770216-st1v0c5s0v1thcgnpn1o3akp6dkh0ff6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ghilliedup",
+            "certificate_hash": "928ba4165c96a312bfc5a247af23ecdc1fa513e7"
+          }
+        },
+        {
+          "client_id": "701930770216-dld1v1a6kd5bdja7gj645mmpchlsc0el.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDhlci1crMLcNId2EMnxb748tOTP4UrTA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "701930770216-dld1v1a6kd5bdja7gj645mmpchlsc0el.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "701930770216-g1nrsq1v1v2cjsnk0invvjkfjgt9j388.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ghilliedup",
+                "app_store_id": "6443959350"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701930770216:android:b7d33544256f995f6c8a1d",
+        "android_client_info": {
+          "package_name": "com.ghilliedup.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "701930770216-dld1v1a6kd5bdja7gj645mmpchlsc0el.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDhlci1crMLcNId2EMnxb748tOTP4UrTA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "701930770216-dld1v1a6kd5bdja7gj645mmpchlsc0el.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "701930770216-g1nrsq1v1v2cjsnk0invvjkfjgt9j388.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ghilliedup",
+                "app_store_id": "6443959350"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
