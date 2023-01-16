@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>701930770216-odahu3p1ei6favv88tfi76kh92161f8p.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.701930770216-odahu3p1ei6favv88tfi76kh92161f8p</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>701930770216-st1v0c5s0v1thcgnpn1o3akp6dkh0ff6.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA56GYyUVTlFgCI5EIyTUJ5M02EFX8HNT8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>701930770216</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ghilliedup.dev</string>
+	<key>PROJECT_ID</key>
+	<string>ghillied-up</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ghillied-up.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:701930770216:ios:3ec9be6906b4f7a66c8a1d</string>
+</dict>
+</plist>
