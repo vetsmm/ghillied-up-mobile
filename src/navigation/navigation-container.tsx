@@ -8,7 +8,6 @@ import {NavigationContainer} from "@react-navigation/native";
 import {isReadyRef, navigationRef} from "./nav-ref";
 import ApplicationTabBar from "../components/tab-bar/application-tab-bar";
 import notificationService from "../shared/services/push-notification.service";
-import * as Notifications from "expo-notifications";
 import settingsService from "../shared/services/settings.service";
 import {getUnreadNotifications} from "../shared/reducers/notifications.reducer";
 import {usePolling} from "../shared/hooks";
@@ -23,6 +22,11 @@ import {getNotificationScreenRoutes} from "./stacks/notification-stack";
 import {getAccountRoutes} from "./stacks/account-stack";
 import {getGhillieScreenRoutes} from "./stacks/ghillie-stack";
 import NoAuthStackNavigator, {getNoAuthScreenRoutes} from "./stacks/no-auth-stack";
+import {FlashMessageRef} from "../components/flash-message/index";
+import * as Sentry from 'sentry-expo';
+import messaging from "@react-native-firebase/messaging";
+import pushNotificationService from "../shared/services/push-notification.service";
+import notifee, {EventType} from "@notifee/react-native";
 
 export const linkingConfig: LinkingOptions<any> | undefined = {
     enabled: true,
@@ -87,10 +91,8 @@ export const linkingConfig: LinkingOptions<any> | undefined = {
 const Stack = createNativeStackNavigator();
 
 function NavContainer() {
-    const [expoPushToken, setExpoPushToken] = React.useState<any>('');
-    const [delay, setDelay] = React.useState<number>(30000);
-    const notificationListener = React.useRef<any>();
-    const responseListener = React.useRef<any>();
+    const [delay, setDelay] = React.useState<number>(60000);
+    const [pushToken, setPushToken] = React.useState<string>();
 
     const isAuthenticated = useSelector(
         (state: IRootState) => state.authentication.isAuthenticated
@@ -130,31 +132,40 @@ function NavContainer() {
     }, [dispatch]);
 
     React.useEffect(() => {
-        const addTokenToUser = async (token: any) => {
-            await settingsService.addPushTokenToAccount(token);
+        const addTokenToUser = (token: string) => {
+            settingsService.addPushTokenToAccount(token);
         }
-        if (isAuthenticated && expoPushToken) {
-            addTokenToUser(expoPushToken)
+        if (isAuthenticated && pushToken) {
+            addTokenToUser(pushToken);
         }
-    }, [isAuthenticated, expoPushToken]);
+    }, [isAuthenticated, pushToken]);
 
     React.useEffect(() => {
-        notificationService.registerForPushNotificationsAsync().then(async token => setExpoPushToken(token));
+        notificationService.registerForPushNotificationsAsync()
+            .then(async token => setPushToken(token))
+            .catch(err => {
+                FlashMessageRef.current?.showMessage({
+                    message: err.message,
+                    type: "danger",
+                    icon: "danger",
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+                Sentry.Native.captureException(err);
+            });
 
-        // This listener is fired whenever a notification is received while the app is foregrounded
-        // notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-        //   notificationService.processPushNotificationInApp(notification);
-        // });
+        messaging().setBackgroundMessageHandler(pushNotificationService.onMessageHandler);
 
-        // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            notificationService.processPushNotification(response.notification)
-        });
+        const unsubscribe = messaging().onMessage(pushNotificationService.onMessageHandler);
 
-        return () => {
-            Notifications.removeNotificationSubscription(notificationListener.current);
-            Notifications.removeNotificationSubscription(responseListener.current);
-        };
+        return unsubscribe;
+    }, []);
+
+    React.useEffect(() => {
+        notifee.onBackgroundEvent(pushNotificationService.handlePushNotification)
+        return notifee.onForegroundEvent(pushNotificationService.handlePushNotification);
     }, []);
 
     return (

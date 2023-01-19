@@ -34,11 +34,19 @@ const markAllNotificationsAsRead = async (): Promise<BaseApiResponse<void, never
         });
 }
 
+const markNotificationAsRead = async (notificationId: string): Promise<void> => {
+    return axios.put(`${AppConfig.apiUrl}/notifications/${notificationId}/read`)
+        .then(response => {
+            return response.data;
+        });
+}
+
 const notificationService = {
     getNotifications,
     markNotificationsAsRead,
     getUserUnreadNotificationCount,
-    markAllNotificationsAsRead
+    markAllNotificationsAsRead,
+    markNotificationAsRead
 }
 
 export default notificationService;

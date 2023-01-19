@@ -18,6 +18,7 @@ import {FlashList} from "@shopify/flash-list";
 import {useStateWithCallback} from "../../../shared/hooks";
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 import {FlashMessageRef} from "../../../components/flash-message/index";
+import notifee from "@notifee/react-native";
 
 function NotificationListingScreen() {
     const [clearAllOpen, setClearAllOpen] = useStateWithCallback(false);
@@ -93,6 +94,7 @@ function NotificationListingScreen() {
                 handleRefresh();
                 dispatch(getUnreadNotifications())
                 setClearAllOpen(false);
+                notifee.setBadgeCount(0);
             })
             .catch((error) => {
                 FlashMessageRef.current?.showMessage({
