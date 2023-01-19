@@ -11,6 +11,8 @@ import KeyboardAvoidingContainer from "../../../components/containers/KeyboardAv
 import {colorsVerifyCode} from "../../../components/colors";
 import commentService from "../../../shared/services/comment.service";
 import {ChildCommentDto} from '../../../shared/models/comments/child-comment.dto';
+import {ValidationSchemas} from "../../../shared/validators";
+import {FlashMessageRef} from "../../../components/flash-message/index";
 
 const {primary} = colorsVerifyCode;
 
@@ -24,52 +26,59 @@ interface Route {
 export const ChildCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) => {
   const {params} = {...route};
   const {comment} = {...params};
-  
+
   const [message, setMessage] = useState<string | null>('');
-  const [isSuccessMessage, setIsSuccessMessage] = useState(false);
-  
+
   const navigation: any = useNavigation();
-  
-  type FormErrors = {
-    content: string | null;
-  }
-  const [formErrors, setFormErrors] = useState<FormErrors>({
-    content: null
-  });
-  
+
   const handleUpdate = async (formData, setSubmitting) => {
     setMessage(null);
     commentService.updateReplyComment(comment.id, {
       content: formData.content
     })
-      .then((response) => {
-        setIsSuccessMessage(true);
+      .then(() => {
+        FlashMessageRef.current?.showMessage({
+          message: 'Comment Updated',
+          type: 'success',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
         setSubmitting(false);
         navigation.goBack();
       })
       .catch(error => {
         setMessage(error.data.error.message);
-        setIsSuccessMessage(false);
+        FlashMessageRef.current?.showMessage({
+          message: error.data.error.message || 'Something went wrong',
+          type: 'danger',
+          style: {
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        });
         setSubmitting(false);
       })
   }
-  
-  const _isFormValid = (values) => {
-    if (values.content.length > 1000) {
-      setFormErrors({
-        content: 'Reply must be less than 1000 characters'
-      });
-      return false;
+
+  const _validateForm = (formData) => {
+    try {
+      ValidationSchemas.UpdateCommentFormSchema
+          .validateSync(formData, {abortEarly: false});
+      return {};
+    } catch (e: any) {
+      let errors = {};
+      e.inner.reduce((acc, curr) => {
+        if (curr.message) {
+          errors[curr.path] = curr.message;
+        }
+      }, {});
+
+      return errors;
     }
-    if (values.content.length < 3) {
-      setFormErrors({
-        content: 'Reply must be more than 3 characters'
-      });
-      return false;
-    }
-    return true;
   }
-  
+
   return (
     <MainContainer>
       <KeyboardAvoidingContainer
@@ -81,17 +90,16 @@ export const ChildCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) =>
             initialValues={{
               content: comment.content
             }}
-            onSubmit={async (values, {setSubmitting}) => {
-              if (await _isFormValid(values)) {
-                handleUpdate(values, setSubmitting);
-              } else {
-                setSubmitting(false);
-              }
+            validate={_validateForm}
+            validateOnChange={false}
+            validateOnBlur={false}
+            onSubmit={(values, {setSubmitting}) => {
+              handleUpdate(values, setSubmitting);
             }}
           >
             {({
                 handleChange,
-                setFieldValue,
+                errors,
                 handleBlur,
                 handleSubmit,
                 values,
@@ -108,17 +116,21 @@ export const ChildCommentUpdateScreen: React.FC<{ route: Route }> = ({route}) =>
                   onBlur={handleBlur('content')}
                   value={values.content}
                   style={{marginBottom: 15, height: 300}}
-                  isError={formErrors.content !== null}
+                  isError={errors.content !== undefined}
                 />
-                
-                <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                  {formErrors.content || ' '}
-                </MsgBox>
-                
-                <MsgBox success={isSuccessMessage} style={{marginBottom: 10}}>
-                  {message || ' '}
-                </MsgBox>
-                
+
+                {errors.content && (
+                    <MsgBox success={false} style={{marginBottom: 5}}>
+                      {errors.content}
+                    </MsgBox>
+                )}
+
+                {message && (
+                    <MsgBox success={false} style={{marginBottom: 10}}>
+                      {message}
+                    </MsgBox>
+                )}
+
                 {!isSubmitting && (
                   <RegularButton
                     onPress={handleSubmit}
