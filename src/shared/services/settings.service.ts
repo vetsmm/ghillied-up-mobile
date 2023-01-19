@@ -4,7 +4,7 @@ import {Platform} from "react-native";
 import * as Sentry from 'sentry-expo';
 import {FlashMessageRef} from "../../components/flash-message/index";
 
-const addPushTokenToAccount = async (token): Promise<void> => {
+const addPushTokenToAccount = async (token: string): Promise<void> => {
   axios.post(`${AppConfig.apiUrl}/settings/device-token`, {
     deviceToken: token,
     phonePlatform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID',

@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import NotificationsService from "../services/notifications.service";
 import {ReadNotificationsInputDto} from "../models/notifications/read-notifications-input.dto";
+import notifee from "@notifee/react-native";
 
 export const initialState = {
     loading: false,
@@ -15,6 +16,8 @@ export const getUnreadNotifications = createAsyncThunk(
     async (_, thunkAPI) => {
         return await NotificationsService.getUserUnreadNotificationCount()
             .then(async (response) => {
+                notifee.setBadgeCount(response.data.unreadCount)
+                    .then(() => undefined);
                 return response.data.unreadCount;
             });
     }
@@ -26,7 +29,23 @@ export const markNotificationsAsRead = createAsyncThunk(
         return await NotificationsService.markNotificationsAsRead(notificationIds)
             .then(async (response) => {
                 thunkAPI.dispatch(getUnreadNotifications());
+                notifee
+                    .decrementBadgeCount(1)
+                    .then(() => console.log("Badge decremented"));
                 return response.data;
+            });
+    });
+
+export const markNotificationAsRead = createAsyncThunk(
+    "notifications/markNotificationAsRead",
+    async (notificationid: string, thunkAPI) => {
+        return await NotificationsService.markNotificationAsRead(notificationid)
+            .then(async (response) => {
+                thunkAPI.dispatch(getUnreadNotifications());
+                notifee
+                    .decrementBadgeCount(1)
+                    .then(() => console.log("Badge decremented"));
+                return response;
             });
     });
 
@@ -52,6 +71,11 @@ export const NotificationState = createSlice({
             state.errorMessage = action?.payload?.error?.message || "Error marking notifications as read";
             state.loading = true;
         })
+        builder.addCase(markNotificationAsRead.rejected, (state, action) => {
+            // @ts-ignore
+            state.errorMessage = action?.payload?.error?.message || "Error marking notification as read";
+            state.loading = true;
+        })
         builder.addCase(getUnreadNotifications.fulfilled, (state, action) => {
             state.unreadNotifications = action.payload;
             state.loading = false
@@ -59,10 +83,16 @@ export const NotificationState = createSlice({
         builder.addCase(markNotificationsAsRead.fulfilled, (state) => {
             state.loading = false;
         });
+        builder.addCase(markNotificationAsRead.fulfilled, (state) => {
+            state.loading = false;
+        });
         builder.addCase(getUnreadNotifications.pending, (state) => {
             state.loading = true;
         });
         builder.addCase(markNotificationsAsRead.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(markNotificationAsRead.pending, (state) => {
             state.loading = true;
         });
     }

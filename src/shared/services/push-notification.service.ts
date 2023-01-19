@@ -1,72 +1,129 @@
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-import {Platform} from "react-native";
-import {Notification} from "expo-notifications/src/Notifications.types";
-import {ActivityType, ExpoPushMessageData} from "../models/types";
+import {ActivityType} from "../models/types";
 import {navigate} from "../../navigation/nav-ref";
-import AppConfig from "../../config/app.config";
 import * as Sentry from 'sentry-expo';
+import messaging, {FirebaseMessagingTypes} from "@react-native-firebase/messaging";
+import notifee, {AndroidImportance, Event, EventType} from '@notifee/react-native';
+import {NotificationType} from "../models/notifications/notification-type";
+import {
+    ChainBuilder,
+    CommentReactionHandler,
+    CommentReplyHandler,
+    PostCommentHandler, PostHandler,
+    PostReactionHandler
+} from "./notification-chains";
 
+export interface IFirebaseMessageData {
+    [key: string]: any;
 
-async function registerForPushNotificationsAsync() {
-    let token;
-    if (Device.isDevice) {
-        const {status: existingStatus} = await Notifications.getPermissionsAsync();
-        let finalStatus = existingStatus;
-        if (existingStatus !== 'granted') {
-            const {status} = await Notifications.requestPermissionsAsync();
-            finalStatus = status;
-        }
-        if (finalStatus !== 'granted') {
-            alert('Failed to get push token for push notification!');
-            return;
-        }
-        token = (await Notifications.getExpoPushTokenAsync({
-            experienceId: AppConfig.experienceId
-        })).data;
-    } else {
-        alert('Must use physical device for Push Notifications');
-    }
-
-    if (Platform.OS === 'android') {
-        Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: '#FF231F7C',
-        });
-    }
-
-    return token;
+    notificationType: NotificationType;
+    notificationId?: string;
+    performSilent?: boolean;
 }
 
-// TODO: de-thunk this, possibly by using a chain of responsibility pattern
-function processPushNotification(notification: Notification) {
-    const data: ExpoPushMessageData = notification?.request?.content?.data as ExpoPushMessageData;
-    switch (ActivityType[data.activityType]) {
-        case ActivityType.POST_COMMENT_REPLY:
-        case ActivityType.POST_COMMENT:
-        case ActivityType.POST:
-        case ActivityType.POST_COMMENT_REACTION:
-        case ActivityType.POST_REACTION:
-            navigate('Posts', {
-                screen: "PostDetail",
-                params: {
-                    postId: data.routingId
-                }
-            });
-            break;
-        default:
-            Sentry.Native.captureMessage(
-                `Unhandled activity type: ${ActivityType[data.activityType]}`,
-                "warning"
-            );
-            break;
+export interface IFirebaseMessageDataRouting extends IFirebaseMessageData {
+    routingId: string;
+    activityId: string;
+    notificationId: string;
+}
+
+async function registerForPushNotificationsAsync(): Promise<string | undefined> {
+    await notifee.createChannel({
+        id: 'gu-alerts',
+        name: 'Alerts',
+        lights: false,
+        vibration: true,
+        importance: AndroidImportance.DEFAULT,
+    });
+
+    if (Device.isDevice) {
+        const authStatus = await messaging().requestPermission({
+            announcement: true,
+        });
+        const enabled =
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+        if (enabled) {
+            return await messaging().getToken();
+        }
+    } else {
+        console.log('Must use physical device for Push Notifications');
     }
+}
+
+const onMessageHandler = async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+    const {notification, data} = remoteMessage;
+
+    if (data && data.performSilent) {
+        await notifee.incrementBadgeCount(1);
+        return;
+    }
+
+    let additional = {
+        ios: {
+            foregroundPresentationOptions: {
+                badge: true,
+                sound: true,
+                banner: true,
+                list: true,
+            },
+        },
+    };
+
+    if (data && data["fcm_options"] && data["fcm_options"]["image"]) {
+        additional["android"] = {
+            channelId: 'gu-alerts',
+            largeIcon: data["fcm_options"]["image"],
+        }
+        additional.ios["attachments"] = [{
+            url: data["fcm_options"]["image"],
+            typeHint: "public.png",
+        }]
+
+    }
+
+    await notifee.displayNotification({
+        title: notification?.title,
+        body: notification?.body,
+        data,
+        ...additional,
+    });
+}
+
+async function handlePushNotification({ type, detail }: Event) {
+    if (type !== EventType.PRESS) {
+        return;
+    }
+    if (!detail.notification?.data) {
+        return;
+    }
+
+    const {data} = detail.notification;
+    const pushMessage: IFirebaseMessageData = data as IFirebaseMessageData;
+    await processPushNotification(pushMessage);
+}
+
+const processPushNotification = async (notification: IFirebaseMessageData) => {
+    const chain = new ChainBuilder()
+        .add(new PostHandler())
+        .add(new PostReactionHandler())
+        .add(new PostCommentHandler())
+        .add(new CommentReplyHandler())
+        .add(new CommentReactionHandler())
+        .build();
+
+    chain.handle(notification);
+
+    Sentry.Native.captureMessage(
+        `Unhandled activity type: ${ActivityType[notification.notificationType]}`,
+        "warning"
+    );
 }
 
 
 export default {
     registerForPushNotificationsAsync,
-    processPushNotification,
+    onMessageHandler,
+    handlePushNotification,
 }
