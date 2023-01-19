@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import MainContainer from "../../../components/containers/MainContainer";
-import {CommentDetailDto} from "../../../shared/models/comments/comment-detail.dto";
 import {PostDetailDto} from "../../../shared/models/posts/post-detail.dto";
 import {useNavigation} from "@react-navigation/native";
 import {VStack} from "native-base";
@@ -13,135 +12,146 @@ import KeyboardAvoidingContainer from "../../../components/containers/KeyboardAv
 import {colorsVerifyCode} from "../../../components/colors";
 import PostSharedElementNoActions from "../../../components/post-shared-element-no-actions";
 import commentService from "../../../shared/services/comment.service";
+import {ValidationSchemas} from "../../../shared/validators";
+import {FlashMessageRef} from "../../../components/flash-message/index";
+
 const {primary} = colorsVerifyCode;
 
 
 interface Route {
-  params: {
-    post: PostDetailDto;
-    parentComment: CommentDetailDto | null;
-  };
+    params: {
+        post: PostDetailDto;
+    };
 }
 
 export const PostCommentCreateScreen: React.FC<{ route: Route }> = ({route}) => {
-  const {params} = {...route};
-  const {post, parentComment} = {...params};
+    const {params} = {...route};
+    const {post} = {...params};
 
-  const [message, setMessage] = useState<string | null>('');
-  const [isSuccessMessage, setIsSuccessMessage] = useState(false);
+    const [message, setMessage] = useState<string | null>('');
 
-  const navigation: any = useNavigation();
+    const navigation: any = useNavigation();
 
-  type FormErrors = {
-    content: string | null;
-  }
-  const [formErrors, setFormErrors] = useState<FormErrors>({
-    content: null,
-  });
+    const handleCreate = async (formData, setSubmitting) => {
+        setMessage(null);
 
-  const handleCreate = async (formData, setSubmitting) => {
-    setMessage(null);
-
-    commentService.createParentComment(formData)
-      .then((response) => {
-        setIsSuccessMessage(true);
-        setSubmitting(false);
-        navigation.goBack();
-      })
-      .catch(error => {
-        setMessage(error.data.error.message);
-        setIsSuccessMessage(false);
-        setSubmitting(false);
-      })
-  }
-
-  const _isFormValid = (values) => {
-    if (values.content.length > 1000) {
-      setFormErrors({
-        content: 'Reply must be less than 1000 characters',
-      });
-      return false;
-    }
-    if (values.content.length < 3) {
-      setFormErrors({
-        content: 'Reply must be more than 3 characters',
-      });
-      return false;
-    }
-    return true;
-  }
-
-  return (
-    <MainContainer>
-      <KeyboardAvoidingContainer
-        enableScroll={true}
-      >
-        <PostSharedElementNoActions post={post} />
-        <VStack style={{margin: 25, marginBottom: 100}}>
-          <Formik
-            enableReinitialize={true}
-            initialValues={{
-              content: '',
-              postId: post.id,
-              parentCommentId: parentComment?.id,
-            }}
-            onSubmit={async (values, {setSubmitting}) => {
-              if (await _isFormValid(values)) {
-                handleCreate(values, setSubmitting);
-              } else {
+        commentService.createParentComment(formData)
+            .then(() => {
                 setSubmitting(false);
-              }
-            }}
-          >
-            {({
-                handleChange,
-                setFieldValue,
-                handleBlur,
-                handleSubmit,
-                values,
-                isSubmitting
-              }) => (
-              <>
-                <StyledTextFieldInput
-                  label="Reply to Post"
-                  icon="email-variant"
-                  placeholder="How do I use my GI Bill?"
-                  numberOfLines={10}
-                  keyboardType="default"
-                  onChangeText={handleChange('content')}
-                  onBlur={handleBlur('content')}
-                  value={values.content}
-                  style={{marginBottom: 15, height: 300}}
-                  isError={formErrors.content !== null}
-                />
+                FlashMessageRef.current?.showMessage({
+                    message: 'Comment created successfully',
+                    type: 'success',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+                navigation.goBack();
+            })
+            .catch(error => {
+                setMessage(error.data.error.message);
+                FlashMessageRef.current?.showMessage({
+                    message: error.data.error.message || 'Something went wrong',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+                setSubmitting(false);
+            })
+    }
 
-                <MsgBox success={isSuccessMessage} style={{marginBottom: 5}}>
-                  {formErrors.content || ' '}
-                </MsgBox>
+    const _validateForm = (formData) => {
+        try {
+            ValidationSchemas.CreateCommentFormSchema
+                .validateSync(formData, {abortEarly: false});
+            return {};
+        } catch (e: any) {
+            let errors = {};
+            e.inner.reduce((acc, curr) => {
+                if (curr.message) {
+                    errors[curr.path] = curr.message;
+                }
+            }, {});
 
-                <MsgBox success={isSuccessMessage} style={{marginBottom: 10}}>
-                  {message || ' '}
-                </MsgBox>
+            return errors;
+        }
+    }
 
-                {!isSubmitting && (
-                  <RegularButton
-                    onPress={handleSubmit}
-                  >
-                    Reply
-                  </RegularButton>
-                )}
-                {isSubmitting && (
-                  <RegularButton disabled={true}>
-                    <ActivityIndicator size="small" color={primary}/>
-                  </RegularButton>
-                )}
-              </>
-            )}
-          </Formik>
-        </VStack>
-      </KeyboardAvoidingContainer>
-    </MainContainer>
-  );
+    return (
+        <MainContainer>
+            <KeyboardAvoidingContainer
+                enableScroll={true}
+            >
+                <PostSharedElementNoActions post={post}/>
+                <VStack style={{margin: 25, marginBottom: 100}}>
+                    <Formik
+                        enableReinitialize={true}
+                        initialValues={{
+                            content: '',
+                            postId: post.id,
+                        }}
+                        validate={_validateForm}
+                        validateOnChange={false}
+                        validateOnBlur={false}
+                        onSubmit={(values, {setSubmitting}) => {
+                            handleCreate(values, setSubmitting);
+                        }}
+                    >
+                        {({
+                              handleChange,
+                              handleBlur,
+                              handleSubmit,
+                              values,
+                              isSubmitting,
+                              errors,
+                          }) => (
+                            <>
+                                <StyledTextFieldInput
+                                    label="Reply to Post"
+                                    icon="email-variant"
+                                    placeholder="How do I use my GI Bill?"
+                                    numberOfLines={10}
+                                    keyboardType="default"
+                                    onChangeText={handleChange('content')}
+                                    onBlur={handleBlur('content')}
+                                    value={values.content}
+                                    style={{marginBottom: 15, height: 300}}
+                                    isError={errors.content !== undefined}
+                                />
+
+                                {errors.content && (
+                                    <MsgBox success={false} style={{marginBottom: 5}}>
+                                        {errors.content}
+                                    </MsgBox>
+                                )}
+
+                                {message && (
+                                    <MsgBox success={false} style={{marginBottom: 10}}>
+                                        {message}
+                                    </MsgBox>
+                                )}
+
+                                {!isSubmitting && (
+                                    <RegularButton
+                                        onPress={handleSubmit}
+                                    >
+                                        Reply
+                                    </RegularButton>
+                                )}
+                                {isSubmitting && (
+                                    <RegularButton disabled={true}>
+                                        <ActivityIndicator size="small" color={primary}/>
+                                    </RegularButton>
+                                )}
+                            </>
+                        )}
+                    </Formik>
+                </VStack>
+            </KeyboardAvoidingContainer>
+        </MainContainer>
+    );
 }
 
 export default PostCommentCreateScreen;

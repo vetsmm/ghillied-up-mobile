@@ -13,6 +13,12 @@ import {
     UpdateGhillieMemberSettingsFormSchema
 } from "./ghillies";
 import {IsBadWord} from "./utils";
+import {
+    CreateCommentFormSchema,
+    CreateCommentReplyFormSchema,
+    UpdateCommentFormSchema,
+    UpdateCommentReplyFormSchema
+} from "./comment.validator";
 
 export const ValidationSchemas = {
     IsBadWord,
@@ -25,5 +31,9 @@ export const ValidationSchemas = {
     PasswordResetFormSchema,
     CreateGhillieFormSchema,
     UpdateGhillieFormSchema,
-    UpdateGhillieMemberSettingsFormSchema
+    UpdateGhillieMemberSettingsFormSchema,
+    CreateCommentFormSchema,
+    UpdateCommentFormSchema,
+    CreateCommentReplyFormSchema,
+    UpdateCommentReplyFormSchema,
 }
