@@ -120,7 +120,8 @@ export default {
         twitter: "https://twitter.com/ghilliedupapp",
         linkedin: "https://linkedin.com/company/ghilliedup",
         discord: "https://discord.gg/4yYFgZVeaH",
-        supportEmail: "mailto:support@ghilliedup.com"
+        supportEmail: "mailto:support@ghilliedup.com",
+        ghillieOwnershipEmail: "request.ghillie@ghilliedup.com",
     }
 };
 

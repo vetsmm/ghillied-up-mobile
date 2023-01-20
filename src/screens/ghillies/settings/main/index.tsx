@@ -33,9 +33,14 @@ export const GhillieSettingsScreen: React.FC = () => {
     const dispatch = useAppDispatch();
     const cancelRef = React.useRef(null);
 
+    const user = useSelector((state: IRootState) => state.authentication.account);
 
     const ghillie = useSelector(
         (state: IRootState) => state.ghillie.ghillie
+    );
+
+    const isOwner = useSelector(
+        (state: IRootState) => state.ghillie.ghillie.memberMeta?.role === GhillieRole.OWNER
     );
 
     const isModerator = useSelector(
@@ -53,8 +58,24 @@ export const GhillieSettingsScreen: React.FC = () => {
 
     const isAdminOrModerator = isAdmin || isModerator;
 
+    const isAdminOrOwner = isAdmin || isOwner;
+
     const moveTo = (screen, payload?) => {
         navigation.navigate(screen, {...payload});
+    }
+
+    const onRequestGhillieEmail = async () => {
+        ShareUtils.requestGhillieOwnershipEmail(user, ghillie)
+            .catch(() => {
+                FlashMessageRef.current?.showMessage({
+                    message: `Error sending request email, please try again later.`,
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+            });
     }
 
     const generateInviteCode = () => {
@@ -319,6 +340,16 @@ export const GhillieSettingsScreen: React.FC = () => {
                         }
                     </TouchableOpacity>
                 </View>
+
+                {(!ghillie.isInternal && !isAdminOrOwner) && (
+                    <TouchableOpacity
+                        style={styles.requestGhillieOwnershipButton}
+                        onPress={() => onRequestGhillieEmail()}
+                    >
+                        <Text style={styles.requestGhillieText}>Request Ownership</Text>
+                        <Ionicons name="alert-circle" size={24} color={colorsVerifyCode.warning}/>
+                    </TouchableOpacity>
+                )}
 
                 <TouchableOpacity
                     style={styles.leaveGhillieButton}
