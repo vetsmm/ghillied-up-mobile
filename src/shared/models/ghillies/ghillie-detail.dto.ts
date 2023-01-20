@@ -23,4 +23,5 @@ export interface GhillieDetailDto {
   category: GhillieCategory;
   inviteCode?: string;
   postCount?: number;
+  isInternal?: boolean;
 }

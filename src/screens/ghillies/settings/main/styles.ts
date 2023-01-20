@@ -72,6 +72,11 @@ export default StyleSheet.create({
         fontWeight: "bold",
         color: colorsVerifyCode.failLighter
     },
+    requestGhillieText: {
+        fontSize: 14,
+        fontWeight: "bold",
+        color: colorsVerifyCode.warning
+    },
     leaveGhillieButton: {
         paddingVertical: 8,
         paddingHorizontal: 16,
@@ -84,6 +89,19 @@ export default StyleSheet.create({
         borderRadius: 8,
         borderWidth: 2,
         borderColor: colorsVerifyCode.failLighter,
+    },
+    requestGhillieOwnershipButton: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 8,
+        marginLeft: 16,
+        marginRight: 16,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: colorsVerifyCode.warning,
     },
     leaveGhillieText: {
         fontSize: 14,
