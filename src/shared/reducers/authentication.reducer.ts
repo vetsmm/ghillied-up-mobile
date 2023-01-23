@@ -6,7 +6,13 @@ import {AuthPasswordResetInitDto} from "../models/auth/auth-password-reset-init.
 import {AuthPasswordResetFinishDto} from "../models/auth/auth-password-reset-finish.dto";
 import {UserOutput} from "../models/users/user-output.dto";
 import {AuthTokenOutput} from "../models/auth/auth-token-output.dto";
-import {clearAuthenticationCredentials, clearAuthTokens, setAuthenticationCredentials, setAuthTokens} from "../jwt";
+import {
+    clearAuthenticationCredentials,
+    clearAuthTokens,
+    getRefreshToken,
+    setAuthenticationCredentials,
+    setAuthTokens
+} from "../jwt";
 import {FlashMessageRef} from "../../components/flash-message/index";
 
 export const initialState = {
@@ -29,14 +35,16 @@ export const login = createAsyncThunk(
     "auth/login",
     async (input: {
         authTokenOutput: AuthTokenOutput,
-        credentials: { username: string, password: string }
+        credentials?: { username: string, password: string }
     }, thunkAPI) => {
         await setAuthTokens({
             accessToken: input.authTokenOutput.accessToken,
             refreshToken: input.authTokenOutput.refreshToken
         })
 
-        await setAuthenticationCredentials(input.credentials);
+        if (input.credentials) {
+            await setAuthenticationCredentials(input.credentials);
+        }
 
         thunkAPI.dispatch(getAccount())
         return input.authTokenOutput;
@@ -110,29 +118,50 @@ export const getAccount = createAsyncThunk(
 );
 
 
-export const logout = (): any => async (dispatch: any) => {
-    await clearAuthenticationCredentials(); // clear the user's credentials
-    await clearAuthTokens(); // clear the user's tokens
-    FlashMessageRef.current?.showMessage({
-        message: 'You have been logged out',
-        type: 'danger',
-        style: {
-            justifyContent: 'center',
-            alignItems: 'center',
+// export const logout = (): any => async (dispatch: any) => {
+//     await clearAuthenticationCredentials(); // clear the user's credentials
+//     await clearAuthTokens(); // clear the user's tokens
+//     FlashMessageRef.current?.showMessage({
+//         message: 'You have been logged out',
+//         type: 'danger',
+//         style: {
+//             justifyContent: 'center',
+//             alignItems: 'center',
+//         }
+//     });
+//     dispatch(logoutSession());
+// };
+
+export const logout = createAsyncThunk(
+    "auth/logout",
+    async (_, thunkAPI) => {
+        const refreshToken = await getRefreshToken();
+        await clearAuthenticationCredentials(); // clear the user's credentials
+        await clearAuthTokens(); // clear the user's tokens
+
+        if (!refreshToken) {
+            return thunkAPI.rejectWithValue("No refresh token");
         }
-    });
-    dispatch(logoutSession());
-};
+
+        return AuthService.logout(refreshToken)
+            .then(async (response) => {
+                FlashMessageRef.current?.showMessage({
+                    message: 'You have been logged out',
+                    type: 'danger',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
+                });
+                return response;
+            });
+    }
+);
 
 export const AuthenticationSlice = createSlice({
     name: "authentication",
     initialState: initialState as AuthenticationState,
     reducers: {
-        logoutSession() {
-            return {
-                ...initialState,
-            };
-        },
         clearAuth(state) {
             return {
                 ...state,
@@ -143,6 +172,13 @@ export const AuthenticationSlice = createSlice({
     },
     extraReducers(builder) {
         builder
+            .addCase(logout.rejected, (state, action) => {
+                return {
+                    ...initialState,
+                    loading: false,
+                    isAuthenticated: false,
+                }
+            })
             .addCase(login.rejected, (state, action) => {
                 // @ts-ignore
                 return {
@@ -191,6 +227,13 @@ export const AuthenticationSlice = createSlice({
                 isAdmin: false,
                 isModerator: false,
             }))
+            .addCase(logout.fulfilled, (state, action) => {
+                return {
+                    ...initialState,
+                    loading: false,
+                    isAuthenticated: false,
+                }
+            })
             .addCase(login.fulfilled, (state, action) => {
                 return {
                     ...state,
@@ -265,15 +308,16 @@ export const AuthenticationSlice = createSlice({
             })
             .addCase(getAccount.pending, (state) => {
                 state.loading = true;
+            })
+            .addCase(logout.pending, (state, action) => {
+                state.loading = true;
             });
     },
 });
 
 export default AuthenticationSlice.reducer;
 
-export const {
-    logoutSession,
-} = AuthenticationSlice.actions;
+export const {} = AuthenticationSlice.actions;
 
 
 

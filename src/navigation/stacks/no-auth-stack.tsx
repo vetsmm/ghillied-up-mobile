@@ -8,6 +8,8 @@ import PasswordResetInitScreen from "../../screens/auth/password-reset-init.scre
 import PasswordResetFinishScreen from "../../screens/auth/password-reset-finish.screen";
 import PasswordResetCodeScreen from "../../screens/auth/password-reset-code.screen";
 import {colorsVerifyCode} from "../../components/colors";
+import NewSignInLocationScreen from "../../screens/auth/new-signin-location.screen";
+import SubnetVerificationScreen from "../../screens/auth/subnet-verification.screen";
 
 interface NoAuthScreenProps {
     name: string;
@@ -79,6 +81,27 @@ export const noAuthScreens: Array<NoAuthScreenProps> = [
         }
     },
     {
+        name: "NewSignInLocation",
+        path: "auth/new-sign-in-location",
+        component: NewSignInLocationScreen,
+        options: {
+            headerShown: true,
+            headerTitle: 'New Location',
+            backTitle: 'Login',
+            gestureEnabled: true,
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+            animationTypeForReplace: "pop"
+        }
+    },
+    {
         name: "PasswordResetInit",
         path: "auth/password-reset-init",
         component: PasswordResetInitScreen,
@@ -127,6 +150,27 @@ export const noAuthScreens: Array<NoAuthScreenProps> = [
         options: {
             headerShown: true,
             headerTitle: 'Password Reset',
+            gestureEnabled: true,
+            // title bar color
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+            animationTypeForReplace: "pop"
+        }
+    },
+    {
+        name: "SubnetVerification",
+        path: "auth/confirm-subnet/:jwtToken",
+        component: SubnetVerificationScreen,
+        options: {
+            headerShown: true,
+            headerTitle: 'Verify New Location',
             gestureEnabled: true,
             // title bar color
             headerStyle: {

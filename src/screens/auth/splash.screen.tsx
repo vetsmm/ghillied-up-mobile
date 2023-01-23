@@ -30,13 +30,12 @@ const ActionButtons: React.FunctionComponent<ActionButtonsProps> = ({navigation}
         AuthService.login(credentials)
             .then((res) => {
                 dispatch(login({
-                    authTokenOutput: res.data,
+                    authTokenOutput: res,
                     credentials: credentials
                 }))
             })
             .catch(async (error) => {
-                const err = JSON.parse(JSON.stringify(error));
-                if (err.status === 403) {
+                if (error?.response?.data?.error?.message?.includes("401008")) {
                     navigation.navigate("VerifyEmail", {
                         username: credentials.username,
                     });
