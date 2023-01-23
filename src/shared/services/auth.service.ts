@@ -100,7 +100,7 @@ const resendActivationEmail = async (resendVerifyEmailInputDto: AuthResendVerify
 }
 
 const approveSubnet = async (token: string): Promise<AuthTokenOutput> => {
-    return await axiosInstance
+    return await axios
         .post(`${AppConfig.apiUrl}/auth/approve-subnet`, {token})
         .then(res => {
             return res.data;
