@@ -64,20 +64,20 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
         AuthService.login(credentials)
             .then((res) => {
                 dispatch(login({
-                    authTokenOutput: res.data,
+                    authTokenOutput: res,
                     credentials: credentials
                 }))
             })
             .catch((error) => {
-                const err = JSON.parse(JSON.stringify(error));
-                if (err.status === 403) {
+                if (error?.response?.data?.error?.message?.includes("401008")) {
                     navigation.navigate("VerifyEmail", {
                         username: credentials.username,
                     });
-                } else if (err.status === 401) {
+                } else if (error?.response?.data?.error?.message?.includes("401001")) {
                     setMessage('Login failed: Invalid Credentials');
+                } else if (error?.response?.data?.error?.message?.includes("401005")) {
+                    navigation.navigate("NewSignInLocation", {});
                 } else {
-                    // Sentry.Native.captureException(err);
                     setMessage('Login failed: Unknown error');
                 }
             })

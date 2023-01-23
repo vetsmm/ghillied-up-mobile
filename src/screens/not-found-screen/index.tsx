@@ -7,9 +7,23 @@ import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
 import {Image} from 'native-base';
 import RegularButton from "../../components/buttons/regular-button";
 import {useNavigation} from "@react-navigation/native";
+import {useSelector} from "react-redux";
+import {IRootState} from "../../store";
 
 export const NotFoundScreen = () => {
   const navigation: any = useNavigation();
+
+    const isAuthenticated = useSelector(
+        (state: IRootState) => state.authentication.isAuthenticated
+    );
+
+  const notFoundNavigate = () => {
+      if (isAuthenticated) {
+          navigation.navigate('Feed');
+      } else {
+            navigation.navigate('Splash');
+      }
+  }
 
   return (
     <MainContainer style={[styles.container]}>
@@ -26,7 +40,7 @@ export const NotFoundScreen = () => {
             backgroundColor: colorsVerifyCode.secondary,
             margin: "2%",
           }}
-          onPress={() => navigation.navigate("Feed")}
+          onPress={() => notFoundNavigate()}
       >
         Go Home
       </RegularButton>

@@ -182,6 +182,19 @@ export default {
                     "DEFAULT"
                 ]
             },
+            {
+                action: "VIEW",
+                autoVerify: true,
+                data: {
+                    scheme: "https",
+                    host: "*.ghilliedup.com",
+                    pathPrefix: "/auth/confirm-subnet/*"
+                },
+                category: [
+                    "BROWSABLE",
+                    "DEFAULT"
+                ]
+            },
         ]
     },
     web: {
