@@ -1,6 +1,5 @@
 import * as Device from 'expo-device';
 import {ActivityType} from "../models/types";
-import {navigate} from "../../navigation/nav-ref";
 import * as Sentry from 'sentry-expo';
 import messaging, {FirebaseMessagingTypes} from "@react-native-firebase/messaging";
 import notifee, {AndroidImportance, Event, EventType} from '@notifee/react-native';

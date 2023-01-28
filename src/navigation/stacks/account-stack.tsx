@@ -7,6 +7,9 @@ import PushNotificationSettings from "../../screens/account/notification-setting
 import MyAccount from "../../screens/account/my-account";
 import ChangePassword from "../../screens/account/change-password";
 import UpdateUserInformation from "../../screens/account/update-user-information";
+import ChangePhoneNumber from "../../screens/account/change-phone-number";
+import SessionsScreen from "../../screens/account/sessions";
+import TwoStepVerificationScreen from "../../screens/account/two-step-verification";
 
 interface AccountScreenProps {
     name: string;
@@ -93,6 +96,66 @@ export const accountScreens: Array<AccountScreenProps> = [
         component: ChangePassword,
         options: {
             title: "Change Password",
+            headerShown: true,
+            gestureEnabled: true,
+            // title bar color
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+        }
+    },
+    {
+        name: "AccountChangePhoneNumber",
+        path: "update/phone-number",
+        component: ChangePhoneNumber,
+        options: {
+            title: "Change Phone Number",
+            headerShown: true,
+            gestureEnabled: true,
+            // title bar color
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+        }
+    },
+    {
+        name: "AccountSessions",
+        path: "sessions",
+        component: SessionsScreen,
+        options: {
+            title: "Active Sessions",
+            headerShown: true,
+            gestureEnabled: true,
+            // title bar color
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+        }
+    },
+    {
+        name: "AccountTwoStepVerification",
+        path: "two-step-verification",
+        component: TwoStepVerificationScreen,
+        options: {
+            title: "Two Step Verification",
             headerShown: true,
             gestureEnabled: true,
             // title bar color

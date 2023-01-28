@@ -44,9 +44,20 @@ export const AccountSettings = () => {
                 {
                     title: "Change Password",
                     onPress: () => moveTo("AccountChangePassword", {})
+                },
+                {
+                    title: "Add/Change Phone Number",
+                    onPress: () => moveTo("AccountChangePhoneNumber", {})
+                },
+                {
+                    title: "Where you're logged in",
+                    onPress: () => moveTo("AccountSessions", {})
+                },
+                {
+                    title: "Two-Step Verification (2FA)",
+                    onPress: () => moveTo("AccountTwoStepVerification", {})
                 }
                 // TODO: Add Change Email
-                // TODO: Add Change Phone Number
                 // TODO: Add Additional Emails
 
             ]
