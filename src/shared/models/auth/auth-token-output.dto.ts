@@ -1,4 +1,5 @@
 import {UserAuthority} from "../users";
+import {MfaMethod} from "../users/mfa-method";
 
 export interface AuthTokenOutput {
   accessToken: string;
@@ -13,4 +14,10 @@ export interface UserAccessTokenClaims {
 
 export interface UserRefreshTokenClaims {
   id: number;
+}
+
+export interface TotpTokenResponse {
+  totpToken: string;
+  type: MfaMethod;
+  multiFactorRequired: true;
 }

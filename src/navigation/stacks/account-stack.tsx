@@ -10,6 +10,8 @@ import UpdateUserInformation from "../../screens/account/update-user-information
 import ChangePhoneNumber from "../../screens/account/change-phone-number";
 import SessionsScreen from "../../screens/account/sessions";
 import TwoStepVerificationScreen from "../../screens/account/two-step-verification";
+import MfaCodeEntryScreen from "../../screens/account/two-step-verification/subscreens/mfa-code-entry-screen";
+import BackupCodesScreen from "../../screens/account/two-step-verification/subscreens/backup-codes.screen";
 
 interface AccountScreenProps {
     name: string;
@@ -156,6 +158,46 @@ export const accountScreens: Array<AccountScreenProps> = [
         component: TwoStepVerificationScreen,
         options: {
             title: "Two Step Verification",
+            headerShown: true,
+            gestureEnabled: true,
+            // title bar color
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+        }
+    },
+    {
+        name: "MfaCodeEntry",
+        path: "mfa-code-entry",
+        component: MfaCodeEntryScreen,
+        options: {
+            title: "MFA Code",
+            headerShown: true,
+            gestureEnabled: true,
+            // title bar color
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+        }
+    },
+    {
+        name: "AccountBackupCodes",
+        path: "backup-codes",
+        component: BackupCodesScreen,
+        options: {
+            title: "Backup Codes",
             headerShown: true,
             gestureEnabled: true,
             // title bar color
