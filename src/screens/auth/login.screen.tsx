@@ -16,6 +16,11 @@ import AuthService from "../../shared/services/auth.service";
 import {login} from "../../shared/reducers/authentication.reducer";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import {ValidationSchemas} from "../../shared/validators";
+import {
+    AuthTokenOutput,
+    isInstanceOfTokenOutput,
+    TotpTokenResponse
+} from "../../shared/models/auth/auth-token-output.dto";
 
 const {white} = colorsVerifyCode;
 
@@ -58,32 +63,40 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
         navigation.navigate(screen, {...payload});
     };
 
-    const handleLogin = (credentials, setSubmitting) => {
+    const handleLogin = async (credentials, setSubmitting) => {
         setMessage(null);
 
-        AuthService.login(credentials)
-            .then((res) => {
+        try {
+            const response = await AuthService.login(credentials);
+            setSubmitting(false);
+            if (isInstanceOfTokenOutput(response)) {
                 dispatch(login({
-                    authTokenOutput: res,
+                    authTokenOutput: response as AuthTokenOutput,
                     credentials: credentials
                 }))
-            })
-            .catch((error) => {
-                if (error?.response?.data?.error?.message?.includes("401008")) {
-                    navigation.navigate("VerifyEmail", {
-                        username: credentials.username,
-                    });
-                } else if (error?.response?.data?.error?.message?.includes("401001")) {
-                    setMessage('Login failed: Invalid Credentials');
-                } else if (error?.response?.data?.error?.message?.includes("401005")) {
-                    navigation.navigate("NewSignInLocation", {});
-                } else {
-                    setMessage('Login failed: Unknown error');
-                }
-            })
-            .finally(() => {
-                setSubmitting(false);
-            });
+            } else {
+                const mfaResponse = response as TotpTokenResponse;
+                navigation.navigate("MfaNoAuthCodeEntry", {
+                    username: credentials.username,
+                    password: credentials.password,
+                    mfaMethod: mfaResponse.type,
+                    totpToken: mfaResponse.totpToken,
+                });
+            }
+        } catch (error: any) {
+            if (error?.response?.data?.error?.message?.includes("401008")) {
+                navigation.navigate("VerifyEmail", {
+                    username: credentials.username,
+                });
+            } else if (error?.response?.data?.error?.message?.includes("401001")) {
+                setMessage('Login failed: Invalid Credentials');
+            } else if (error?.response?.data?.error?.message?.includes("401005")) {
+                navigation.navigate("NewSignInLocation", {});
+            } else {
+                setMessage('Login failed: Unknown error');
+            }
+            setSubmitting(false);
+        }
     };
 
     const _validateForm = (formData) => {

@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         borderColor: colorsVerifyCode.secondary,
     },
     sectionButtonText: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: "bold",
         color: colorsVerifyCode.secondary
     }

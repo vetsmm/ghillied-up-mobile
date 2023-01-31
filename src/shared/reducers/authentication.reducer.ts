@@ -1,4 +1,4 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import AuthService from "../services/auth.service";
 import {AuthRegisterInputDto} from "../models/auth/auth-register-input.dto";
 import {AuthChangePasswordInputDto} from "../models/auth/auth-change-password-input.dto";
@@ -169,6 +169,26 @@ export const AuthenticationSlice = createSlice({
                 isAuthenticated: false,
             };
         },
+        removePhoneFromUser(state) {
+            state.account = {
+                ...state.account,
+                phoneNumber: null,
+                phoneNumberConfirmed: false
+            }
+        },
+        addUserPhoneNumber(state, action: PayloadAction<string>) {
+            state.account = {
+                ...state.account,
+                phoneNumber: action.payload,
+                phoneNumberConfirmed: false
+            }
+        },
+        confirmUserPhoneNumber(state) {
+            state.account = {
+                ...state.account,
+                phoneNumberConfirmed: true
+            }
+        }
     },
     extraReducers(builder) {
         builder
@@ -317,7 +337,11 @@ export const AuthenticationSlice = createSlice({
 
 export default AuthenticationSlice.reducer;
 
-export const {} = AuthenticationSlice.actions;
+export const {
+    removePhoneFromUser,
+    addUserPhoneNumber,
+    confirmUserPhoneNumber
+} = AuthenticationSlice.actions;
 
 
 

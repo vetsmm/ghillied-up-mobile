@@ -288,7 +288,7 @@ export const authTokenInterceptor =
                 setIsRefreshing(true)
                 accessToken = await refreshTokenIfNeeded(requestRefresh)
             } catch (error) {
-                console.log('Token refresh failed', error)
+                console.log(JSON.stringify(error))
                 declineQueue(error as Error)
 
                 if (error instanceof Error) {

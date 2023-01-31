@@ -4,7 +4,8 @@ import {
     PasswordResetFormSchema,
     PasswordResetInitFormSchema,
     RegisterFormSchema,
-    UpdateUserInfoFormSchema
+    UpdateUserInfoFormSchema,
+    UpdateUserPhoneNumberSchema,
 } from "./auth";
 import {CreatePostSchema} from "./posts";
 import {
@@ -36,4 +37,5 @@ export const ValidationSchemas = {
     UpdateCommentFormSchema,
     CreateCommentReplyFormSchema,
     UpdateCommentReplyFormSchema,
+    UpdateUserPhoneNumberSchema
 }

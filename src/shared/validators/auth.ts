@@ -51,6 +51,12 @@ export const UpdateUserInfoFormSchema = object({
         .optional()
 });
 
+export const UpdateUserPhoneNumberSchema = object({
+    phoneNumber: string()
+        .required('Phone Number is required')
+        .matches(/^\+[1-9]\d{1,14}$/, 'Invalid phone number')
+});
+
 export const PasswordResetInitFormSchema = object({
     email: string()
         .required('Email is required')

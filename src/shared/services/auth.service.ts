@@ -3,7 +3,7 @@ import {axiosInstance} from './api'
 import {AuthLoginInputDto} from "../models/auth/auth-login-input.dto";
 import {AuthRegisterInputDto} from "../models/auth/auth-register-input.dto";
 import {RegisterOutput} from "../models/auth/auth-register-output.dto";
-import {AuthTokenOutput} from "../models/auth/auth-token-output.dto";
+import {AuthTokenOutput, TotpTokenResponse} from "../models/auth/auth-token-output.dto";
 import AppConfig from "../../config/app.config";
 import {AuthChangePasswordInputDto} from "../models/auth/auth-change-password-input.dto";
 import {AuthPasswordResetInitDto} from "../models/auth/auth-password-reset-init.dto";
@@ -15,7 +15,7 @@ import {AuthPasswordResetVerifyKeyDto} from "../models/auth/auth-password-reset-
 import {BaseApiResponse} from "../models/base-api-response";
 import axios from "axios";
 
-const login = async (loginInput: AuthLoginInputDto): Promise<AuthTokenOutput> => {
+const login = async (loginInput: AuthLoginInputDto): Promise<AuthTokenOutput | TotpTokenResponse> => {
     return await axios.post(`${AppConfig.apiUrl}/auth/login`, loginInput)
         .then(res => {
             return res.data;
@@ -115,6 +115,22 @@ const logout = async (refreshToken: string): Promise<void> => {
         });
 }
 
+const emailTokenLogin = async (token: string): Promise<AuthTokenOutput> => {
+    return await axios
+        .post(`${AppConfig.apiUrl}/auth/login/token`, {token: token})
+        .then((res) => {
+            return res.data;
+        });
+}
+
+const totpLogin = async (token: string, code: string): Promise<AuthTokenOutput> => {
+    return await axios
+        .post(`${AppConfig.apiUrl}/auth/login/totp`, {token: token, code: code})
+        .then((res) => {
+            return res.data;
+        });
+}
+
 
 const authService = {
     register,
@@ -128,7 +144,9 @@ const authService = {
     resendActivationEmail,
     resetPasswordVerifyKey,
     approveSubnet,
-    logout
+    logout,
+    emailTokenLogin,
+    totpLogin
 };
 
 export default authService;
