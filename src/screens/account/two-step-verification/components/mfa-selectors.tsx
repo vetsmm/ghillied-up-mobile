@@ -13,7 +13,8 @@ export interface MfaSelectorsProps {
     onTypeSelect: (value: boolean, type: MfaMethod) => void;
     onNavigateToBackupCodes: ((event: GestureResponderEvent) => void) | undefined;
 }
-export const MfaSelectors: React.FC<MfaSelectorsProps> = ({ user, isLoading, onTypeSelect, onNavigateToBackupCodes }) => (
+
+export const MfaSelectors: React.FC<MfaSelectorsProps> = ({user, isLoading, onTypeSelect, onNavigateToBackupCodes}) => (
     <>
         {/*<ItemToggle*/}
         {/*    title="Authentication App (recommended)"*/}
@@ -27,7 +28,7 @@ export const MfaSelectors: React.FC<MfaSelectorsProps> = ({ user, isLoading, onT
             value={MfaMethod[user.twoFactorMethod] === MfaMethod.SMS}
             onValueChange={(value) => onTypeSelect(value, MfaMethod.SMS)}
             isLoading={isLoading}
-            isDisabled={!user.phoneNumber}
+            isDisabled={!user.phoneNumber || (MfaMethod[user.twoFactorMethod] === MfaMethod.EMAIL || MfaMethod[user.twoFactorMethod] === MfaMethod.TOTP)}
         />
         <ItemToggle
             title={"Email"}

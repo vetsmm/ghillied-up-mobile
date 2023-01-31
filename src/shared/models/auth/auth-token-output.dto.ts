@@ -6,6 +6,11 @@ export interface AuthTokenOutput {
   refreshToken: string;
 }
 
+export function isInstanceOfTokenOutput(object: any): boolean {
+  return "accessToken" in object;
+}
+
+
 export interface UserAccessTokenClaims {
   id: string;
   username: string;
@@ -20,4 +25,8 @@ export interface TotpTokenResponse {
   totpToken: string;
   type: MfaMethod;
   multiFactorRequired: true;
+}
+
+export function isInstanceOfTotpTokenResponse(object: any): boolean {
+  return "multiFactorRequired" in object;
 }

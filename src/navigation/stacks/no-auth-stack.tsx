@@ -10,6 +10,8 @@ import PasswordResetCodeScreen from "../../screens/auth/password-reset-code.scre
 import {colorsVerifyCode} from "../../components/colors";
 import NewSignInLocationScreen from "../../screens/auth/new-signin-location.screen";
 import SubnetVerificationScreen from "../../screens/auth/subnet-verification.screen";
+import MfaNoAuthCodeEntryScreen from "../../screens/auth/mfa-no-auth-code-entry.screen";
+import EmailLoginScreen from "../../screens/auth/email-login.screen";
 
 interface NoAuthScreenProps {
     name: string;
@@ -144,6 +146,27 @@ export const noAuthScreens: Array<NoAuthScreenProps> = [
         }
     },
     {
+        name: "MfaNoAuthCodeEntry",
+        path: "auth/mfa-no-auth-code-entry",
+        component: MfaNoAuthCodeEntryScreen,
+        options: {
+            headerShown: true,
+            headerTitle: 'Login 2FA',
+            gestureEnabled: true,
+            // title bar color
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+            animationTypeForReplace: "pop"
+        }
+    },
+    {
         name: "PasswordResetCode",
         path: "auth/password-reset/:resetKey",
         component: PasswordResetCodeScreen,
@@ -171,6 +194,27 @@ export const noAuthScreens: Array<NoAuthScreenProps> = [
         options: {
             headerShown: true,
             headerTitle: 'Verify New Location',
+            gestureEnabled: true,
+            // title bar color
+            headerStyle: {
+                backgroundColor: colorsVerifyCode.primary,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                color: colorsVerifyCode.white,
+            },
+            headerTintColor: colorsVerifyCode.white,
+            animationTypeForReplace: "pop"
+        }
+    },
+    {
+        name: "EmailLoginLink",
+        path: "auth/login-link/:jwtToken",
+        component: EmailLoginScreen,
+        options: {
+            headerShown: true,
+            headerTitle: 'Email Login',
             gestureEnabled: true,
             // title bar color
             headerStyle: {
