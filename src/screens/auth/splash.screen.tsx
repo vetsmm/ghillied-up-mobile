@@ -4,11 +4,17 @@ import RegularButton from "../../components/buttons/regular-button";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import MainContainer from "../../components/containers/MainContainer";
 import BigText from "../../components/texts/big-text";
-import {clearAuthenticationCredentials, getUserCredentials} from "../../shared/jwt";
+import {getUserCredentials} from "../../shared/jwt";
 import AuthService from "../../shared/services/auth.service";
 import {login} from "../../shared/reducers/authentication.reducer";
 import {AuthLoginInputDto} from "../../shared/models/auth/auth-login-input.dto";
 import {useAppDispatch} from "../../store";
+import {
+    AuthTokenOutput,
+    isInstanceOfTokenOutput,
+    TotpTokenResponse
+} from "../../shared/models/auth/auth-token-output.dto";
+import {FlashMessageRef} from "../../components/flash-message/index";
 
 export interface ActionButtonsProps {
     navigation: NavigationProp<ParamListBase>
@@ -26,25 +32,47 @@ const ActionButtons: React.FunctionComponent<ActionButtonsProps> = ({navigation}
         attemptLogin();
     }, []);
 
-    const loginUser = (credentials: AuthLoginInputDto) => {
-        AuthService.login(credentials)
-            .then((res) => {
+    const loginUser = async (credentials: AuthLoginInputDto) => {
+        setIsAttemptingLogin(true);
+        try {
+            const response = await AuthService.login(credentials);
+            setIsAttemptingLogin(false);
+            if (isInstanceOfTokenOutput(response)) {
                 dispatch(login({
-                    authTokenOutput: res,
+                    authTokenOutput: response as AuthTokenOutput,
                     credentials: credentials
                 }))
-            })
-            .catch(async (error) => {
-                if (error?.response?.data?.error?.message?.includes("401008")) {
-                    navigation.navigate("VerifyEmail", {
-                        username: credentials.username,
-                    });
-                } else {
-                    await clearAuthenticationCredentials();
-                    setIsAttemptingLogin(false);
+            } else {
+                const mfaResponse = response as TotpTokenResponse;
+                navigation.navigate("MfaNoAuthCodeEntry", {
+                    username: credentials.username,
+                    password: credentials.password,
+                    mfaMethod: mfaResponse.type,
+                    totpToken: mfaResponse.totpToken,
+                });
+            }
+        } catch (error: any) {
+            let message = "Login failed: Unknown error";
+            if (error?.response?.data?.error?.message?.includes("401008")) {
+                navigation.navigate("VerifyEmail", {
+                    username: credentials.username,
+                });
+            } else if (error?.response?.data?.error?.message?.includes("401001")) {
+                message = 'Login failed: Invalid Credentials';
+            } else if (error?.response?.data?.error?.message?.includes("401005")) {
+                navigation.navigate("NewSignInLocation", {});
+            }
+            setIsAttemptingLogin(false);
+            FlashMessageRef.current?.showMessage({
+                message: message,
+                type: 'danger',
+                style: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
                 }
             });
-    }
+        }
+    };
 
     const attemptLogin = () => {
         setIsAttemptingLogin(true);
