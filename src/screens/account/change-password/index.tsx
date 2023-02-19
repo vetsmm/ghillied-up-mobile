@@ -98,7 +98,7 @@ export const ChangePassword = () => {
                             <>
                                 <StyledTextInput
                                     label="Old Password"
-                                    icon="lock-open-variant"
+                                    icon="lock"
                                     placeholder="* * * * * * * *"
                                     onChangeText={handleChange('oldPassword')}
                                     onBlur={handleBlur('oldPassword')}
@@ -117,7 +117,7 @@ export const ChangePassword = () => {
 
                                 <StyledTextInput
                                     label="New Password"
-                                    icon="lock-open-variant"
+                                    icon="lock"
                                     placeholder="* * * * * * * *"
                                     onChangeText={handleChange('newPassword')}
                                     onBlur={handleBlur('newPassword')}
@@ -136,7 +136,7 @@ export const ChangePassword = () => {
 
                                 <StyledTextInput
                                     label="Confirm New Password"
-                                    icon="lock-open-variant"
+                                    icon="lock"
                                     placeholder="* * * * * * * *"
                                     onChangeText={handleChange('confirmNewPassword')}
                                     onBlur={handleBlur('confirmNewPassword')}

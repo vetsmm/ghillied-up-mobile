@@ -181,7 +181,7 @@ const GhillieCreateScreen3 = ({route, navigation}) => {
 
                                     <StyledTextInput
                                         label="Ghillie Name"
-                                        icon="account-outline"
+                                        icon="account"
                                         placeholder="US Marine Corps"
                                         keyboardType="default"
                                         onChangeText={handleChange('name')}

@@ -213,7 +213,7 @@ const EmailVerification = ({navigation, route}: any) => {
                     // margin top from screen height to be centered
                     marginTop: Dimensions.get('window').height * 0.15,
                 }}>
-                    <IconHeader name="lock-open" style={{marginBottom: 30}}/>
+                    <IconHeader name="lock" style={{marginBottom: 30}}/>
                     <RegularText
                         style={{textAlign: 'center'}}
                         accessibility={true}

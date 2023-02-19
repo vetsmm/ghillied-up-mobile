@@ -4,7 +4,6 @@ import {useSelector} from "react-redux";
 import {IRootState} from "../../../store";
 import {Center, Column, HStack, ScrollView, Text, View} from "native-base";
 import {ActivityIndicator, RefreshControl, TouchableOpacity} from "react-native";
-import {Feather, Ionicons} from "@expo/vector-icons";
 import styles from "./styles";
 import {Colors} from "../../../shared/styles";
 import {useNavigation} from "@react-navigation/native";
@@ -19,6 +18,7 @@ import VerifiedMilitaryProtected from "../../../shared/protection/verified-milit
 import {FlashList} from "@shopify/flash-list";
 import GhillieCreateOrJoin from "../../../components/ghillie-create-or-join";
 import {FlashMessageRef} from "../../../components/flash-message/index";
+import GhillieIcon from "../../../components/ghillie-icon";
 
 function GhillieListingHeader({isVerifiedMilitary, isAdmin}) {
     const navigation: any = useNavigation();
@@ -41,11 +41,11 @@ function GhillieListingHeader({isVerifiedMilitary, isAdmin}) {
                             alignItems: "center",
                             height: 40,
                             marginBottom: 8,
-                            paddingLeft: 20
+                            paddingLeft: 10
                         }}
                         onPress={() => handleCreateNavigate()}
                     >
-                        <Ionicons name="create-outline" size={30} color={colorsVerifyCode.secondary}/>
+                        <GhillieIcon name="plus" size={40} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
                 )}
             </Column>
@@ -59,11 +59,11 @@ function GhillieListingHeader({isVerifiedMilitary, isAdmin}) {
                             alignItems: "center",
                             height: 40,
                             marginBottom: 8,
-                            paddingRight: 20
+                            paddingRight: 10
                         }}
                         onPress={() => handleSearchNavigate()}
                     >
-                        <Feather name="search" size={30} color={colorsVerifyCode.secondary}/>
+                        <GhillieIcon name="search" size={40} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
                 </VerifiedMilitaryProtected>
             </Column>

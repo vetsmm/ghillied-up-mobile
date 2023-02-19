@@ -199,7 +199,7 @@ const RegisterScreen = ({navigation}) => {
 
                                 <StyledTextInput
                                     label="Password"
-                                    icon="lock-open"
+                                    icon="lock"
                                     placeholder="* * * * * * * *"
                                     onChangeText={handleChange('password')}
                                     onBlur={handleBlur('password')}
@@ -225,7 +225,7 @@ const RegisterScreen = ({navigation}) => {
 
                                 <StyledTextInput
                                     label="Confirm Password"
-                                    icon="lock-open"
+                                    icon="lock"
                                     placeholder="* * * * * * * *"
                                     onChangeText={handleChange('confirmPassword')}
                                     onBlur={handleBlur('confirmPassword')}

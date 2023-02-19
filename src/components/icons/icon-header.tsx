@@ -1,11 +1,11 @@
 import React from 'react';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 // styled components
 // @ts-ignore
 import styled from 'styled-components/native';
 import { colorsVerifyCode } from '../colors';
 import {Dimensions} from "react-native";
+import GhillieIcon from "../ghillie-icon";
 const { secondary, accent } = colorsVerifyCode;
 
 export const ScreenHeight = Dimensions.get('screen').height;
@@ -23,7 +23,7 @@ const IconBg = styled.View`
 const IconHeader = ({ name, color, ...props }: any) => {
   return (
     <IconBg style={{ ...props.style }}>
-      <MaterialCommunityIcons name={name} size={ScreenHeight * 0.08} color={color ? color : accent} />
+      <GhillieIcon name={name} size={ScreenHeight * 0.08} color={color ? color : accent} />
     </IconBg>
   );
 };

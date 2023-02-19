@@ -324,7 +324,7 @@ export const CreatePostScreen: React.FC<{ route: Route }> = ({route}) => {
 
                                 <StyledTextInput
                                     label="Post Title"
-                                    icon="account-outline"
+                                    icon="account"
                                     placeholder="So wagner did it again!"
                                     keyboardType="default"
                                     onBlur={handleBlur('title')}

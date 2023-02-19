@@ -1,8 +1,8 @@
 import React from "react";
 import {TouchableOpacity, TouchableOpacityProps} from "react-native";
 import {Text, View} from "native-base";
-import {MaterialIcons} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../colors";
+import GhillieIcon from "../ghillie-icon";
 
 
 export const CreatePostButton = (props: TouchableOpacityProps) => {
@@ -26,9 +26,9 @@ export const CreatePostButton = (props: TouchableOpacityProps) => {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        <MaterialIcons
-          name="create"
-          size={30}
+        <GhillieIcon
+          name="pen"
+          size={40}
           color="white"
         />
         <Text color="white"> Start a discussion...</Text>

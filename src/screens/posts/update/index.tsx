@@ -23,7 +23,7 @@ import RegularText from "../../../components/texts/regular-texts";
 import {PostFeedDto} from "../../../shared/models/feed/post-feed.dto";
 import {PostListingDto} from "../../../shared/models/posts/post-listing.dto";
 import {PostDetailDto} from "../../../shared/models/posts/post-detail.dto";
-import {Ionicons} from "@expo/vector-icons";
+import GhillieIcon from "../../../components/ghillie-icon";
 
 
 const {primary} = colorsVerifyCode;
@@ -50,7 +50,7 @@ function MobileHeader() {
                         // left: 30,
                         zIndex: 9,
                     }} onPress={goBack}>
-                        <Ionicons name="arrow-back-circle-outline" size={40} color={colorsVerifyCode.secondary}/>
+                        <GhillieIcon name="back" size={40} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
                     <Center>
                         <Text

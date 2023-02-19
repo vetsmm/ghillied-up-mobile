@@ -4,7 +4,6 @@ import {ActivityIndicator, Image, TouchableOpacity} from "react-native";
 import styles from "./styles";
 import {ScrollView, Text, View} from "native-base";
 import {SharedElement} from "react-navigation-shared-element";
-import {FontAwesome, Ionicons, MaterialIcons} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../../../../components/colors";
 import {convertDateTimeFromServer} from "../../../../shared/utils/date-utils";
 import {useNavigation} from "@react-navigation/native";
@@ -20,6 +19,8 @@ import {FlagCategory} from "../../../../shared/models/flags/flag-category";
 import flagService from "../../../../shared/services/flag.service";
 import ShareUtils from "../../../../shared/utils/share-utils";
 import {FlashMessageRef} from "../../../../components/flash-message/index";
+import GhillieIcon from "../../../../components/ghillie-icon";
+import {Ionicons} from "@expo/vector-icons";
 
 
 export const GhillieSettingsScreen: React.FC = () => {
@@ -210,14 +211,14 @@ export const GhillieSettingsScreen: React.FC = () => {
                     >
                         <Text style={styles.sectionButtonText}>Invite via Invite
                             Code: {ghillie.inviteCode}</Text>
-                        <Ionicons name="copy-outline" size={24} color={colorsVerifyCode.secondary}/>
+                        <GhillieIcon name="copy" size={24} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.sectionButton}
                         onPress={() => onSocialSharePress()}
                     >
                         <Text style={styles.sectionButtonText}>Share Ghillie</Text>
-                        <Ionicons name="share-social" size={24} color={colorsVerifyCode.secondary}/>
+                        <GhillieIcon name="share" size={24} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
                 </>
             )
@@ -230,14 +231,14 @@ export const GhillieSettingsScreen: React.FC = () => {
                     >
                         <Text style={styles.sectionButtonText}>Invite via Invite
                             Code: {ghillie.inviteCode}</Text>
-                        <Ionicons name="copy-outline" size={24} color={colorsVerifyCode.secondary}/>
+                        <GhillieIcon name="copy" size={24} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.sectionButton}
                         onPress={() => onSocialSharePress()}
                     >
                         <Text style={styles.sectionButtonText}>Share Ghillie</Text>
-                        <Ionicons name="share-social" size={24} color={colorsVerifyCode.secondary}/>
+                        <GhillieIcon name="share" size={24} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
                 </>
             )
@@ -325,7 +326,7 @@ export const GhillieSettingsScreen: React.FC = () => {
                         onPress={() => moveTo("GhillieMemberSettingsScreen")}
                     >
                         <Text style={styles.sectionButtonText}>Member Settings</Text>
-                        <FontAwesome name="cog" size={24} color={colorsVerifyCode.secondary}/>
+                        <GhillieIcon name="cog" size={24} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
                     {ghillie.inviteCode && _renderShareButtons()}
                     <TouchableOpacity
@@ -336,7 +337,7 @@ export const GhillieSettingsScreen: React.FC = () => {
                         <Text style={styles.sectionButtonText}>Leave Ghillie</Text>
                         {isLeavingGhillie
                             ? <ActivityIndicator size="small" color={colorsVerifyCode.secondary}/>
-                            : <MaterialIcons name="logout" size={24} color={colorsVerifyCode.secondary}/>
+                            : <GhillieIcon name="leave" size={24} color={colorsVerifyCode.secondary}/>
                         }
                     </TouchableOpacity>
                 </View>

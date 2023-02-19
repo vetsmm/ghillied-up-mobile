@@ -133,7 +133,7 @@ export const UpdateUserInformation = () => {
                             <>
                                 <StyledTextInput
                                     label="First Name"
-                                    icon="account-outline"
+                                    icon="account"
                                     placeholder="Mark"
                                     keyboardType="default"
                                     onChangeText={handleChange('firstName')}
@@ -156,7 +156,7 @@ export const UpdateUserInformation = () => {
 
                                 <StyledTextInput
                                     label="Last Name"
-                                    icon="account-outline"
+                                    icon="account"
                                     placeholder="Tripoli"
                                     keyboardType="default"
                                     onChangeText={handleChange('lastName')}

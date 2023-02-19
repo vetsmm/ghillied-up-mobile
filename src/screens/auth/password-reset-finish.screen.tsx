@@ -130,7 +130,7 @@ const PasswordResetFinishScreen = ({navigation, route}) => {
                             <>
                                 <StyledTextInput
                                     label="New Password"
-                                    icon="lock-open-variant"
+                                    icon="lock"
                                     placeholder="* * * * * * * *"
                                     onChangeText={handleChange('newPassword')}
                                     onBlur={handleBlur('newPassword')}
@@ -151,7 +151,7 @@ const PasswordResetFinishScreen = ({navigation, route}) => {
 
                                 <StyledTextInput
                                     label="Confirm New Password"
-                                    icon="lock-open-variant"
+                                    icon="lock"
                                     placeholder="* * * * * * * *"
                                     onChangeText={handleChange('confirmNewPassword')}
                                     onBlur={handleBlur('confirmNewPassword')}

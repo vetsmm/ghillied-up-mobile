@@ -14,11 +14,11 @@ import MsgBox from "../../../components/texts/message-box";
 import {MfaMethod} from "../../../shared/models/users/mfa-method";
 import {getAccount} from "../../../shared/reducers/authentication.reducer";
 import OkCancelModel from "../../../components/modals/ok-cancel-modal";
-import {Feather} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../../../components/colors";
 import {TouchableOpacity, Image} from "react-native";
 import * as Clipboard from 'expo-clipboard';
 import RowContainer from "../../../components/containers/row-container";
+import GhillieIcon from "../../../components/ghillie-icon";
 
 export const TwoStepVerificationScreen = () => {
     const [isLoading, setIsLoading] = React.useState(false);
@@ -300,7 +300,7 @@ export const TwoStepVerificationScreen = () => {
                                 <RegularText>
                                     {`Copy to Clipboard    `}
                                 </RegularText>
-                                <Feather name="copy" size={30} color={colorsVerifyCode.secondary}/>
+                                <GhillieIcon name="copy" size={30} color={colorsVerifyCode.secondary}/>
                             </RowContainer>
                         </TouchableOpacity>
 

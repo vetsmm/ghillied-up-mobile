@@ -20,9 +20,9 @@ import {SvgXml} from "react-native-svg";
 import {GU_LOGO} from "../../../shared/images/logos";
 import RegularText from "../../../components/texts/regular-texts";
 import {useStateWithCallback} from "../../../shared/hooks";
-import {Ionicons} from '@expo/vector-icons';
 import {colorsVerifyCode} from '../../../components/colors';
 import {FlashMessageRef} from "../../../components/flash-message/index";
+import GhillieIcon from "../../../components/ghillie-icon";
 
 
 function PostFeedHeader() {
@@ -47,7 +47,7 @@ function PostFeedHeader() {
             navigation.goBack();
           }}
         >
-          <Ionicons name="arrow-back-circle-outline" size={40} color={colorsVerifyCode.secondary}/>
+          <GhillieIcon name="back" size={40} color={colorsVerifyCode.secondary}/>
         </TouchableOpacity>
       </View>
       <View style={{

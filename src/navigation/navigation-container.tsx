@@ -26,7 +26,7 @@ import {FlashMessageRef} from "../components/flash-message/index";
 import * as Sentry from 'sentry-expo';
 import messaging from "@react-native-firebase/messaging";
 import pushNotificationService from "../shared/services/push-notification.service";
-import notifee, {EventType} from "@notifee/react-native";
+import notifee from "@notifee/react-native";
 
 export const linkingConfig: LinkingOptions<any> | undefined = {
     enabled: true,

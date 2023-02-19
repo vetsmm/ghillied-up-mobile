@@ -141,7 +141,7 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
                             <>
                                 <StyledTextInput
                                     label="Username"
-                                    icon="account-outline"
+                                    icon="account"
                                     placeholder="maddog"
                                     keyboardType="default"
                                     onChangeText={handleChange('username')}
@@ -162,7 +162,7 @@ const LoginScreen: React.FunctionComponent<LoginScreenProps> = ({navigation}) =>
 
                                 <StyledTextInput
                                     label="Password"
-                                    icon="lock-open"
+                                    icon="lock"
                                     placeholder="* * * * * * * *"
                                     onChangeText={handleChange('password')}
                                     onBlur={handleBlur('password')}

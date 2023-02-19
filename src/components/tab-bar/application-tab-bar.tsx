@@ -16,6 +16,7 @@ import AccountStackScreen from "../../navigation/stacks/account-stack";
 import PostStackScreen from "../../navigation/stacks/post-stack";
 import {useSelector} from "react-redux";
 import {IRootState} from "../../store";
+import GhillieIcon from "../ghillie-icon";
 
 const Tab = createBottomTabNavigator();
 
@@ -41,51 +42,22 @@ export const ApplicationTabBar = ({navigation}: any) => {
                 headerShown: false,
                 tabBarIcon: ({focused, color, size}) => {
                     let iconName;
-                    let library = "MaterialCommunityIcons";
-
                     if (route.name === "Feed") {
-                        iconName = focused
-                            ? "newspaper-variant"
-                            : "newspaper-variant-outline";
+                        iconName = "post-feed"
                     } else if (route.name === "Ghillies") {
-                        iconName = focused ? "account-group" : "account-group-outline";
+                        iconName = "ghillie"
                     } else if (route.name === "Notifications") {
-                        library = "Ionicons";
-                        iconName = focused
-                            ? "notifications-sharp"
-                            : "notifications-outline";
+                        iconName = "notifications";
                     } else if (route.name === "Account") {
-                        library = "FontAwesome";
-                        iconName = focused ? "user-circle-o" : "user-circle";
+                        iconName = "account";
                     }
-
-                    // You can return any component that you like here!
-                    if (library === "MaterialCommunityIcons") {
-                        return (
-                            <MaterialCommunityIcons
-                                // @ts-ignore
-                                name={iconName}
-                                size={size}
-                                color={color}
-                            />
-                        );
-                    } else if (library === "Ionicons") {
-                        return <Ionicons
-                            // @ts-ignore
-                            name={iconName}
-                            size={size} color={color}
-                        />;
-                    } else if (library === "FontAwesome") {
-                        return <FontAwesome
-                            // @ts-ignore
-                            name={iconName}
-                            size={size}
-                            color={color}
-                        />;
-                    }
+                    return <GhillieIcon name={iconName} size={size} color={color}/>;
                 },
                 tabBarActiveTintColor: Colors.tabBarActiveTint,
                 tabBarInactiveTintColor: Colors.tabBarInactiveTint,
+                tabBarIconStyle: {
+                    fontSize: 50,
+                },
                 showLabel: false,
                 lazyLoad: true,
                 tabBarStyle: {
@@ -139,21 +111,23 @@ export const ApplicationTabBar = ({navigation}: any) => {
                         <View
                             style={{
                                 position: "absolute",
-                                bottom: 3, // space from bottombar
+                                // bottom: 3, // space from bottombar
                                 justifyContent: "center",
                                 alignItems: "center",
+                                alignContent: "center",
                             }}
                         >
-                            <Image
-                                source={require("../../../assets/icons/plus.png")}
-                                style={{
-                                    width: 40,
-                                    height: 40,
-                                    tintColor: "#f1f6f9",
-                                    alignContent: "center",
-                                }}
-                                alt={"plus"}
-                            />
+                            {/*<Image*/}
+                            {/*    source={require("../../../assets/icons/plus.png")}*/}
+                            {/*    style={{*/}
+                            {/*        width: 40,*/}
+                            {/*        height: 40,*/}
+                            {/*        tintColor: "#f1f6f9",*/}
+                            {/*        alignContent: "center",*/}
+                            {/*    }}*/}
+                            {/*    alt={"plus"}*/}
+                            {/*/>*/}
+                            <GhillieIcon name={"plus"} size={size} color={color}/>
                         </View>
                     ),
                     tabBarButton: (props) => (

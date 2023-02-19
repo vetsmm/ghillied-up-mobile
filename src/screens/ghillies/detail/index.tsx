@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import {SharedElement} from "react-navigation-shared-element";
 import styles from "./styles";
-import {FontAwesome, Ionicons} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../../../components/colors";
 import {Badge, Center, Column, Row, Spinner, View} from "native-base";
 import TopicsContainer from "../../../components/topics-container";
@@ -37,6 +36,7 @@ import PostNonFeedCard from "../../../components/post-non-feed-card";
 import postService from "../../../shared/services/post.service";
 import {Colors} from "../../../shared/styles";
 import {FlashMessageRef} from "../../../components/flash-message/index";
+import GhillieIcon from "../../../components/ghillie-icon";
 
 const {primary, secondary} = colorsVerifyCode;
 
@@ -334,7 +334,7 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
         />
     );
 
-    const _renderPinnedPost = ({item}: {item: PostNonFeedDto}) => (
+    const _renderPinnedPost = ({item}: { item: PostNonFeedDto }) => (
         <PostNonFeedCard
             onPinPost={onPinPost}
             onUnpinPost={onUnpinPost}
@@ -416,12 +416,12 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
             backgroundColor: primary,
         }}>
             <TouchableOpacity style={styles.backButton} onPress={goBack}>
-                <Ionicons name="arrow-back-circle-outline" size={40} color={secondary}/>
+                <GhillieIcon name="back" size={40} color={secondary}/>
             </TouchableOpacity>
             <VerifiedMilitaryProtected>
                 <TouchableOpacity style={styles.updateButton}
                                   onPress={() => navigation.navigate("GhillieSettings", {ghillie})}>
-                    <Ionicons name="cog" size={40} color={secondary}/>
+                    <GhillieIcon name="cog" size={40} color={secondary}/>
                 </TouchableOpacity>
             </VerifiedMilitaryProtected>
             <VirtualizedView
@@ -529,13 +529,13 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                     <Row>
                         <Column width="33%" alignItems="center">
                             <TouchableOpacity onPress={() => setSelection(0)}>
-                                <FontAwesome
-                                    name={selection === 0 ? "comments" : "comments-o"}
+                                <GhillieIcon
+                                    name="posts"
                                     size={40}
-                                    color={secondary}
+                                    color={selection === 0 ? secondary : colorsVerifyCode.white}
                                 />
                                 <Text style={{
-                                    color: secondary
+                                    color: selection === 0 ? secondary : colorsVerifyCode.white
                                 }}
                                 >
                                     Posts
@@ -544,13 +544,13 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                         </Column>
                         <Column width="33%" alignItems="center">
                             <TouchableOpacity onPress={() => setSelection(1)}>
-                                <FontAwesome
-                                    name={selection === 1 ? "question-circle" : "question-circle-o"}
+                                <GhillieIcon
+                                    name="about"
                                     size={40}
-                                    color={secondary}
+                                    color={selection === 1 ? secondary : colorsVerifyCode.white}
                                 />
                                 <Text style={{
-                                    color: secondary
+                                    color: selection === 1 ? secondary : colorsVerifyCode.white
                                 }}
                                 >
                                     About
@@ -559,13 +559,13 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                         </Column>
                         <Column width="33%" alignItems="center">
                             <TouchableOpacity onPress={() => setSelection(2)}>
-                                <Ionicons
-                                    name={selection === 1 ? "pin-outline" : "pin"}
+                                <GhillieIcon
+                                    name="pin"
                                     size={40}
-                                    color={secondary}
+                                    color={selection === 2 ? secondary : colorsVerifyCode.white}
                                 />
                                 <Text style={{
-                                    color: secondary
+                                    color: selection === 2 ? secondary : colorsVerifyCode.white
                                 }}
                                 >
                                     Pinned
@@ -575,89 +575,96 @@ export const GhillieDetailScreen: React.FC<{ route: Route }> = ({route}) => {
                     </Row>
                 </View>
 
-                {selection === 0 && (
-                    <View>
-                        {isBanned
-                            ? (
-                                <Center>
-                                    <Text style={{
-                                        color: "white"
-                                    }}
-                                    >
-                                        You are banned from this ghillie.
-                                    </Text>
-                                </Center>
-                            )
-                            : (
-                                <View flex={1}>
-                                    <BigText style={{
-                                        marginLeft: 15,
-                                        marginBottom: 10
-                                    }}>
-                                        Recent Posts
-                                    </BigText>
-                                    {_renderPostButton()}
-                                </View>
-                            )}
-                    </View>
-                )}
-                {selection === 1 && (
-                    <>
+                {
+                    selection === 0 && (
                         <View>
-                            <Text style={[styles.content, {color: colorsVerifyCode.white}]}>
-                                <Autolink
-                                    text={ghillie?.about || ""}
-                                    truncate={240}
-                                    truncateChars="more"
-                                    url
-                                />
-                            </Text>
+                            {isBanned
+                                ? (
+                                    <Center>
+                                        <Text style={{
+                                            color: "white"
+                                        }}
+                                        >
+                                            You are banned from this ghillie.
+                                        </Text>
+                                    </Center>
+                                )
+                                : (
+                                    <View flex={1}>
+                                        <BigText style={{
+                                            marginLeft: 15,
+                                            marginBottom: 10
+                                        }}>
+                                            Recent Posts
+                                        </BigText>
+                                        {_renderPostButton()}
+                                    </View>
+                                )}
                         </View>
-                        <View style={{
-                            marginTop: 20,
-                            borderTopWidth: 1,
-                            borderTopColor: secondary,
-                            borderTopLeftRadius: 20,
-                            borderTopRightRadius: 20
-                        }}>
-                            <TopicsContainer topics={ghillie.topics} style={{
-                                flex: 1,
-                                marginTop: 10,
-                                marginBottom: 10
-                            }}/>
-                        </View>
+                    )
+                }
+                {
+                    selection === 1 && (
+                        <>
+                            <View>
+                                <Text style={[styles.content, {color: colorsVerifyCode.white}]}>
+                                    <Autolink
+                                        text={ghillie?.about || ""}
+                                        truncate={240}
+                                        truncateChars="more"
+                                        url
+                                    />
+                                </Text>
+                            </View>
+                            <View style={{
+                                marginTop: 20,
+                                borderTopWidth: 1,
+                                borderTopColor: secondary,
+                                borderTopLeftRadius: 20,
+                                borderTopRightRadius: 20
+                            }}>
+                                <TopicsContainer topics={ghillie.topics} style={{
+                                    flex: 1,
+                                    marginTop: 10,
+                                    marginBottom: 10
+                                }}/>
+                            </View>
 
-                    </>
-                )}
-                {selection === 2 && (
-                    <View>
-                        {isBanned
-                            ? (
-                                <Center>
-                                    <Text style={{
-                                        color: "white"
-                                    }}
-                                    >
-                                        You are banned from this ghillie.
-                                    </Text>
-                                </Center>
-                            )
-                            : (
-                                <View flex={1}>
-                                    <BigText style={{
-                                        marginLeft: 15,
-                                        marginBottom: 10
-                                    }}>
-                                        Pinned Posts
-                                    </BigText>
-                                </View>
-                            )}
-                    </View>
-                )}
+                        </>
+                    )
+                }
+                {
+                    selection === 2 && (
+                        <View>
+                            {isBanned
+                                ? (
+                                    <Center>
+                                        <Text style={{
+                                            color: "white"
+                                        }}
+                                        >
+                                            You are banned from this ghillie.
+                                        </Text>
+                                    </Center>
+                                )
+                                : (
+                                    <View flex={1}>
+                                        <BigText style={{
+                                            marginLeft: 15,
+                                            marginBottom: 10
+                                        }}>
+                                            Pinned Posts
+                                        </BigText>
+                                    </View>
+                                )}
+                        </View>
+                    )
+                }
 
             </VirtualizedView>
         </View>
-    );
+    )
+        ;
 };
 
 (GhillieDetailScreen as any).sharedElements = (route: any) => {

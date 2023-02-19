@@ -19,6 +19,7 @@ import {useStateWithCallback} from "../../../shared/hooks";
 import VerifiedMilitaryProtected from "../../../shared/protection/verified-military-protected";
 import {FlashMessageRef} from "../../../components/flash-message/index";
 import notifee from "@notifee/react-native";
+import GhillieIcon from "../../../components/ghillie-icon";
 
 function NotificationListingScreen() {
     const [clearAllOpen, setClearAllOpen] = useStateWithCallback(false);
@@ -155,7 +156,7 @@ function NotificationListingScreen() {
                             }}
                             onPress={() => setClearAllOpen(true)}
                         >
-                            <FontAwesome5 name="check" size={30} color="white"/>
+                            <GhillieIcon name="notification-check" size={40} color="white"/>
                         </TouchableOpacity>
                     </VerifiedMilitaryProtected>
                 </View>

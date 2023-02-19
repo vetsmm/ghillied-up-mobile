@@ -4,7 +4,7 @@ import styles from "./styles";
 import {ScrollView, Text, View} from "native-base";
 import {TouchableOpacity} from "react-native";
 import {useNavigation} from "@react-navigation/native";
-import {Ionicons, MaterialIcons} from "@expo/vector-icons";
+import {Ionicons} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../../../components/colors";
 import {useAppDispatch} from "../../../store";
 import {logout} from "../../../shared/reducers/authentication.reducer";
@@ -12,6 +12,7 @@ import SmallText from "../../../components/texts/small-text";
 import Constants from "expo-constants";
 import * as WebBrowser from 'expo-web-browser';
 import AppConfig from "../../../config/app.config";
+import GhillieIcon from "../../../components/ghillie-icon";
 
 
 interface SectionButton {
@@ -167,7 +168,7 @@ export const AccountSettings = () => {
                     onPress={() => dispatch(logout())}
                 >
                     <Text style={styles.logoutText}>Log Out</Text>
-                    <MaterialIcons name="logout" size={24} color={colorsVerifyCode.white}/>
+                    <GhillieIcon name="leave" size={24} color={colorsVerifyCode.white}/>
                 </TouchableOpacity>
 
                 <View style={styles.appVersion}>

@@ -27,8 +27,8 @@ import {FlagCategory} from "../../../shared/models/flags/flag-category";
 import flagService from "../../../shared/services/flag.service";
 import {ParentCommentDto} from '../../../shared/models/comments/parent-comment.dto';
 import {ChildCommentDto} from '../../../shared/models/comments/child-comment.dto';
-import {Ionicons} from "@expo/vector-icons";
 import {FlashMessageRef} from "../../../components/flash-message/index";
+import GhillieIcon from "../../../components/ghillie-icon";
 
 const {primary} = colorsVerifyCode;
 
@@ -55,7 +55,7 @@ function MobileHeader() {
                         // left: 30,
                         zIndex: 9,
                     }} onPress={goBack}>
-                        <Ionicons name="arrow-back-circle-outline" size={40} color={colorsVerifyCode.secondary}/>
+                        <GhillieIcon name="back" size={40} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
                 </HStack>
             </VStack>

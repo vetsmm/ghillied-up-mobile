@@ -10,7 +10,6 @@ import {useNavigation} from "@react-navigation/native";
 import {GhillieDetailDto} from "../../../shared/models/ghillies/ghillie-detail.dto";
 import {PageInfo} from "../../../shared/models/pagination/types";
 import {FlatList, RefreshControl, TouchableOpacity} from "react-native";
-import {Ionicons} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../../../components/colors";
 import AccountTabBar from "../../../components/account-tab-bar";
 import {Colors} from "../../../shared/styles";
@@ -30,6 +29,7 @@ import {getAccount} from "../../../shared/reducers/authentication.reducer";
 import MessageModal from "../../../components/modals/message-modal";
 import GhillieCreateOrJoin from "../../../components/ghillie-create-or-join";
 import {FlashMessageRef} from "../../../components/flash-message/index";
+import GhillieIcon from "../../../components/ghillie-icon";
 
 
 const RenderGhillies: React.FC<{
@@ -453,7 +453,7 @@ function AccountScreen() {
             }}>
                 {/* Create Icon Button, align right */}
                 <TouchableOpacity onPress={() => moveTo("AccountSettings", {})}>
-                    <Ionicons name="ios-cog" size={30} color={colorsVerifyCode.white}/>
+                    <GhillieIcon name="cog" size={40} color={colorsVerifyCode.white}/>
                 </TouchableOpacity>
             </View>
             <AccountOverviewCard

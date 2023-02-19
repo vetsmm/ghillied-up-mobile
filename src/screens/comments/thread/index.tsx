@@ -25,8 +25,8 @@ import {PostDetailDto} from '../../../shared/models/posts/post-detail.dto';
 import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
 import {SuccessAlert} from '../../../components/alerts/success-alert';
 import AppConfig from '../../../config/app.config';
-import {Ionicons} from "@expo/vector-icons";
 import {FlashMessageRef} from "../../../components/flash-message/index";
+import GhillieIcon from "../../../components/ghillie-icon";
 
 interface Route {
   params: {
@@ -50,7 +50,7 @@ function MobileHeader() {
               // left: 30,
               zIndex: 9,
             }} onPress={goBack}>
-              <Ionicons name="arrow-back-circle-outline" size={40} color={colorsVerifyCode.secondary}/>
+              <GhillieIcon name="back" size={40} color={colorsVerifyCode.secondary}/>
             </TouchableOpacity>
             <Center>
               <Text

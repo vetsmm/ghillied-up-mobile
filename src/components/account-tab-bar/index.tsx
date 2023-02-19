@@ -1,8 +1,8 @@
 import React from "react";
 import {Column, Row} from "native-base";
 import {Text, TouchableOpacity} from "react-native";
-import {FontAwesome, MaterialCommunityIcons} from "@expo/vector-icons";
 import {colorsVerifyCode} from "../colors";
+import GhillieIcon from "../ghillie-icon";
 
 
 export const AccountTabBar = ({ setSelection, selection}) => {
@@ -16,13 +16,13 @@ export const AccountTabBar = ({ setSelection, selection}) => {
                         alignItems: "center",
                     }}
                 >
-                    <MaterialCommunityIcons
-                        name={selection === 0 ? "account-group" : "account-group-outline"}
-                        size={35}
-                        color={colorsVerifyCode.secondary}
+                    <GhillieIcon
+                        name="ghillie"
+                        size={40}
+                        color={selection === 0 ? colorsVerifyCode.secondary : colorsVerifyCode.white}
                     />
                     <Text style={{
-                        color: colorsVerifyCode.secondary,
+                        color: selection === 0 ? colorsVerifyCode.secondary : colorsVerifyCode.white,
                     }}
                     >
                         My Ghillies
@@ -37,13 +37,13 @@ export const AccountTabBar = ({ setSelection, selection}) => {
                         alignItems: "center",
                     }}
                 >
-                    <FontAwesome
-                        name={selection === 1 ? "question-circle" : "question-circle-o"}
-                        size={35}
-                        color={colorsVerifyCode.secondary}
+                    <GhillieIcon
+                        name={"posts"}
+                        size={40}
+                        color={selection === 1 ? colorsVerifyCode.secondary : colorsVerifyCode.white}
                     />
                     <Text style={{
-                        color: colorsVerifyCode.secondary
+                        color: selection === 1 ? colorsVerifyCode.secondary : colorsVerifyCode.white
                     }}
                     >
                         Posts
@@ -58,13 +58,13 @@ export const AccountTabBar = ({ setSelection, selection}) => {
                         alignItems: "center",
                     }}
                 >
-                    <FontAwesome
-                        name={selection === 2 ? "bookmark" : "bookmark-o"}
-                        size={35}
-                        color={colorsVerifyCode.secondary}
+                    <GhillieIcon
+                        name="bookmarked"
+                        size={40}
+                        color={selection === 2 ? colorsVerifyCode.secondary : colorsVerifyCode.white}
                     />
                     <Text style={{
-                        color: colorsVerifyCode.secondary
+                        color: selection === 2 ? colorsVerifyCode.secondary : colorsVerifyCode.white
                     }}
                     >
                         Saved

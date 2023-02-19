@@ -2,9 +2,8 @@ import React, {useCallback, useEffect} from 'react';
 import MainContainer from '../../../components/containers/MainContainer';
 import {RefreshControl, StyleSheet} from 'react-native';
 import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
-import {Center, Column, HStack, Icon, Text, View} from 'native-base';
+import {Center, Column, HStack, View} from 'native-base';
 import {TouchableOpacity} from 'react-native';
-import {Ionicons, MaterialIcons} from '@expo/vector-icons';
 import {colorsVerifyCode} from '../../../components/colors';
 import StyledSearchInput from '../../../components/inputs/styled-search-input';
 import {FlashList} from '@shopify/flash-list';
@@ -21,6 +20,7 @@ import GhillieCategoryCircle from "../../../components/ghillie-category-circle";
 import GhillieCategoryRow from "../../../components/ghillie-category-row";
 import RegularText from "../../../components/texts/regular-texts";
 import {FlashMessageRef} from "../../../components/flash-message/index";
+import GhillieIcon from "../../../components/ghillie-icon";
 
 
 function GhillieListingHeader({searchText, setSearchText, clearSearch, onSearchPress, navigation}) {
@@ -42,7 +42,7 @@ function GhillieListingHeader({searchText, setSearchText, clearSearch, onSearchP
                     }}
                     onPress={() => goBack()}
                 >
-                    <Ionicons name="arrow-back-circle-outline" size={30} color={colorsVerifyCode.secondary}/>
+                    <GhillieIcon name="back" size={40} color={colorsVerifyCode.secondary}/>
                 </TouchableOpacity>
             </Column>
             <Column width="76%">
@@ -75,7 +75,7 @@ function GhillieListingHeader({searchText, setSearchText, clearSearch, onSearchP
                         }}
                         onPress={() => clearSearch()}
                     >
-                        <MaterialIcons name="clear" size={30} color={colorsVerifyCode.secondary}/>
+                        <GhillieIcon name="clear" size={30} color={colorsVerifyCode.secondary}/>
                     </TouchableOpacity>
                 )}
             </Column>
