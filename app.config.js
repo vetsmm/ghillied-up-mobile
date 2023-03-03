@@ -44,7 +44,7 @@ export default {
     slug: "ghillied-up",
     owner: "ghilliedup",
     originalFullName: '@ghilliedup/ghillied-up',
-    version: "1.1.10",
+    version: "1.1.11",
     orientation: "portrait",
     icon: getProperties().icon,
     scheme: "ghilliedup",
