@@ -23,7 +23,7 @@ const login = async (loginInput: AuthLoginInputDto): Promise<AuthTokenOutput | T
 }
 
 const register = async (registerInput: AuthRegisterInputDto): Promise<BaseApiResponse<RegisterOutput, never>> => {
-    return await axiosInstance
+    return await axios
         .post(`${AppConfig.apiUrl}/auth/register`, registerInput)
         .then(res => {
             return res.data
@@ -39,7 +39,7 @@ const changePassword = async (changePasswordInput: AuthChangePasswordInputDto): 
 }
 
 const resetPasswordInit = async (resetInit: AuthPasswordResetInitDto): Promise<BaseApiResponse<string, never>> => {
-    return await axiosInstance
+    return await axios
         .post(`${AppConfig.apiUrl}/auth/reset-password/init`, resetInit)
         .then((res) => {
             return res.data;
@@ -47,7 +47,7 @@ const resetPasswordInit = async (resetInit: AuthPasswordResetInitDto): Promise<B
 }
 
 const resetPasswordVerifyKey = async (verifyKeyDto: AuthPasswordResetVerifyKeyDto): Promise<any> => {
-    return await axiosInstance
+    return await axios
         .post(`${AppConfig.apiUrl}/auth/reset-password/verify-key`, verifyKeyDto)
         .then((res) => {
             return JSON.parse(JSON.stringify(res.data));
@@ -55,7 +55,7 @@ const resetPasswordVerifyKey = async (verifyKeyDto: AuthPasswordResetVerifyKeyDt
 }
 
 const resetPasswordFinish = async (resetPasswordFinish: AuthPasswordResetFinishDto): Promise<any> => {
-    return await axiosInstance
+    return await axios
         .post(`${AppConfig.apiUrl}/auth/reset-password/finish`, resetPasswordFinish)
         .then((res) => {
             return JSON.parse(JSON.stringify(res));
@@ -72,7 +72,7 @@ const getAccount = async (): Promise<BaseApiResponse<UserOutput, never>> => {
 }
 
 const isUsernameAvailable = async (username: string): Promise<{ available: boolean }> => {
-    return await axiosInstance
+    return await axios
         .get(`${AppConfig.apiUrl}/auth/check-username/${username}`)
         .then(res => {
             return res.data.data;
@@ -81,7 +81,7 @@ const isUsernameAvailable = async (username: string): Promise<{ available: boole
 
 const activateAccount = async (emailVerification: AuthVerifyEmailInputDto)
     : Promise<AuthTokenOutput> => {
-    return await axiosInstance
+    return await axios
         .post(`${AppConfig.apiUrl}/auth/activate/code`, emailVerification)
         .then(res => {
             return res.data;
@@ -92,7 +92,7 @@ const resendActivationEmail = async (resendVerifyEmailInputDto: AuthResendVerify
     if (!resendVerifyEmailInputDto.email && !resendVerifyEmailInputDto.username) {
         throw new Error("Email or username is required");
     }
-    return await axiosInstance
+    return await axios
         .post(`${AppConfig.apiUrl}/auth/activate/resend`, resendVerifyEmailInputDto)
         .then(res => {
             return res.data;
