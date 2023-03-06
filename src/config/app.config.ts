@@ -63,15 +63,15 @@ const ENV = {
     },
 };
 
-const getEnvVars = (env = Constants.manifest?.releaseChannel) => {
+const getEnvVars = (appEnv = Constants.manifest?.extra?.appEnv) => {
     // What is __DEV__ ?
     // This variable is set to true when react-native is running in Dev mode.
     // __DEV__ is true when run locally, but false when published.
     if (__DEV__) {
         return ENV.dev;
-    } else if (env === 'qa') {
+    } else if (appEnv === 'staging') {
         return ENV.qa;
-    } else if (env === 'prod') {
+    } else if (appEnv === 'production') {
         return ENV.prod;
     }
 
