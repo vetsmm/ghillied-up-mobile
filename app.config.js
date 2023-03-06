@@ -213,6 +213,7 @@ export default {
         ]
     },
     extra: {
+        appEnv: process.env.APP_ENV,
         eas: {
             projectId: "975262d5-696e-4258-a256-1b9cbd12ff53",
             experienceId: "@ghilliedup/ghillied-up",

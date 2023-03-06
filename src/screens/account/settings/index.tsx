@@ -172,7 +172,7 @@ export const AccountSettings = () => {
 
                 <View style={styles.appVersion}>
                     <SmallText>
-                        App Version: {Constants.manifest?.version} {Constants.manifest?.releaseChannel && ` - (${Constants.manifest?.releaseChannel})`}
+                        App Version: {Constants.manifest?.version} {Constants.manifest?.extra?.appEnv && ` - (${Constants.manifest?.extra?.appEnv})`}
                     </SmallText>
                 </View>
             </ScrollView>
